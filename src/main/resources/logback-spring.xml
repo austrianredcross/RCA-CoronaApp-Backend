@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    
+
+    <appender name="json" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+            <jsonFormatter
+                    class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+                <prettyPrint>false</prettyPrint>
+            </jsonFormatter>
+            <timestampFormat>yyyy-MM-dd' 'HH:mm:ss.SSS</timestampFormat>
+            <appendLineSeparator>true</appendLineSeparator>
+        </layout>
+    </appender>
+	        
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
     <appender name="aiAppender"
               class="com.microsoft.applicationinsights.logback.ApplicationInsightsAppender">
@@ -10,9 +25,14 @@
 	    </pattern>
 	</encoder>
     </appender-->
-    
-    <root level="info">
-        <appender-ref ref="aiAppender" />
-        <!--appender-ref ref="stdout" /-->
-    </root>
+    <springProfile name="pz">
+	<root level="INFO">
+	    <appender-ref ref="CONSOLE"/>
+	</root>	
+    </springProfile>
+    <springProfile name="!pz">
+	<root level="INFO">
+	    <appender-ref ref="aiAppender" />
+	</root>	
+    </springProfile>    
 </configuration>
