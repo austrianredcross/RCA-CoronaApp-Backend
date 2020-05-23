@@ -53,7 +53,7 @@ public class BatchService {
 			}
 		}
 		log.info(String.format("Processed %s configs creating %s batches across %s configs", totalConfigs, totalBatches, totalConfigsWithBatches));
-		return new ApiResponse(200, "OK", "", 1, false);
+		return ApiResponse.ok();
 	}
 
 	private int maybeCreateBatches(ExportConfig exportConfig, LocalDateTime now) {
@@ -131,7 +131,7 @@ public class BatchService {
 	}
 
 	public ApiResponse doWork() {
-		return new ApiResponse(200, "OK", "", 1, false);
+		return ApiResponse.ok();
 	}
 
 }

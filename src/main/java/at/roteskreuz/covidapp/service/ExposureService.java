@@ -1,7 +1,6 @@
 package at.roteskreuz.covidapp.service;
 
 import at.roteskreuz.covidapp.domain.Exposure;
-import at.roteskreuz.covidapp.exception.AuthorizedAppNotFoundException;
 import at.roteskreuz.covidapp.repository.ExposureRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,7 @@ public class ExposureService {
 	
 	private final ExposureRepository exposureRepository;
 
-	public void saveAll(List<Exposure> exposures) throws AuthorizedAppNotFoundException {
+	public void saveAll(List<Exposure> exposures) {
 		exposureRepository.saveAll(exposures);
 	}
 }
