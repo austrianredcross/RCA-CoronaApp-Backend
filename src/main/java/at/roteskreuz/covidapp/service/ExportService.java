@@ -9,17 +9,19 @@ import at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKeyExport;
 import com.google.protobuf.ByteString;
 import io.micrometer.core.instrument.util.StringUtils;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
+import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.SecureRandom;
+import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.SignatureException;
-import java.security.spec.ECGenParameterSpec;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 /**
@@ -37,7 +40,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ExportService {
 
-	private static final Integer FIXED_HEADER_WIDTH = 16;
 	private static final String EXPORT_BINARY_NAME = "export.bin";
 	private static final String EXPORT_SIGNATURE_NAME = "export.sig";
 	private static final String ALGORITHM = "1.2.840.10045.4.3.2";
@@ -45,7 +47,7 @@ public class ExportService {
 	private final Sha256Service sha256Service;
 
 	//MarshalExportFile converts the inputs into an encoded byte array.
-	public byte[] marshalExportFile(ExportBatch batch, List<Exposure> exposures, int batchNum, int batchSize, List<SignatureInfo> exportSigners) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, SignatureException, IOException {
+	public byte[] marshalExportFile(ExportBatch batch, List<Exposure> exposures, int batchNum, int batchSize, List<SignatureInfo> exportSigners) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, SignatureException, IOException, InvalidKeySpecException {
 		// create main exposure key export binary
 		byte[] expContents = marshalContents(batch, exposures, batchNum, batchSize, exportSigners);
 		// create signature file
@@ -122,7 +124,7 @@ public class ExportService {
 		return output.toByteArray();
 	}
 
-	private byte[] marshalSignature(ExportBatch batch, byte[] exportContents, int batchNum, int batchSize, List<SignatureInfo> exportSigners) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, SignatureException, IOException {
+	private byte[] marshalSignature(ExportBatch batch, byte[] exportContents, int batchNum, int batchSize, List<SignatureInfo> exportSigners) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, SignatureException, IOException, InvalidKeySpecException {
 		List<Export.TEKSignature> signatures = new ArrayList<>();
 		byte[] signiture = generateSignature(exportContents);
 
@@ -156,25 +158,21 @@ public class ExportService {
 		return output.toByteArray();
 	}
 
-	public byte[] generateSignature(byte[] data) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, SignatureException, IOException {
-		//ECGenParameterSpec
-		byte[] digest = sha256Service.sha256(data);
-		KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");
-		keyGen.initialize(new ECGenParameterSpec("secp256r1"), new SecureRandom());
-		KeyPair pair = keyGen.generateKeyPair();
+	private byte[] generateSignature(byte[] data) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, SignatureException, IOException, InvalidKeySpecException {
 		Signature ecdsa = Signature.getInstance("SHA256withECDSA");
-		ecdsa.initSign(pair.getPrivate());
-//
-//		System.out.println("-----BEGIN EC PRIVATE KEY-----\n"
-//				+ Base64.getEncoder().encodeToString((pair.getPrivate().getEncoded()))
-//				+ "\n-----END EC PRIVATE KEY-----\n");
-//		System.out.println("");
-//		System.out.println("");
-//		System.out.println("-----BEGIN PUBLIC KEY-----\n"
-//				+ Base64.getEncoder().encodeToString((pair.getPublic().getEncoded()))
-//				+ "\n-----END PUBLIC KEY-----\n");	
-		ecdsa.update(digest);
+		File resource = new ClassPathResource("private.der").getFile();
+		ecdsa.initSign(getPrivateKey(resource));
+		ecdsa.update(data);
+		//System.out.println("Verify: " + ecdsa.verify(ecdsa.sign()));
 		return ecdsa.sign();
+	}
+
+	private PrivateKey getPrivateKey(File file) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+		byte[] keyBytes = Files.readAllBytes(file.toPath());
+		PKCS8EncodedKeySpec spec
+				= new PKCS8EncodedKeySpec(keyBytes);
+		KeyFactory kf = KeyFactory.getInstance("EC");
+		return kf.generatePrivate(spec);
 	}
 
 }

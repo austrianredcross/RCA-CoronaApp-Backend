@@ -44,5 +44,7 @@ public class Exposure implements Serializable {
 	
 	@Column(name = "sync_id")
 	private Long federationSyncID;
+	
+	private String diagnosisType;
 
 }
