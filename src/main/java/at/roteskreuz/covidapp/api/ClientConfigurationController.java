@@ -46,7 +46,7 @@ public class ClientConfigurationController {
 		ClientConfiguration configuration = service.getConfiuration();
 		if (configuration == null) {
 			throw new ResponseStatusException(
-			  HttpStatus.NOT_FOUND, "Clien configuration not found"
+			  HttpStatus.NOT_FOUND, "Client configuration not found"
 			);
 		}
 		long lastModifiedDate = configuration.getDateCreated().toInstant(ZoneOffset.UTC).toEpochMilli();

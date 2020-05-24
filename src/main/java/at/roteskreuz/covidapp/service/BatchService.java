@@ -13,7 +13,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,8 +64,8 @@ public class BatchService {
 			log.debug("Batch creation for config %d is not required, skipping", exportConfig.getConfigID());
 			return 0;
 		}
-		exportBatchRepository.saveAll(ranges.stream().map(
-				r -> new ExportBatch(null,
+		ranges.forEach(r -> {
+			exportBatchRepository.save(new ExportBatch(null,
 						exportConfig,
 						exportConfig.getBucketName(),
 						exportConfig.getFilenameRoot(),
@@ -74,8 +73,9 @@ public class BatchService {
 						exportConfig.getRegion(),
 						ExportBatchStatus.EXPORT_BATCH_OPEN,
 						null,
-						exportConfig.getSignatureInfos())
-		).collect(Collectors.toList()));
+						new ArrayList<>(exportConfig.getSignatureInfos())));		
+		});
+				
 
 		log.info(String.format("Created %s batch(es) for config %s", ranges.size(), exportConfig.getConfigID()));
 		return ranges.size();
@@ -127,7 +127,7 @@ public class BatchService {
 		if (exportBatch != null) {
 			return exportBatch.getEndTimestamp();
 		}
-		return null;
+		return LocalDateTime.MIN;
 	}
 
 	public ApiResponse doWork() {
