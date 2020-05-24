@@ -45,8 +45,8 @@ public class PublishController {
 	   @ApiImplicitParam(name = "X-AppId", value = "Application id", required = true, dataType = "string", paramType = "header")		
 	 })
 	public ResponseEntity<ApiResponse> publish(@Valid @RequestBody Publish publish) throws InvalidTanException {
-		if (!tanService.validate(publish.getUuid(), publish.getAuthorization(), publish.getDiagnosisType())) {
-			throw new InvalidTanException(String.format("TAN is invalid. tan: %s, uuid:%s, type: %s", publish.getUuid(), publish.getAuthorization(), publish.getDiagnosisType()));
+		if (!tanService.validate(publish.getVerificationPayload().getUuid(), publish.getVerificationPayload().getAuthorization(), publish.getDiagnosisType())) {
+			throw new InvalidTanException(String.format("TAN is invalid. tan: %s, uuid:%s, type: %s", publish.getVerificationPayload().getUuid(), publish.getVerificationPayload().getAuthorization(), publish.getDiagnosisType()));
 		}
 		ApiResponse response = publishService.publish(publish);
 		return ResponseEntity.status(response.getStatus()).body(response);
