@@ -34,7 +34,8 @@ public class AndroidNonceService {
 		joiner.add(publish.getAppPackageName());
 		joiner.add(sortedKeys);
 		joiner.add(sortedRegions);
-		joiner.add(publish.getVerificationPayload());
+		joiner.add(publish.getVerificationPayload().getAuthorization());
+		joiner.add(publish.getVerificationPayload().getUuid());
 		
 		return Base64.getEncoder().encodeToString(sha256Service.sha256(joiner.toString()).getBytes());
 	}	
