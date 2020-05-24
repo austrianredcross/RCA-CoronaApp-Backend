@@ -5,7 +5,6 @@ import at.roteskreuz.covidapp.model.ExposureKey;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +33,7 @@ public class ExposureKeyValidator extends AbstractValidator implements Constrain
 	public boolean isValid(ExposureKey exposureKey, ConstraintValidatorContext context) {
 		boolean result = true;
 		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime truncated = now.truncatedTo(ChronoUnit.HOURS);
+		//LocalDateTime truncated = now.truncatedTo(ChronoUnit.HOURS);
 		
 		long minIntervalNumber = now.minus(maxIntervalStartAge).toInstant(ZoneOffset.UTC).getEpochSecond() / ApplicationConfig.INTERVAL_LENGTH.getSeconds();
 		// And have an interval <= maxInterval (configured allowed clock skew)
