@@ -9,7 +9,6 @@ import at.roteskreuz.covidapp.repository.ExportBatchRepository;
 import at.roteskreuz.covidapp.repository.ExportConfigRepository;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,13 +26,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BatchService {
 
-	@Value("${export.truncate-window:Hours}")
-	private ChronoUnit truncateWindow;
+	@Value("${export.truncate-window:PT1H}")
+	private Duration truncateWindow;
 
 	private static final LocalDateTime SANITY_DATE = LocalDateTime.of(2019, 1, 1, 0, 0, 0, 0);
 
 	private final ExportConfigRepository exportConfigRepository;
 	private final ExportBatchRepository exportBatchRepository;
+	private final TimeCalculationService timeCalculationService;
 
 	public ApiResponse createBratches() {
 		LocalDateTime now = LocalDateTime.now();
@@ -81,9 +81,9 @@ public class BatchService {
 		return ranges.size();
 	}
 
-	private List<BatchRange> makeBatchRanges(Duration period, LocalDateTime latestEnd, LocalDateTime now, ChronoUnit truncateWindow) {
+	private List<BatchRange> makeBatchRanges(Duration period, LocalDateTime latestEnd, LocalDateTime now, Duration truncateWindow) {
 		// Compute the end of the exposure publish window; we don't want any batches with an end date greater than this time.
-		LocalDateTime publishEnd = now.truncatedTo(truncateWindow);
+		LocalDateTime publishEnd = timeCalculationService.truncateToDuration(now,truncateWindow);
 		// Special case: if there have not been batches before, return only a single one.
 		// We use sanityDate here because the loop below will happily create batch ranges
 		// until the beginning of time otherwise.		
@@ -91,13 +91,15 @@ public class BatchService {
 			// We want to create a batch aligned on the period, but not overlapping the current publish window.
 			// To do this, we use the publishEnd and truncate it to the period; this becomes the end date.
 			// Then we just subtract the period to get the start date.
-			LocalDateTime end = publishEnd.truncatedTo(ChronoUnit.HOURS);//should be truncated with period
+			LocalDateTime end = timeCalculationService.truncateToDuration(publishEnd, period);
+			
+			
 			LocalDateTime start = end.minus(period);
 			return Arrays.asList(new BatchRange(start, end));
 		}
 
 		// Truncate now to align with period; use this as the end date.
-		LocalDateTime end = now.truncatedTo(ChronoUnit.HOURS);//should be truncated with period
+		LocalDateTime end = timeCalculationService.truncateToDuration(now, period);
 
 		// If the end date < latest end date, we already have a batch that covers this period, so return no batches.
 		if (end.isBefore(latestEnd)) {

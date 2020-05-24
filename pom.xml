@@ -20,7 +20,10 @@
 	<protobuf-java-format.version>1.4</protobuf-java-format.version>	
 	<swager.version>2.9.2</swager.version>
 	
-	<azure-starter.version>2.5.1</azure-starter.version>
+	<azure-insights.version>2.6.0</azure-insights.version>
+	<azure-storage.version>8.6.3</azure-storage.version>	
+	<azure.version>2.2.4</azure.version>
+	
 	<!--	<bouncycastle.version>1.65</bouncycastle.version>-->
     </properties>
 
@@ -51,19 +54,32 @@
 	<dependency>
 	    <groupId>com.microsoft.azure</groupId>
 	    <artifactId>applicationinsights-spring-boot-starter</artifactId>
-	    <version>${azure-starter.version}</version>
+	    <version>${azure-insights.version}</version>
 	</dependency>
 
 	<dependency>
 	    <groupId>com.microsoft.azure</groupId>
 	    <artifactId>applicationinsights-logging-logback</artifactId>
-	    <version>${azure-starter.version}</version>
-	</dependency>	
-	
+	    <version>${azure-insights.version}</version>
+	</dependency>
+
+        <dependency>
+            <groupId>com.microsoft.azure</groupId>
+            <artifactId>azure-storage</artifactId>
+            <version>${azure-storage.version}</version>
+        </dependency>
+<!--        <dependency>
+            <groupId>com.microsoft.azure</groupId>
+            <artifactId>azure-storage-spring-boot-starter</artifactId>
+        </dependency>	-->
+
 	<dependency>
 	    <groupId>org.springframework.boot</groupId>
 	    <artifactId>spring-boot-starter-validation</artifactId>
 	</dependency>		
+	
+
+	
 	<dependency>
 	    <groupId>org.springframework.boot</groupId>
 	    <artifactId>spring-boot-starter-web</artifactId>
@@ -79,7 +95,11 @@
 	    <groupId>org.springframework.boot</groupId>
 	    <artifactId>spring-boot-starter-cache</artifactId>
 	</dependency>
-
+<!--        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>-->
 
 	<dependency>
 	    <groupId>com.google.protobuf</groupId>
@@ -135,8 +155,22 @@
 		</exclusion>
 	    </exclusions>
 	</dependency>
-    </dependencies>
 
+    </dependencies>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>azure-spring-boot-bom</artifactId>
+                <version>${azure.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>    
+    
+    
     <build>
 	<plugins>
 	    <plugin>
