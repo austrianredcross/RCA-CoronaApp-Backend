@@ -16,12 +16,12 @@
 
     <properties>
 	<java.version>1.8</java.version>
-        <protobuf-java.version>3.12.1</protobuf-java.version>
-        <protobuf-java-format.version>1.4</protobuf-java-format.version>	
+	<protobuf-java.version>3.12.1</protobuf-java.version>
+	<protobuf-java-format.version>1.4</protobuf-java-format.version>	
 	<swager.version>2.9.2</swager.version>
 	
 	<azure-starter.version>2.5.1</azure-starter.version>
-<!--	<bouncycastle.version>1.65</bouncycastle.version>-->
+	<!--	<bouncycastle.version>1.65</bouncycastle.version>-->
     </properties>
 
     <dependencies>
@@ -86,15 +86,15 @@
 	    <artifactId>protobuf-java</artifactId>
 	    <version>${protobuf-java.version}</version>
 	</dependency>	
-        <dependency>
-            <groupId>com.googlecode.protobuf-java-format</groupId>
-            <artifactId>protobuf-java-format</artifactId>
-            <version>${protobuf-java-format.version}</version>
-        </dependency>	
+	<dependency>
+	    <groupId>com.googlecode.protobuf-java-format</groupId>
+	    <artifactId>protobuf-java-format</artifactId>
+	    <version>${protobuf-java-format.version}</version>
+	</dependency>	
 	
 
 		
-<!--	<dependency>
+	<!--	<dependency>
 	    <groupId>org.bouncycastle</groupId>
 	    <artifactId>bcpkix-jdk15on</artifactId>
 	    <version>${bouncycastle.version}</version>
@@ -143,6 +143,13 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-maven-plugin</artifactId>
 	    </plugin>
+	    <plugin>
+		<groupId>pl.project13.maven</groupId>
+		<artifactId>git-commit-id-plugin</artifactId>
+		<configuration>
+		    <offline>true</offline>
+		</configuration>
+	    </plugin>   	
 	</plugins>
     </build>
 
