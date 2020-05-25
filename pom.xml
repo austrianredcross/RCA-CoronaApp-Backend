@@ -23,8 +23,7 @@
 	<azure-insights.version>2.6.0</azure-insights.version>
 	<azure-storage.version>8.6.3</azure-storage.version>	
 	<azure.version>2.2.4</azure.version>
-	
-	<!--	<bouncycastle.version>1.65</bouncycastle.version>-->
+	<hibernate-jpamodelgen.version>5.4.14.Final</hibernate-jpamodelgen.version>
     </properties>
 
     <dependencies>
@@ -63,15 +62,16 @@
 	    <version>${azure-insights.version}</version>
 	</dependency>
 
-        <dependency>
-            <groupId>com.microsoft.azure</groupId>
-            <artifactId>azure-storage</artifactId>
-            <version>${azure-storage.version}</version>
-        </dependency>
-<!--        <dependency>
-            <groupId>com.microsoft.azure</groupId>
-            <artifactId>azure-storage-spring-boot-starter</artifactId>
-        </dependency>	-->
+	<dependency>
+	    <groupId>com.microsoft.azure</groupId>
+	    <artifactId>azure-storage</artifactId>
+	</dependency>
+
+	<dependency>
+	    <groupId>org.hibernate</groupId>
+	    <artifactId>hibernate-jpamodelgen</artifactId>
+	    <version>${hibernate-jpamodelgen.version}</version>
+	</dependency>
 
 	<dependency>
 	    <groupId>org.springframework.boot</groupId>
@@ -95,11 +95,11 @@
 	    <groupId>org.springframework.boot</groupId>
 	    <artifactId>spring-boot-starter-cache</artifactId>
 	</dependency>
-<!--        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>-->
+	<dependency>
+	    <groupId>org.springframework.boot</groupId>
+	    <artifactId>spring-boot-configuration-processor</artifactId>
+	    <optional>true</optional>
+	</dependency>
 
 	<dependency>
 	    <groupId>com.google.protobuf</groupId>
@@ -159,15 +159,15 @@
     </dependencies>
     
     <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.microsoft.azure</groupId>
-                <artifactId>azure-spring-boot-bom</artifactId>
-                <version>${azure.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
+	<dependencies>
+	    <dependency>
+		<groupId>com.microsoft.azure</groupId>
+		<artifactId>azure-spring-boot-bom</artifactId>
+		<version>${azure.version}</version>
+		<type>pom</type>
+		<scope>import</scope>
+	    </dependency>
+	</dependencies>
     </dependencyManagement>    
     
     

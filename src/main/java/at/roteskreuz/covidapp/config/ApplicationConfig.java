@@ -1,7 +1,8 @@
 package at.roteskreuz.covidapp.config;
 
+import at.roteskreuz.covidapp.properties.PublishProperties;
 import java.time.Duration;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
 
@@ -10,10 +11,15 @@ import org.springframework.util.Assert;
  * @author zolika
  */
 @Configuration
+@RequiredArgsConstructor
 public class ApplicationConfig {
 	
-	@Value("${validation.publish.maxExposureKeys}")
-	private int maxExposureKeys;	
+	
+	public ApplicationConfig(PublishProperties publishProperties) {
+		int maxExposureKeys = publishProperties.getMaxKeysOnPublish();
+		Assert.isTrue((maxExposureKeys>= 0 && maxExposureKeys <= MAX_KEYS_PER_PUBLISH), String.format("maxExposureKeys must be > 0 and <= %s, got %s", MAX_KEYS_PER_PUBLISH, maxExposureKeys));
+	}
+	
 	
 	// 21 Days worth of keys is the maximum per publish request (inclusive)
 	public static final Integer MAX_KEYS_PER_PUBLISH  = 21;
@@ -35,9 +41,6 @@ public class ApplicationConfig {
 	// interval length
 	public static final Duration INTERVAL_LENGTH = Duration.ofMinutes(10);
 
-	public ApplicationConfig() {
-		Assert.isTrue((maxExposureKeys>= 0 && maxExposureKeys <= MAX_KEYS_PER_PUBLISH), String.format("maxExposureKeys must be > 0 and <= %s, got %s", MAX_KEYS_PER_PUBLISH, maxExposureKeys));
-	}
 	
 	
 }

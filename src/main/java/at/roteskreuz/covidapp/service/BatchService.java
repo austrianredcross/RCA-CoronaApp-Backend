@@ -11,10 +11,12 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,6 +34,7 @@ public class BatchService {
 	private static final LocalDateTime SANITY_DATE = LocalDateTime.of(2019, 1, 1, 0, 0, 0, 0);
 
 	private final ExportConfigRepository exportConfigRepository;
+	
 	private final ExportBatchRepository exportBatchRepository;
 	private final TimeCalculationService timeCalculationService;
 
@@ -54,6 +57,36 @@ public class BatchService {
 		log.info(String.format("Processed %s configs creating %s batches across %s configs", totalConfigs, totalBatches, totalConfigsWithBatches));
 		return ApiResponse.ok();
 	}
+	
+	public ExportBatch leaseBatch(Duration ttl, LocalDateTime now) {
+		// Query for batches that are OPEN or PENDING with expired lease. Also, only return batches with end timestamp
+		// in the past (i.e., the batch is complete).
+		List<Long> openBatchIds = exportBatchRepository.leaseBatches(ExportBatchStatus.EXPORT_BATCH_OPEN, ExportBatchStatus.EXPORT_BATCH_PENDING, now, PageRequest.of(0,100));
+		if (openBatchIds == null || openBatchIds.isEmpty()) {
+			return null;
+		}
+		
+		// Randomize openBatchIDs so that workers aren't competing for the same job.	
+		Collections.shuffle(openBatchIds);
+		for (Long openBatchId : openBatchIds) {
+			// In a serialized transaction, fetch the existing batch and make sure it can be leased, then lease it.
+			ExportBatch batch = exportBatchRepository.findById(openBatchId).orElse(null);
+			if (batch == null || (batch.getStatus() == ExportBatchStatus.EXPORT_BATCH_COMPLETE || (batch.getLeaseExpires() != null && batch.getStatus() == ExportBatchStatus.EXPORT_BATCH_PENDING && now.isBefore(batch.getLeaseExpires())))) {
+				// Something beat us to this batch, it's no longer available.
+				return null;
+			}
+			batch.setStatus(ExportBatchStatus.EXPORT_BATCH_PENDING);
+			batch.setLeaseExpires(now.plus(ttl));
+			return exportBatchRepository.save(batch);
+		}
+		// We didn't manage to lease any of the candidates, so return no work to be done (nil).
+		return null;
+	}
+	
+	public ExportBatch saveBatch(ExportBatch batch) {
+		return exportBatchRepository.save(batch);
+	}
+	
 
 	private int maybeCreateBatches(ExportConfig exportConfig, LocalDateTime now) {
 		LocalDateTime latestEnd = latestExportBatchEnd(exportConfig);
@@ -61,7 +94,7 @@ public class BatchService {
 		List<BatchRange> ranges = makeBatchRanges(exportConfig.getPeriod(), latestEnd, now, truncateWindow);
 
 		if (ranges == null || ranges.isEmpty()) {
-			log.debug("Batch creation for config %d is not required, skipping", exportConfig.getConfigID());
+			log.debug("Batch creation for config %s is not required, skipping", exportConfig.getConfigID());
 			return 0;
 		}
 		ranges.forEach(r -> {
@@ -130,10 +163,6 @@ public class BatchService {
 			return exportBatch.getEndTimestamp();
 		}
 		return LocalDateTime.MIN;
-	}
-
-	public ApiResponse doWork() {
-		return ApiResponse.ok();
 	}
 
 }

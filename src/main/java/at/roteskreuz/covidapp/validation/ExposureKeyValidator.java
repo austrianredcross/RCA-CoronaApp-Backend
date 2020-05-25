@@ -2,12 +2,12 @@ package at.roteskreuz.covidapp.validation;
 
 import at.roteskreuz.covidapp.config.ApplicationConfig;
 import at.roteskreuz.covidapp.model.ExposureKey;
-import java.time.Duration;
+import at.roteskreuz.covidapp.properties.PublishProperties;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Validator for checking Exposure key objects
@@ -16,9 +16,9 @@ import org.springframework.beans.factory.annotation.Value;
  */
 public class ExposureKeyValidator extends AbstractValidator implements ConstraintValidator<ValidExposureKey, ExposureKey> {
 	
-
-	@Value("${validation.exposure.key.maxIntervalStartAge}")
-	private Duration maxIntervalStartAge;
+	@Autowired
+	private PublishProperties publishProperties;
+	
 	
 	/**
 	 * Initializes the validator
@@ -35,7 +35,7 @@ public class ExposureKeyValidator extends AbstractValidator implements Constrain
 		LocalDateTime now = LocalDateTime.now();
 		//LocalDateTime truncated = now.truncatedTo(ChronoUnit.HOURS);
 		
-		long minIntervalNumber = now.minus(maxIntervalStartAge).toInstant(ZoneOffset.UTC).getEpochSecond() / ApplicationConfig.INTERVAL_LENGTH.getSeconds();
+		long minIntervalNumber = now.minus(publishProperties.getMaxIntervalAgeOnPublish()).toInstant(ZoneOffset.UTC).getEpochSecond() / ApplicationConfig.INTERVAL_LENGTH.getSeconds();
 		// And have an interval <= maxInterval (configured allowed clock skew)
 		long maxIntervalNumber = now.toInstant(ZoneOffset.UTC).getEpochSecond() /  ApplicationConfig.INTERVAL_LENGTH.getSeconds();
 		
