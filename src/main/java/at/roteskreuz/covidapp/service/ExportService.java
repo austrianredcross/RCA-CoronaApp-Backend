@@ -9,9 +9,8 @@ import at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKeyExport;
 import com.google.protobuf.ByteString;
 import io.micrometer.core.instrument.util.StringUtils;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.InputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -31,6 +30,7 @@ import java.util.zip.ZipOutputStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 
 /**
  *
@@ -43,8 +43,6 @@ public class ExportService {
 	private static final String EXPORT_BINARY_NAME = "export.bin";
 	private static final String EXPORT_SIGNATURE_NAME = "export.sig";
 	private static final String ALGORITHM = "1.2.840.10045.4.3.2";
-
-	private final Sha256Service sha256Service;
 
 	//MarshalExportFile converts the inputs into an encoded byte array.
 	public byte[] marshalExportFile(ExportBatch batch, List<Exposure> exposures, int batchNum, int batchSize, List<SignatureInfo> exportSigners) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, SignatureException, IOException, InvalidKeySpecException {
@@ -160,15 +158,14 @@ public class ExportService {
 
 	private byte[] generateSignature(byte[] data) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, SignatureException, IOException, InvalidKeySpecException {
 		Signature ecdsa = Signature.getInstance("SHA256withECDSA");
-			File resource = new ClassPathResource("private.der", this.getClass()).getFile();
-		ecdsa.initSign(getPrivateKey(resource));
+		InputStream is = new ClassPathResource("/private.der").getInputStream();
+		ecdsa.initSign(getPrivateKey(is));
 		ecdsa.update(data);
-		//System.out.println("Verify: " + ecdsa.verify(ecdsa.sign()));
 		return ecdsa.sign();
 	}
 
-	private PrivateKey getPrivateKey(File file) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-		byte[] keyBytes = Files.readAllBytes(file.toPath());
+	private PrivateKey getPrivateKey(InputStream inputStream) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+		byte[] keyBytes = FileCopyUtils.copyToByteArray(inputStream);
 		PKCS8EncodedKeySpec spec
 				= new PKCS8EncodedKeySpec(keyBytes);
 		KeyFactory kf = KeyFactory.getInstance("EC");
