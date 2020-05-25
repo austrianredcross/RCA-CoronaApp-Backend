@@ -160,7 +160,7 @@ public class ExportService {
 
 	private byte[] generateSignature(byte[] data) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, SignatureException, IOException, InvalidKeySpecException {
 		Signature ecdsa = Signature.getInstance("SHA256withECDSA");
-		File resource = new ClassPathResource("private.der").getFile();
+			File resource = new ClassPathResource("private.der", this.getClass()).getFile();
 		ecdsa.initSign(getPrivateKey(resource));
 		ecdsa.update(data);
 		//System.out.println("Verify: " + ecdsa.verify(ecdsa.sign()));
