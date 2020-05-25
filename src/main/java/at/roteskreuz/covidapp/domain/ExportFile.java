@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,13 +18,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class ExportFile implements Serializable {
 
 	@Id
-	private Long id;
-
-	private String bucketName;
 	private String filename;
+	private String bucketName;
 	@OneToOne
 	private ExportBatch batch;
 	private String region;

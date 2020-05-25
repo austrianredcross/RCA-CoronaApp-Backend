@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
  */
 public class PublishValidator extends AbstractValidator implements ConstraintValidator<ValidPublish, Publish> {
 
-	@Value("${validation.publish.maxExposureKeys}")
+	@Value("${application.publish.max-keys-on-publish}")
 	private int maxExposureKeys;
 
 	@Autowired

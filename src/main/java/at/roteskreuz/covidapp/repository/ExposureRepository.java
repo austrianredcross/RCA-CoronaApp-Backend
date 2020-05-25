@@ -1,6 +1,7 @@
 package at.roteskreuz.covidapp.repository;
 
 import at.roteskreuz.covidapp.domain.Exposure;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 
 /**
@@ -10,7 +11,7 @@ import org.springframework.data.repository.CrudRepository;
  * @since 0.0.1-SNAPSHOT
  */
 
-public interface ExposureRepository extends CrudRepository<Exposure, Long> {
+public interface ExposureRepository extends CrudRepository<Exposure, Long>, JpaSpecificationExecutor<Exposure> {
 
 	
 }

@@ -1,11 +1,8 @@
 package at.roteskreuz.covidapp.domain;
 
-import at.roteskreuz.covidapp.convert.StringToListConverter;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import lombok.AllArgsConstructor;
@@ -31,8 +28,8 @@ public class Exposure implements Serializable {
 	
 	private String appPackageName;
 	
-	@Convert(converter = StringToListConverter.class)
-	List<String> regions;
+	//@Convert(converter = StringToListConverter.class)
+	private String regions;
 	
 	private Integer intervalNumber;
 	
