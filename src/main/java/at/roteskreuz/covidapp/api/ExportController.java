@@ -3,6 +3,7 @@ package at.roteskreuz.covidapp.api;
 
 import at.roteskreuz.covidapp.model.ApiResponse;
 import at.roteskreuz.covidapp.service.BatchService;
+import at.roteskreuz.covidapp.service.WorkerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ExportController {
 	
 	private final BatchService batchService;
+	private final WorkerService workerService;
 
 	@ApiOperation(value = "Creates batches.)", authorizations = {
 		@Authorization(value = "AuthorizationKey")})
@@ -58,8 +60,8 @@ public class ExportController {
 		@io.swagger.annotations.ApiResponse(code = 403, message = "Forbidden"),
 		@io.swagger.annotations.ApiResponse(code = 500, message = "Internal server error")})	
 	@GetMapping(value = "/do-work", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse> doWork()  {
-		ApiResponse response = batchService.doWork();
+	public ResponseEntity<ApiResponse> doWork() throws Exception  {
+		ApiResponse response = workerService.doWork();
 		return ResponseEntity.status(response.getStatus()).body(response);
 	}
 

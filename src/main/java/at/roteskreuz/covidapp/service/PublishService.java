@@ -23,6 +23,7 @@ public class PublishService {
 		LocalDateTime now = LocalDateTime.now();
 		
 		publish.getRegions().replaceAll(String::toUpperCase);
+		String regions = "," + String.join(", ", publish.getRegions()) + ",";
 		
 		exposureService.saveAll(
 			publish.getKeys()
@@ -32,7 +33,7 @@ public class PublishService {
 							k.getBinKey(), 
 							k.getTransmissionRisk(), 
 							publish.getAppPackageName(),
-							publish.getRegions(), 
+							regions, 
 							k.getIntervalNumber(), 
 							k.getIntervalCount(), 
 							now , 
