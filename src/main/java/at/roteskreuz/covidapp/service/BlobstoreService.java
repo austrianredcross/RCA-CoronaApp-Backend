@@ -1,9 +1,14 @@
 package at.roteskreuz.covidapp.service;
 
 import at.roteskreuz.covidapp.domain.ExportBatch;
+import at.roteskreuz.covidapp.domain.ExportFile;
 import at.roteskreuz.covidapp.domain.Exposure;
 import at.roteskreuz.covidapp.domain.SignatureInfo;
+import at.roteskreuz.covidapp.model.ExportBatchStatus;
 import at.roteskreuz.covidapp.properties.ExportProperties;
+import at.roteskreuz.covidapp.protobuf.Export;
+import at.roteskreuz.covidapp.repository.ExportBatchRepository;
+import at.roteskreuz.covidapp.repository.ExportFileRepository;
 import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.blob.CloudBlobContainer;
 import com.microsoft.azure.storage.blob.CloudBlockBlob;
@@ -11,6 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +35,7 @@ public class BlobstoreService {
 	
 	private final ExportService exportService;
 	private final ExportProperties exportProperties;
-	
-	
+
 	@Value("${azure.storage.connection-string:}")
 	private String storageConnectionString;	
 	
@@ -39,10 +44,10 @@ public class BlobstoreService {
 		String objectName = exportPathAndFilename(batch, batchNum);
 		switch (exportProperties.getBlobstoreType()) {
 			case AZURE_CLOUD_STORAGE: {
-				objectName =exportFilename(batch, batchNum);
+				objectName = exportFilename(batch, batchNum);
 				byte[] data = exportService.marshalExportFile(batch, exposures, batchNum, batchSize, exportSigners);
 				CloudStorageAccount cloudStorageAccount = CloudStorageAccount.parse(storageConnectionString);
-				CloudBlobContainer container =cloudStorageAccount.createCloudBlobClient().getContainerReference(batch.getFilenameRoot());
+				CloudBlobContainer container = cloudStorageAccount.createCloudBlobClient().getContainerReference(batch.getFilenameRoot());
 				CloudBlockBlob blockBlobReference = container.getBlockBlobReference(objectName);
 				blockBlobReference.upload(new ByteArrayInputStream(data) , data.length);
 				break;
@@ -61,6 +66,22 @@ public class BlobstoreService {
 			}
 		}
 		return objectName;
+	}
+
+	public boolean deleteFile(ExportFile exportFile) throws Exception {
+		switch (exportProperties.getBlobstoreType()) {
+			case AZURE_CLOUD_STORAGE: {
+				CloudStorageAccount cloudStorageAccount = CloudStorageAccount.parse(storageConnectionString);
+				CloudBlobContainer container = cloudStorageAccount.createCloudBlobClient().getContainerReference(exportFile.getBatch().getFilenameRoot());
+				CloudBlockBlob blockBlobReference = container.getBlockBlobReference(exportFile.getFilename());
+				return blockBlobReference.deleteIfExists();
+			}
+			case FILESYSTEM: {
+				File file = new File(exportFile.getFilename());
+				return file.delete();
+			}
+		}
+		return false;
 	}
 
 	private String exportFilename(ExportBatch batch, int batchNum) {
