@@ -1,5 +1,6 @@
 package at.roteskreuz.covidapp.service;
 
+import at.roteskreuz.covidapp.config.ApplicationConfig;
 import at.roteskreuz.covidapp.domain.ExportBatch;
 import at.roteskreuz.covidapp.domain.ExportFile;
 import at.roteskreuz.covidapp.domain.Exposure;
@@ -8,9 +9,13 @@ import at.roteskreuz.covidapp.model.ApiResponse;
 import at.roteskreuz.covidapp.model.ExportBatchStatus;
 import at.roteskreuz.covidapp.properties.ExportProperties;
 import at.roteskreuz.covidapp.repository.ExportFileRepository;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -79,8 +84,7 @@ public class WorkerService {
 		if (groups.isEmpty()) {
 			log.info(String.format("No records for export batch %s", batch.getBatchId()));
 		}
-		//TODO - talk with Siegi
-		// it seems that the list is filled with random elements, this could also lead to not reproduceable exports (after an update of an exposure)
+		
 		ensureMinNumExposures(exposures, batch.getRegion(), exportProperties.getMinRecords(), exportProperties.getPaddingRange());
 
 		// Load the non-expired signature infos associated with this export batch. - in our case we already have them, just have to filter them	
@@ -107,8 +111,39 @@ public class WorkerService {
 		
 	}
 
-	private void ensureMinNumExposures(List<Exposure> exposures, String region, Integer minRecords, Integer paddingRange) {
-		//TODO - check with Siegi - here we should add some random valoes
+	private List<Exposure> ensureMinNumExposures(List<Exposure> exposures, String region, Integer minLength, Integer jitter) throws NoSuchAlgorithmException {
+		
+		if (exposures.isEmpty()) {
+			return Collections.EMPTY_LIST;
+		}
+		
+		Random random = new Random();
+		int extra = random.nextInt(jitter);
+		int target = minLength + extra;
+		Integer fromIdx;
+
+		SecureRandom  secureRandom = SecureRandom.getInstanceStrong();
+		while(exposures.size() < target) {
+			// Pieces needed are
+			// (1) exposure key, (2) interval number, (3) transmission risk
+			// Exposure key is 16 random bytes.
+			byte[] bytes = new byte[ApplicationConfig.KEY_LENGTH];
+			secureRandom.nextBytes(bytes);
+
+			// Transmission risk is within the bounds.
+			Integer transmissionRisk = random.nextInt(ApplicationConfig.MAX_TRANSMISSION_RISK) + 1;
+			
+			fromIdx = random.nextInt(exposures.size());
+			Integer intervalNumber = exposures.get(fromIdx).getIntervalNumber();
+
+			fromIdx = random.nextInt(exposures.size());
+			Integer intervalCount = exposures.get(fromIdx).getIntervalCount();
+			
+			Exposure exposure = new Exposure(new String(bytes), transmissionRisk, region, intervalNumber, intervalCount);
+			// The rest of the publishmodel.Exposure fields are not used in the export file.
+			exposures.add(exposure);
+		}
+		return exposures;
 	}
 
 	// FinalizeBatch writes the ExportFile records and marks the ExportBatch as complete.

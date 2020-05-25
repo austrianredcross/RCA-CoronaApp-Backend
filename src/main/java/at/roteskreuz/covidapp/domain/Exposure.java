@@ -44,4 +44,14 @@ public class Exposure implements Serializable {
 	
 	private String diagnosisType;
 
+	public Exposure(String exposureKey, Integer transmissionRisk, String regions, Integer intervalNumber, Integer intervalCount) {
+		this.exposureKey = exposureKey;
+		this.transmissionRisk = transmissionRisk;
+		this.regions = regions;
+		this.intervalNumber = intervalNumber;
+		this.intervalCount = intervalCount;
+	}
+	
+	
+
 }
