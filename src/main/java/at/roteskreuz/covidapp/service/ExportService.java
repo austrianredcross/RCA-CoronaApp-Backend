@@ -7,18 +7,13 @@ import at.roteskreuz.covidapp.protobuf.Export;
 import at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKey;
 import at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKeyExport;
 import com.google.protobuf.ByteString;
+import com.microsoft.applicationinsights.core.dependencies.io.grpc.netty.shaded.io.netty.handler.ssl.PemPrivateKey;
 import io.micrometer.core.instrument.util.StringUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.PrivateKey;
-import java.security.Signature;
-import java.security.SignatureException;
+import java.io.InputStreamReader;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.ZoneOffset;
@@ -158,18 +153,17 @@ public class ExportService {
 
 	private byte[] generateSignature(byte[] data) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, SignatureException, IOException, InvalidKeySpecException {
 		Signature ecdsa = Signature.getInstance("SHA256withECDSA");
-		InputStream is = new ClassPathResource("/private.der").getInputStream();
+		InputStream is = new ClassPathResource("/private.pem").getInputStream();
 		ecdsa.initSign(getPrivateKey(is));
 		ecdsa.update(data);
 		return ecdsa.sign();
 	}
 
 	private PrivateKey getPrivateKey(InputStream inputStream) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-		byte[] keyBytes = FileCopyUtils.copyToByteArray(inputStream);
-		PKCS8EncodedKeySpec spec
-				= new PKCS8EncodedKeySpec(keyBytes);
-		KeyFactory kf = KeyFactory.getInstance("EC");
-		return kf.generatePrivate(spec);
+		//KeyFactory kf = KeyFactory.getInstance("EC");
+		//;
+		return PemReader.loadPrivateKey(FileCopyUtils.copyToString(new InputStreamReader(inputStream)));//new PemPrivateKey(PemReader.readPrivateKey(inputStream));//kf.generatePrivate(encryptionService.loadDecryptionKey(inputStream, "EC"));
 	}
+
 
 }
