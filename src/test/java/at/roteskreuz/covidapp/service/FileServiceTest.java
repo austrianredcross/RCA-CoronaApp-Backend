@@ -7,8 +7,10 @@ import at.roteskreuz.covidapp.domain.SignatureInfo;
 import at.roteskreuz.covidapp.model.ExportBatchStatus;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -47,4 +49,35 @@ public class FileServiceTest {
 		blobstoreService.createFile(batch, exposures, batchNum, batchSize, signatureInfos);
 	}
 
+	private static LocalDateTime truncateToDuration(LocalDateTime zonedDateTime, Duration duration) {
+		LocalDateTime startOfDay = zonedDateTime.truncatedTo(ChronoUnit.DAYS);
+		return startOfDay.plus(duration.multipliedBy(
+				Duration.between(startOfDay, zonedDateTime).dividedBy(duration.getSeconds()).getSeconds()));
+	}
+
+	//@Test
+	public void test() {
+		Duration oneMinute = Duration.of(1, ChronoUnit.MINUTES);
+		Duration fiveMinutes = Duration.of(5, ChronoUnit.MINUTES);
+		Duration fifteenMinutes = Duration.of(15, ChronoUnit.MINUTES);
+		Duration oneHour = Duration.of(1, ChronoUnit.HOURS);
+		Duration sixHours = Duration.of(6, ChronoUnit.HOURS);
+		Duration oneDay = Duration.of(1, ChronoUnit.DAYS);
+
+		LocalDateTime now = LocalDateTime.parse("2018-02-24T10:37:07.123");
+
+		assertEquals(LocalDateTime.parse("2018-02-24T10:37:00.000"),
+				truncateToDuration(now, oneMinute));
+		assertEquals(LocalDateTime.parse("2018-02-24T10:35:00.000"),
+				truncateToDuration(now, fiveMinutes));
+		assertEquals(LocalDateTime.parse("2018-02-24T10:30:00.000"),
+				truncateToDuration(now, fifteenMinutes));
+		assertEquals(LocalDateTime.parse("2018-02-24T10:00:00.000"),
+				truncateToDuration(now, oneHour));
+		assertEquals(LocalDateTime.parse("2018-02-24T06:00:00.000"),
+				truncateToDuration(now, sixHours));
+		assertEquals(LocalDateTime.parse("2018-02-24T00:00:00.000"),
+				truncateToDuration(now, oneDay));
+	}	
+	
 }
