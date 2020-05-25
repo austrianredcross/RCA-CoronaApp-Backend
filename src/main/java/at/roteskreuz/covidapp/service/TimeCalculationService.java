@@ -15,6 +15,6 @@ public class TimeCalculationService {
 	public LocalDateTime truncateToDuration(LocalDateTime time, Duration duration) {
 		LocalDateTime startOfDay = time.truncatedTo(ChronoUnit.DAYS);
 		return startOfDay.plus(duration.multipliedBy(
-				Duration.between(startOfDay, time).dividedBy(duration)));
+				Duration.between(startOfDay, time).dividedBy(duration.getSeconds()).getSeconds()));
 	}	
 }
