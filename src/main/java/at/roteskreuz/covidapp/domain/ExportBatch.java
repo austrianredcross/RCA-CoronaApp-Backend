@@ -8,8 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,7 +39,7 @@ public class ExportBatch implements Serializable {
 	private ExportBatchStatus status;
 	private LocalDateTime leaseExpires;
 	
-	@OneToMany
+	@ManyToMany
 	private List<SignatureInfo> signatureInfos;
 
 }
