@@ -34,3 +34,4 @@ src/main/resources/META-INF/JAXB
 application-pz.properties
 out
 exposures
+nb-configuration.xml

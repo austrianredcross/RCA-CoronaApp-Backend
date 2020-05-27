@@ -6,7 +6,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @SpringBootApplication
-@EnableConfigurationProperties({ApiProperties.class, ClientConfigurationCacheProperties.class, ExportProperties.class, PublishProperties.class, SignatureProperties.class, PushNotificationProperties.class})
+@EnableConfigurationProperties({
+	ApiProperties.class, 
+	ExportProperties.class, 
+	PublishProperties.class, 
+	SignatureProperties.class,
+	PushNotificationProperties.class
+})
 public class CovidappApplication {
 
 	public static void main(String[] args) {

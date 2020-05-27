@@ -1,14 +1,11 @@
 package at.roteskreuz.covidapp.repository;
 
-import at.roteskreuz.covidapp.domain.ExportConfig;
 import at.roteskreuz.covidapp.domain.Exposure;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
-
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Repository for persisting authorized apps
@@ -17,7 +14,7 @@ import java.util.List;
  * @since 0.0.1-SNAPSHOT
  */
 
-public interface ExposureRepository extends CrudRepository<Exposure, Long>, JpaSpecificationExecutor<Exposure> {
+public interface ExposureRepository extends CrudRepository<Exposure, String>, JpaSpecificationExecutor<Exposure> {
 
     @Transactional
     List<Exposure> deleteAllByCreatedAtIsLessThan(LocalDateTime createdAt);
