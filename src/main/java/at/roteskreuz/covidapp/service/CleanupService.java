@@ -25,11 +25,9 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class CleanupService {
 
-	//private static final Duration MIN_CLEANUP_TTL = Duration.ofDays(10);
+	private static final Duration MIN_CLEANUP_TTL = Duration.ofDays(10);
 
-	private static final Duration MIN_CLEANUP_TTL = Duration.ofMinutes(1);
-	
-	@Value("${cleanup.ttl:PT1M}")
+	@Value("${cleanup.ttl:P14D}")
 	private Duration cleanupTtl;
 
 	private final ExposureService exposureService;
