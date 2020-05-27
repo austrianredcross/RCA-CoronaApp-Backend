@@ -1,8 +1,10 @@
 package at.roteskreuz.covidapp.service;
 
+import at.roteskreuz.covidapp.blobstore.Blobstore;
 import at.roteskreuz.covidapp.config.ApplicationConfig;
 import at.roteskreuz.covidapp.domain.ExportBatch;
 import at.roteskreuz.covidapp.domain.ExportFile;
+import at.roteskreuz.covidapp.domain.ExportFilename;
 import at.roteskreuz.covidapp.domain.Exposure;
 import at.roteskreuz.covidapp.domain.SignatureInfo;
 import at.roteskreuz.covidapp.model.ApiResponse;
@@ -12,10 +14,13 @@ import at.roteskreuz.covidapp.repository.ExportFileRepository;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,11 +34,15 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class WorkerService {
+	
+	private static final String FILENAME_SUFFIX = ".zip";
+	
 
 	private final BatchService batchService;
 	private final ExportProperties exportProperties;
+	private final ExportService exportService;
 	private final ExposureService exposureService;
-	private final BlobstoreService blobstoreService;
+	private final Blobstore blobstore;
 	private final ExportFileRepository exportFileRepository;
 
 	public ApiResponse doWork() throws Exception {
@@ -96,7 +105,7 @@ public class WorkerService {
 
 		for (int i = 0; i < groups.size(); i++) {
 			List<Exposure> group = groups.get(i);
-			String objectName = blobstoreService.createFile(batch, exposures, i + 1, batchSize, sigInfos);
+			String objectName = createFile(batch, exposures, i + 1, batchSize, sigInfos);
 			log.info(String.format("Wrote export file %s for batch %s", objectName, batch.getBatchId()));
 			objectNames.add(objectName);
 		}		
@@ -163,15 +172,51 @@ public class WorkerService {
 	}
 	
 	
-	
-	
 	// retryingCreateIndex create the index file. The index file includes _all_ batches for an ExportConfig,
 	// so multiple workers may be racing to update it. We use a lock to make them line up after one another.
+	private void retryingCreateIndex(ExportBatch batch, List<String> objectNames) throws Exception {
+		//TODO - retrying implementation is missing currently
+		
+		String indexName = createIndex(batch,objectNames);
+		log.info(String.format("Wrote index file %s (triggered by batch %d)", indexName, batch.getBatchId()));
+
+		
+	}
 	
-	//TODO - check with Siegi if we have concurrency
-	private void retryingCreateIndex(ExportBatch batch, List<String> objectNames) {
-		//TODO - implementation needed
+	public String createFile(ExportBatch batch, List<Exposure> exposures, int batchNum, int batchSize, List<SignatureInfo> exportSigners) throws Exception {
+		String objectName = exportFilename(batch, batchNum);
+		byte[] data = exportService.marshalExportFile(batch, exposures, batchNum, batchSize, exportSigners);
+		blobstore.createObject(batch.getBucketName(), objectName, data);
+		return objectName;
 	}
 
+	private String exportFilename(ExportBatch batch, int batchNum) {
+		return String.format("%s/%d-%05d%s", batch.getFilenameRoot(), batch.getStartTimestamp().toEpochSecond(ZoneOffset.UTC), batchNum, FILENAME_SUFFIX);
+	}
+
+	private String createIndex(ExportBatch batch, List<String> objectNames) throws Exception {
+	
+		// Add the new objects (they haven't been committed to the database yet).
+		Set<String> filenamesSet = new HashSet<>(objectNames);
+		
+		List<ExportFilename> objects = exportFileRepository.findByBatchConfigAndBatchStatusOrderByFilename(batch.getConfig(),ExportBatchStatus.EXPORT_BATCH_COMPLETE);
+		if (!objects.isEmpty()) {
+			filenamesSet.addAll(objects.stream().map(s-> s.getFilename()).collect(Collectors.toList()));
+		}
+		List<String> filenames = new ArrayList<>(filenamesSet);
+		Collections.sort(filenames);
+		
+		byte[] data = String.join("\n", filenames).getBytes();
+		String indexObjectName = exportIndexFilename(batch);
+
+		blobstore.createObject(batch.getBucketName(), indexObjectName,  data);
+
+		return indexObjectName;
+		
+	}
+	
+	private String exportIndexFilename(ExportBatch batch) {
+		return String.format("%s/index.txt", batch.getFilenameRoot());
+	}		
 
 }

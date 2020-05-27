@@ -24,7 +24,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ExportConfig implements Serializable {
 	@Id
-	private Long configID;
+	@Column(name = "configid")
+	private Long id;
 	private String bucketName;
 	private String filenameRoot;
 	private Duration period; // duration in seconds

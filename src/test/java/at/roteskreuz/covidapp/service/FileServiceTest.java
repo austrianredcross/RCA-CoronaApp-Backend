@@ -22,15 +22,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class FileServiceTest {
 
 	@Autowired
-	private BlobstoreService blobstoreService;
+	private WorkerService workerService;
 
 	//@Test
 	public void testCreateFile() throws Exception {
 
 		LocalDateTime now = LocalDateTime.now();
 
-		String bucketName = "bucketName";
-		String filenameRoot = "exposures";
+		String bucketName = "exposures";
+		String filenameRoot = "test";
 		String region = "AT";
 
 		List<SignatureInfo> signatureInfos = Arrays.asList(new SignatureInfo(null, null, null, null, "1", "some_id", now.plusYears(1)));
@@ -46,7 +46,7 @@ public class FileServiceTest {
 		int batchNum = 1;
 		int batchSize = 1;
 
-		blobstoreService.createFile(batch, exposures, batchNum, batchSize, signatureInfos);
+		workerService.createFile(batch, exposures, batchNum, batchSize, signatureInfos);
 	}
 
 	private static LocalDateTime truncateToDuration(LocalDateTime zonedDateTime, Duration duration) {
