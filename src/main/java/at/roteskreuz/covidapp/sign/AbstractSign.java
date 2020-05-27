@@ -19,7 +19,7 @@ public abstract class AbstractSign implements Sign {
 
 	protected byte[] signature(byte[] data, InputStream keyInputStream, String signatureAlgorithm, String keyType)
 									throws GeneralSecurityException, IOException {
-		java.security.Signature ecdsa = Signature.getInstance(signatureAlgorithm);
+		Signature ecdsa = Signature.getInstance(signatureAlgorithm);
 		ecdsa.initSign(getPrivateKey(keyInputStream, keyType));
 		ecdsa.update(data);
 		return ecdsa.sign();
