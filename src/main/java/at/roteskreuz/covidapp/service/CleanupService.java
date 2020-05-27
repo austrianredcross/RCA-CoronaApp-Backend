@@ -1,24 +1,20 @@
 package at.roteskreuz.covidapp.service;
 
+import at.roteskreuz.covidapp.blobstore.Blobstore;
 import at.roteskreuz.covidapp.domain.ExportBatch;
 import at.roteskreuz.covidapp.domain.ExportFile;
 import at.roteskreuz.covidapp.domain.Exposure;
-import at.roteskreuz.covidapp.domain.SignatureInfo;
 import at.roteskreuz.covidapp.model.ApiResponse;
 import at.roteskreuz.covidapp.model.ExportBatchStatus;
-import at.roteskreuz.covidapp.properties.ExportProperties;
 import at.roteskreuz.covidapp.repository.ExportBatchRepository;
 import at.roteskreuz.covidapp.repository.ExportFileRepository;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -29,26 +25,28 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CleanupService {
 
-	private static final Duration MIN_CLEANUP_TTL = Duration.ofDays(10);
+	//private static final Duration MIN_CLEANUP_TTL = Duration.ofDays(10);
 
-	@Value("${cleanup.ttl:P14D}")
+	private static final Duration MIN_CLEANUP_TTL = Duration.ofMinutes(1);
+	
+	@Value("${cleanup.ttl:PT1M}")
 	private Duration cleanupTtl;
 
 	private final ExposureService exposureService;
 	private final ExportBatchRepository exportBatchRepository;
 	private final ExportFileRepository exportFileRepository;
-	private final BlobstoreService blobstoreService;
+	private final Blobstore blobstore;
 
 	public ApiResponse cleanupExport() {
-		List<ExportBatch> delExportBatches = exportBatchRepository.findByEndTimestampIsLessThanAndStatusIsNot(getCutOffDate(), ExportBatchStatus.EXPORT_BATCH_DELETED);
+		List<ExportBatch> delExportBatches = exportBatchRepository.findByEndTimestampBeforeAndStatusIsNot(getCutOffDate(), ExportBatchStatus.EXPORT_BATCH_DELETED);
 		if(delExportBatches != null) {
-			for(ExportBatch exportBatch : delExportBatches) {
+			delExportBatches.forEach((exportBatch) -> {
 				boolean allCurBatchDeleted = true;
 				List<ExportFile> exportFiles = exportFileRepository.findAllByBatchIsAndStatusIsNot(exportBatch, ExportBatchStatus.EXPORT_BATCH_DELETED);
 				if(exportFiles != null) {
 					for (ExportFile exportFile : exportFiles) {
 						try {
-							if (!blobstoreService.deleteFile(exportFile)) {
+							if (!blobstore.deleteObject(exportFile.getBucketName(), exportFile.getFilename())) {
 								allCurBatchDeleted = false;
 								log.error("Couldn't delete exportFile: " + exportFile.toString());
 							} else {
@@ -61,11 +59,11 @@ public class CleanupService {
 						}
 					}
 				}
-				if(allCurBatchDeleted) {
+				if (allCurBatchDeleted) {
 					exportBatch.setStatus(ExportBatchStatus.EXPORT_BATCH_DELETED);
 					exportBatchRepository.save(exportBatch);
 				}
-			}
+			});
 		}
 		return ApiResponse.ok();
 	}
@@ -77,7 +75,7 @@ public class CleanupService {
 	}
 
 	private LocalDateTime getCutOffDate() {
-		Duration cleanupTtl = this.cleanupTtl;
+		//Duration cleanupTtl = this.cleanupTtl;
 		if (cleanupTtl.compareTo(MIN_CLEANUP_TTL) < 0) {
 			cleanupTtl = MIN_CLEANUP_TTL;
 		}

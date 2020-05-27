@@ -94,7 +94,7 @@ public class BatchService {
 		List<BatchRange> ranges = makeBatchRanges(exportConfig.getPeriod(), latestEnd, now, truncateWindow);
 
 		if (ranges == null || ranges.isEmpty()) {
-			log.debug("Batch creation for config %s is not required, skipping", exportConfig.getConfigID());
+			log.debug("Batch creation for config %s is not required, skipping", exportConfig.getId());
 			return 0;
 		}
 		ranges.forEach(r -> {
@@ -110,7 +110,7 @@ public class BatchService {
 		});
 				
 
-		log.info(String.format("Created %s batch(es) for config %s", ranges.size(), exportConfig.getConfigID()));
+		log.info(String.format("Created %s batch(es) for config %s", ranges.size(), exportConfig.getId()));
 		return ranges.size();
 	}
 
