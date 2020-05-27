@@ -20,13 +20,12 @@ public class AndroidNonceServiceTest {
 	
 	//@Test
 	public void testNonce() throws JsonProcessingException {
-		String json = "{\"temporaryTracingKeys\": [\n" +
+		String json = "{\"temporaryExposureKeys\": [\n" +
 "	{\"key\": \"aeiukfhdcliukshdf==\", \"intervalNumber\": 12, \"intervalCount\": 144, \"transmissionRisk\": 1}, \n" +
 "	{\"key\": \"aisdhjl;ahksdkl==,\", \"intervalNumber\": 24, \"intervalCount\": 10, \"transmissionRisk\": 4},\n" +
 "	{\"key\": \"wedfuhlihkalsd333==\", \"intervalNumber\": 133, \"intervalCount\": 100, \"transmissionRisk\": 5}], \n" +
 "  \"regions\": [\"US\", \"CA\", \"mx\"],\n" +
 "  \"appPackageName\": \"com.foo.app\",\n" +
-"  \"diagnosisStatus\": 2,\n" +
 "  \"deviceVerificationPayload\": \"asldkfhjlkajsbdf==\",\n" +
 "  \"verificationAuthorityName\": \"RedCross\",\n" +
 "  \"verificationPayload\": \"aslkxj;alkxj\"\n" +

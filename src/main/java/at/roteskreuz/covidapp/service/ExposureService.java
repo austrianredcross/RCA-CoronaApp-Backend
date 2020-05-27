@@ -5,7 +5,6 @@ import at.roteskreuz.covidapp.domain.Exposure;
 import at.roteskreuz.covidapp.domain.ExposureCriteria;
 import at.roteskreuz.covidapp.domain.ExposureSpecificationsBuilder;
 import at.roteskreuz.covidapp.repository.ExposureRepository;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +23,27 @@ public class ExposureService {
 
 	private final ExposureRepository exposureRepository;
 
-	public void saveAll(List<Exposure> exposures) {
-		exposureRepository.saveAll(exposures);
+	public void save(Exposure exposure) {
+		Exposure existingExposure = exposureRepository.findById(exposure.getExposureKey()).orElse(null);
+		if (existingExposure != null) {
+			if (existingExposure.getPassword() != null && 
+				existingExposure.getPassword().equals(exposure.getPassword()) && 
+				existingExposure.getIntervalNumber().equals(exposure.getIntervalNumber()) &&
+				existingExposure.getIntervalCount().equals(exposure.getIntervalCount())) {
+				//checking if update should be made
+				existingExposure.setUpdatedAt(LocalDateTime.now());
+				existingExposure.setTransmissionRisk(exposure.getTransmissionRisk());
+				existingExposure.setDiagnosisType(exposure.getDiagnosisType());
+				exposureRepository.save(existingExposure);
+			} else {
+				//fail silently
+				log.error(String.format("SILENT_FAIL - Exposure with key: %s is not valid" , exposure.getExposureKey()));
+			}
+		} else {
+			exposureRepository.save(exposure);
+		}
 	}
-
+	
 	public List<Exposure> findExposuresForBatch(ExportBatch batch) {
  		ExposureCriteria criteria  = new ExposureCriteria(batch.getRegion(), batch.getStartTimestamp(), batch.getEndTimestamp(), false);
 		ExposureSpecificationsBuilder builder = new ExposureSpecificationsBuilder(criteria);

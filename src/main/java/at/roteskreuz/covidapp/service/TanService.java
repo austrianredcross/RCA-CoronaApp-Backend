@@ -30,9 +30,7 @@ public class TanService {
 	private final RestTemplate restTemplate;
 	
 	private final Sha256Service sha256Service;
-	
-	private static final String INVALID_TAN_ERROR_MESSAGE = "TAN is invalid";
-	
+		
 	private final Pattern TAN_PATTERN = Pattern.compile("^[0-9]{6}$");
 	
 	@Value("${external.personal.data.storage.url:}")
