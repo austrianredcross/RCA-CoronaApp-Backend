@@ -23,7 +23,7 @@ import lombok.Setter;
 public class Publish {
 	
 	@Size(min = 0)
-	@JsonProperty("temporaryTracingKeys")
+	@JsonProperty("temporaryExposureKeys")
 	@Valid
 	private List<ExposureKey> keys;
 	
@@ -33,8 +33,6 @@ public class Publish {
 
 	private String 	platform;
 	
-	private Integer diagnosisStatus;
-
 	private String 	deviceVerificationPayload;
 
 	private String verificationAuthorityName;
