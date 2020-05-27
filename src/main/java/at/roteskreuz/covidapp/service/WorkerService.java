@@ -151,7 +151,7 @@ public class WorkerService {
 			fromIdx = random.nextInt(exposures.size());
 			Integer intervalCount = exposures.get(fromIdx).getIntervalCount();
 			
-			Exposure exposure = new Exposure(new String(bytes), transmissionRisk, region, intervalNumber, intervalCount);
+			Exposure exposure = new Exposure(new String(bytes), null, transmissionRisk, region, intervalNumber, intervalCount);
 			// The rest of the publishmodel.Exposure fields are not used in the export file.
 			exposures.add(exposure);
 		}

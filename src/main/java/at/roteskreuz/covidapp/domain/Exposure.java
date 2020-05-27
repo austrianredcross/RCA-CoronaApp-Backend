@@ -23,6 +23,8 @@ public class Exposure implements Serializable {
 	
 	@Id
 	private String exposureKey;
+	
+	private String password;
 
 	private Integer transmissionRisk;
 	
@@ -40,12 +42,16 @@ public class Exposure implements Serializable {
 	private Boolean localProvenance;
 	
 	@Column(name = "sync_id")
-	private Long federationSyncID;
+	private Long federationSyncID;	
 	
 	private String diagnosisType;
 
-	public Exposure(String exposureKey, Integer transmissionRisk, String regions, Integer intervalNumber, Integer intervalCount) {
+	private LocalDateTime updatedAt;
+
+
+	public Exposure(String exposureKey, String password, Integer transmissionRisk, String regions, Integer intervalNumber, Integer intervalCount) {
 		this.exposureKey = exposureKey;
+		this.password = password;
 		this.transmissionRisk = transmissionRisk;
 		this.regions = regions;
 		this.intervalNumber = intervalNumber;
