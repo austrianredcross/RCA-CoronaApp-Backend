@@ -23,5 +23,5 @@ public interface ExportBatchRepository extends CrudRepository<ExportBatch, Long>
 	@Query("SELECT b.batchId FROM ExportBatch b WHERE (b.status = ?1 OR (b.status = ?2 AND leaseExpires < ?3)) AND b.endTimestamp < ?3")
 	List<Long> leaseBatches(ExportBatchStatus openStatus, ExportBatchStatus pendingStatus, LocalDateTime timestamp, Pageable pageable);
 
-	List<ExportBatch> findByEndTimestampIsLessThanAndStatusIsNot(LocalDateTime endTimestamp, ExportBatchStatus status);
+	List<ExportBatch> findByEndTimestampBeforeAndStatusIsNot(LocalDateTime endTimestamp, ExportBatchStatus status);
 }
