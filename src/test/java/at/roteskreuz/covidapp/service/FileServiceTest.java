@@ -38,8 +38,8 @@ public class FileServiceTest {
 
 		ExportBatch batch = new ExportBatch(1L, config, bucketName, filenameRoot, now.minusDays(1), now, region, ExportBatchStatus.EXPORT_BATCH_OPEN, now.plusDays(1), signatureInfos);
 
-		Exposure exposure1 = new Exposure("Fy/EgOWYSQw0F3YEM5sVQw==", 8, null, region, 2649980, 1, now, Boolean.FALSE, 1L, "red-warning");
-		Exposure exposure2 = new Exposure("K2MFOsSDI43hdhaehh89zQ==", 1, null, region, 2649866, 114, now, Boolean.FALSE, 1L, "green-warning");
+		Exposure exposure1 = new Exposure("Fy/EgOWYSQw0F3YEM5sVQw==","password1", 8, null, region, 2649980, 1, now, Boolean.FALSE, 1L, "red-warning",null);
+		Exposure exposure2 = new Exposure("K2MFOsSDI43hdhaehh89zQ==","password2", 1, null, region, 2649866, 114, now, Boolean.FALSE, 1L, "green-warning",null);
 
 		//List<Exposure> exposures = Arrays.asList(exposure1, exposure2, exposure3, exposure4);
 		List<Exposure> exposures = Arrays.asList(exposure1, exposure2);

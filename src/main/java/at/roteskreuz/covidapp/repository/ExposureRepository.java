@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 0.0.1-SNAPSHOT
  */
 
-public interface ExposureRepository extends CrudRepository<Exposure, Long>, JpaSpecificationExecutor<Exposure> {
+public interface ExposureRepository extends CrudRepository<Exposure, String>, JpaSpecificationExecutor<Exposure> {
 
     @Transactional
     List<Exposure> deleteAllByCreatedAtIsLessThan(LocalDateTime createdAt);
