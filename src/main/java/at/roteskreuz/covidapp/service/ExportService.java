@@ -7,15 +7,11 @@ import at.roteskreuz.covidapp.protobuf.Export;
 import at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKey;
 import at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKeyExport;
 import com.google.protobuf.ByteString;
-import com.microsoft.applicationinsights.core.dependencies.io.grpc.netty.shaded.io.netty.handler.ssl.PemPrivateKey;
 import io.micrometer.core.instrument.util.StringUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -23,9 +19,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileCopyUtils;
 
 /**
  *
@@ -38,6 +32,8 @@ public class ExportService {
 	private static final String EXPORT_BINARY_NAME = "export.bin";
 	private static final String EXPORT_SIGNATURE_NAME = "export.sig";
 	private static final String ALGORITHM = "1.2.840.10045.4.3.2";
+
+	private final SignatureService signatureService;
 
 	//MarshalExportFile converts the inputs into an encoded byte array.
 	public byte[] marshalExportFile(ExportBatch batch, List<Exposure> exposures, int batchNum, int batchSize, List<SignatureInfo> exportSigners) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, SignatureException, IOException, InvalidKeySpecException {
@@ -119,7 +115,7 @@ public class ExportService {
 
 	private byte[] marshalSignature(ExportBatch batch, byte[] exportContents, int batchNum, int batchSize, List<SignatureInfo> exportSigners) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, SignatureException, IOException, InvalidKeySpecException {
 		List<Export.TEKSignature> signatures = new ArrayList<>();
-		byte[] signiture = generateSignature(exportContents);
+		byte[] signature = signatureService.getSignature(exportContents);
 
 		for (SignatureInfo si : exportSigners) {
 			Export.SignatureInfo.Builder signatureInfoBuilder = Export.SignatureInfo.newBuilder()
@@ -141,7 +137,7 @@ public class ExportService {
 					.setSignatureInfo(signatureInfoBuilder.build())
 					.setBatchNum(batchNum)
 					.setBatchSize(batchSize)
-					.setSignature(ByteString.copyFrom(signiture))
+					.setSignature(ByteString.copyFrom(signature))
 					.build();
 			signatures.add(teks);
 		}
@@ -150,20 +146,4 @@ public class ExportService {
 		signatureList.writeTo(output);
 		return output.toByteArray();
 	}
-
-	private byte[] generateSignature(byte[] data) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, SignatureException, IOException, InvalidKeySpecException {
-		Signature ecdsa = Signature.getInstance("SHA256withECDSA");
-		InputStream is = new ClassPathResource("/private.pem").getInputStream();
-		ecdsa.initSign(getPrivateKey(is));
-		ecdsa.update(data);
-		return ecdsa.sign();
-	}
-
-	private PrivateKey getPrivateKey(InputStream inputStream) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-		//KeyFactory kf = KeyFactory.getInstance("EC");
-		//;
-		return PemReader.loadPrivateKey(FileCopyUtils.copyToString(new InputStreamReader(inputStream)));//new PemPrivateKey(PemReader.readPrivateKey(inputStream));//kf.generatePrivate(encryptionService.loadDecryptionKey(inputStream, "EC"));
-	}
-
-
 }
