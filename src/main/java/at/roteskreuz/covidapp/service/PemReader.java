@@ -3,7 +3,6 @@ package at.roteskreuz.covidapp.service;
 import java.io.*;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -32,33 +31,25 @@ public final class PemReader {
     private static final int OCTET_STRING_TAG = 0x04;
     private static final int OBJECT_IDENTIFIER_TAG = 0x06;
 
-    public static PrivateKey loadPrivateKey(String privateKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+    public static PrivateKey loadPrivateKey(byte[] encodedKey, String keyType) throws IOException, GeneralSecurityException {
+        String privateKey = new String(encodedKey);
         Matcher matcher = PRIVATE_KEY_PATTERN.matcher(privateKey);
-        if (!matcher.find()) {
-            KeyFactory keyFactory = KeyFactory.getInstance("EC");
-            return keyFactory.generatePrivate(new PKCS8EncodedKeySpec(privateKey.getBytes()));
+        if (matcher.find()) {
+            privateKey = matcher.group(2);
         }
 
-        String keyType = matcher.group(1);
-        byte[] encodedKey = Base64.getDecoder().decode(matcher.group(2).replace("\n", ""));
-
-        if (keyType == null) {
-            KeyFactory keyFactory = KeyFactory.getInstance("EC");
-            return keyFactory.generatePrivate(new PKCS8EncodedKeySpec(encodedKey));
+        try {
+            encodedKey = Base64.getDecoder().decode(privateKey.replace("\n", ""));
+            encodedKey = ecPkcs1ToPkcs8(encodedKey);
+        } catch (IllegalArgumentException ex) {
+            // encoded Key is a Pkcs8 format
         }
 
-        return loadPkcs1PrivateKey(keyType, encodedKey);
+        KeyFactory keyFactory = KeyFactory.getInstance(keyType);
+        return keyFactory.generatePrivate(new PKCS8EncodedKeySpec(encodedKey));
     }
 
-    private static PrivateKey loadPkcs1PrivateKey(String pkcs1KeyType, byte[] pkcs1Key) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
-        if(!"EC".equals(pkcs1KeyType)) {
-            throw new InvalidKeySpecException(pkcs1KeyType + " private key in PKCS 1 format is not supported");
-        }
-        KeyFactory keyFactory = KeyFactory.getInstance(pkcs1KeyType);
-        return keyFactory.generatePrivate(new PKCS8EncodedKeySpec(ecPkcs1ToPkcs8(pkcs1Key)));
-    }
-
-    static byte[] ecPkcs1ToPkcs8(byte[] pkcs1) throws InvalidKeySpecException, IOException {
+    static byte[] ecPkcs1ToPkcs8(byte[] pkcs1) throws GeneralSecurityException, IOException {
         List<byte[]> elements = decodeSequence(pkcs1);
         if (elements.size() != 4) {
             throw new InvalidKeySpecException("Expected EC key to have 4 elements");
