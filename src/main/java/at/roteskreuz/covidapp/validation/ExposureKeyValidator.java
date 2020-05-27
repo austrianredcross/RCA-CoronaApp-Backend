@@ -39,9 +39,9 @@ public class ExposureKeyValidator extends AbstractValidator implements Constrain
 		// And have an interval <= maxInterval (configured allowed clock skew)
 		long maxIntervalNumber = now.toInstant(ZoneOffset.UTC).getEpochSecond() /  ApplicationConfig.INTERVAL_LENGTH.getSeconds();
 		
-		String binKey =exposureKey.getBinKey();
-		if (binKey.length() != ApplicationConfig.KEY_LENGTH) {
-			addErrorMessage(context, "invalid key length, " + binKey.length() + ", must be " + ApplicationConfig.KEY_LENGTH);
+		String key =exposureKey.getBinKey();
+		if (key.length() != ApplicationConfig.KEY_LENGTH) {
+			addErrorMessage(context, "invalid key length, " + key.length() + ", must be " + ApplicationConfig.KEY_LENGTH);
 			result = false;
 			
 		}

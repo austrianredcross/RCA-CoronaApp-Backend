@@ -2,9 +2,11 @@ package at.roteskreuz.covidapp.service;
 
 import at.roteskreuz.covidapp.domain.ExportBatch;
 import at.roteskreuz.covidapp.domain.ExportConfig;
+import at.roteskreuz.covidapp.exception.LockNotAcquiredException;
 import at.roteskreuz.covidapp.model.ApiResponse;
 import at.roteskreuz.covidapp.model.BatchRange;
 import at.roteskreuz.covidapp.model.ExportBatchStatus;
+import at.roteskreuz.covidapp.properties.ExportProperties;
 import at.roteskreuz.covidapp.repository.ExportBatchRepository;
 import at.roteskreuz.covidapp.repository.ExportConfigRepository;
 import java.time.Duration;
@@ -34,27 +36,37 @@ public class BatchService {
 	private static final LocalDateTime SANITY_DATE = LocalDateTime.of(2019, 1, 1, 0, 0, 0, 0);
 
 	private final ExportConfigRepository exportConfigRepository;
-	
 	private final ExportBatchRepository exportBatchRepository;
+	private final LockService lockService;
 	private final TimeCalculationService timeCalculationService;
+	private final ExportProperties exportProperties;
 
 	public ApiResponse createBratches() {
-		LocalDateTime now = LocalDateTime.now();
+		
+		String lockId = "create_batches";
+		try {
+			LocalDateTime releaseTimestamp = lockService.acquireLock(lockId, exportProperties.getCreateTimeout());
+			LocalDateTime now = LocalDateTime.now();
+			int totalConfigs = 0;
+			int totalBatches = 0;
+			int totalConfigsWithBatches = 0;
 
-		int totalConfigs = 0;
-		int totalBatches = 0;
-		int totalConfigsWithBatches = 0;
-
-		List<ExportConfig> exportConfigs = exportConfigRepository.findAllByDate(now);
-		for (ExportConfig exportConfig : exportConfigs) {
-			totalConfigs++;
-			int batchesCreated = maybeCreateBatches(exportConfig, now);
-			totalBatches += batchesCreated;
-			if (batchesCreated > 0) {
-				totalConfigsWithBatches++;
+			List<ExportConfig> exportConfigs = exportConfigRepository.findAllByDate(now);
+			for (ExportConfig exportConfig : exportConfigs) {
+				totalConfigs++;
+				int batchesCreated = maybeCreateBatches(exportConfig, now);
+				totalBatches += batchesCreated;
+				if (batchesCreated > 0) {
+					totalConfigsWithBatches++;
+				}
 			}
+			log.info(String.format("Processed %s configs creating %s batches across %s configs", totalConfigs, totalBatches, totalConfigsWithBatches));
+			boolean unlocked = lockService.releaseLock(lockId, releaseTimestamp);
+			log.debug(String.format("Removed lock for id: %s with result: %b", lockId, unlocked));						
+		} catch (LockNotAcquiredException e) {
+			log.error("Could not acquire lock for creating the batches");
+			//fail silently
 		}
-		log.info(String.format("Processed %s configs creating %s batches across %s configs", totalConfigs, totalBatches, totalConfigsWithBatches));
 		return ApiResponse.ok();
 	}
 	
@@ -65,7 +77,6 @@ public class BatchService {
 		if (openBatchIds == null || openBatchIds.isEmpty()) {
 			return null;
 		}
-		
 		// Randomize openBatchIDs so that workers aren't competing for the same job.	
 		Collections.shuffle(openBatchIds);
 		for (Long openBatchId : openBatchIds) {

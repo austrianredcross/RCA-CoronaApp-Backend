@@ -7,12 +7,14 @@ import at.roteskreuz.covidapp.domain.ExportFile;
 import at.roteskreuz.covidapp.domain.ExportFilename;
 import at.roteskreuz.covidapp.domain.Exposure;
 import at.roteskreuz.covidapp.domain.SignatureInfo;
+import at.roteskreuz.covidapp.exception.LockNotAcquiredException;
 import at.roteskreuz.covidapp.model.ApiResponse;
 import at.roteskreuz.covidapp.model.ExportBatchStatus;
 import at.roteskreuz.covidapp.properties.ExportProperties;
 import at.roteskreuz.covidapp.repository.ExportFileRepository;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -44,6 +46,7 @@ public class WorkerService {
 	private final ExposureService exposureService;
 	private final Blobstore blobstore;
 	private final ExportFileRepository exportFileRepository;
+	private final LockService lockService;
 
 	public ApiResponse doWork() throws Exception {
 		boolean emitIndexForEmptyBatch = true;
@@ -148,7 +151,7 @@ public class WorkerService {
 			fromIdx = random.nextInt(exposures.size());
 			Integer intervalCount = exposures.get(fromIdx).getIntervalCount();
 			
-			Exposure exposure = new Exposure(new String(bytes), transmissionRisk, region, intervalNumber, intervalCount);
+			Exposure exposure = new Exposure(new String(bytes), null, transmissionRisk, region, intervalNumber, intervalCount);
 			// The rest of the publishmodel.Exposure fields are not used in the export file.
 			exposures.add(exposure);
 		}
@@ -175,15 +178,22 @@ public class WorkerService {
 	// retryingCreateIndex create the index file. The index file includes _all_ batches for an ExportConfig,
 	// so multiple workers may be racing to update it. We use a lock to make them line up after one another.
 	private void retryingCreateIndex(ExportBatch batch, List<String> objectNames) throws Exception {
-		//TODO - retrying implementation is missing currently
-		
-		String indexName = createIndex(batch,objectNames);
-		log.info(String.format("Wrote index file %s (triggered by batch %d)", indexName, batch.getBatchId()));
-
-		
+		String lockId = String.format("export-batch-%s", batch.getBatchId());
+			while(true) {
+			try {
+				LocalDateTime releaseTimestamp = lockService.acquireLock(lockId, Duration.ofMinutes(1));
+				String indexName = createIndex(batch,objectNames);
+				log.info(String.format("Wrote index file %s (triggered by batch %d)", indexName, batch.getBatchId()));
+				boolean unlocked = lockService.releaseLock(lockId, releaseTimestamp);
+				log.debug(String.format("Removed lock for id: %s with result: %b", lockId, unlocked));
+				break;
+			} catch (LockNotAcquiredException e) {
+				Thread.sleep(10 * 1000); //10 seconds
+			}
+		}
 	}
 	
-	public String createFile(ExportBatch batch, List<Exposure> exposures, int batchNum, int batchSize, List<SignatureInfo> exportSigners) throws Exception {
+	private String createFile(ExportBatch batch, List<Exposure> exposures, int batchNum, int batchSize, List<SignatureInfo> exportSigners) throws Exception {
 		String objectName = exportFilename(batch, batchNum);
 		byte[] data = exportService.marshalExportFile(batch, exposures, batchNum, batchSize, exportSigners);
 		blobstore.createObject(batch.getBucketName(), objectName, data);

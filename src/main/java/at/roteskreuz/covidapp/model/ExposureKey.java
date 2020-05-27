@@ -25,6 +25,8 @@ public class ExposureKey {
 	
 	private Integer transmissionRisk;
 	
+	private String password;
+	
 	
 	public String getBinKey() {
 		if (key == null) {
