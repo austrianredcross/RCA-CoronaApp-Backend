@@ -46,7 +46,7 @@ public class FileServiceTest {
 		int batchNum = 1;
 		int batchSize = 1;
 
-		workerService.createFile(batch, exposures, batchNum, batchSize, signatureInfos);
+		//workerService.createFile(batch, exposures, batchNum, batchSize, signatureInfos);
 	}
 
 	private static LocalDateTime truncateToDuration(LocalDateTime zonedDateTime, Duration duration) {
