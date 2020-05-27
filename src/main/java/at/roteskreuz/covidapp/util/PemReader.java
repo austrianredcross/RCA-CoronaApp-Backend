@@ -1,4 +1,4 @@
-package at.roteskreuz.covidapp.service;
+package at.roteskreuz.covidapp.util;
 
 import java.io.*;
 import java.security.GeneralSecurityException;
