@@ -10,8 +10,8 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- script: Mirror to Git
+  displayName: 'Mirror to Git'
 
 - task: mirror-git-repository-vsts-task@1
   inputs:
