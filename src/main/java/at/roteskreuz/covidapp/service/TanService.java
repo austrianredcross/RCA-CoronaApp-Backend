@@ -16,11 +16,10 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * Service for interacting with the external TAN service.
- * external personal data strage: url, authorization key, authorization value, sha256 key can be configured in the application.properties
+ * external personal data storage: ULR, authorization key, authorization value, SHA256 key can be configured in the application.properties
  * 
  * @author Zoltán Puskai
  */
-
 @Service
 @RequiredArgsConstructor
 @Slf4j

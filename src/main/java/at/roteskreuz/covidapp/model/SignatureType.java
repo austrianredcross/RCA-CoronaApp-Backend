@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- *
- * @author zolika
+ * The different types of signatures
+ * 
+ * @author Zoltán Puskai
  */
 @AllArgsConstructor
 @Getter

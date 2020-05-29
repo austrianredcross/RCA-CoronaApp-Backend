@@ -13,8 +13,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- *
- * @author zolika
+ * Representation of a publish request
+ * 
+ * @author Zoltán Puskai
  */
 @Getter
 @Setter

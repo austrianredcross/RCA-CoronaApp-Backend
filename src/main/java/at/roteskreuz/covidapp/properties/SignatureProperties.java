@@ -7,8 +7,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 
 /**
- *
- * @author zolika
+ * Represents  signature related external configuration
+ * 
+ * @author Zoltán Puskai
  */
 @Getter
 @Setter

@@ -12,9 +12,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * Lock is used to avoid parallel execution of same task
  *
- * @author zolika
- */
+ * @author Zoltán Puskai
+ */	
 @Entity
 @Getter
 @Setter

@@ -6,8 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- *
- * @author zolika
+ * Verification payload is used in a publish request to hold the TAN verification data
+ * 
+ * @author Zoltán Puskai
  */
 @Getter
 @Setter

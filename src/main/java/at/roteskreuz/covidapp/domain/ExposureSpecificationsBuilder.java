@@ -5,14 +5,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
 /**
+ * ExposureSpecificationsBuilder is a builder for building JPA specification queries
  *
- * @author zolika
- */
+ * @author Zoltán Puskai
+ */	
 @RequiredArgsConstructor
 public class ExposureSpecificationsBuilder {
 
 	private final ExposureCriteria criteria;
 	
+	/**
+	 * Builds a specification
+	 * @return specification used by the JPA query
+	 */
 	public Specification<Exposure> build() {
 		return inRegions().and(afterSince()).and(beforeUntis()).and(isLocalProvenance());
 	}

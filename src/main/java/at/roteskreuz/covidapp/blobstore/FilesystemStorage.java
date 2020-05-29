@@ -6,7 +6,8 @@ import java.nio.file.Paths;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Blobstore to store files in the filesystem
+ * FilesystemStorage implements Blobstore and provides the ability
+ * write files to the filesystem.
  *
  * @author Zoltán Puskai
  */

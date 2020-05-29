@@ -5,11 +5,10 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 /**
- * Annotation for validating phone numbers
+ * Annotation for validating exposure keys
  * 
  * @author Zoltán Puskai
  */
-
 @Documented
 @Constraint(validatedBy = ExposureKeyValidator.class)
 @Target({ElementType.TYPE})

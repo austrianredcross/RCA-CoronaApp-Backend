@@ -8,7 +8,6 @@ import lombok.Value;
  * 
  * @author Zoltán Puskai
  */
-
 @Value
 public class TanResponse {
 	private final int httpCode;

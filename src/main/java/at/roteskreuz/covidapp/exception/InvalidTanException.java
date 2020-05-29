@@ -4,8 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
+ * Exception thrown when TAN is invalid
  *
- * @author zolika
+ * @author Zoltán Puskai
  */
 @ResponseStatus(code = HttpStatus.FORBIDDEN, reason = "TAN is invalid")
 public class InvalidTanException extends AbstractCovidException {

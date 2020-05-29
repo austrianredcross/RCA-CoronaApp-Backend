@@ -22,8 +22,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- *
- * @author zolika
+ * Service class that exports exposures
+ * 
+ * @author Zoltán Puskai
  */
 @Service
 @RequiredArgsConstructor
@@ -35,7 +36,19 @@ public class ExportService {
 
 	private final Signer signer;
 
-	//MarshalExportFile converts the inputs into an encoded byte array.
+	/**
+	 * Converts the inputs into an encoded byte array.
+	 * 
+	 * @param batch batch to be exported
+	 * @param exposures exposures to be exported
+	 * @param batchNum batch number
+	 * @param batchSize batch size
+	 * @param exportSigners signers to sign exported data
+	 * @return
+	 * @throws IOException
+	 * @throws GeneralSecurityException 
+	 */
+	//MarshalExportFile converts the inputs into an encoded byte array.	
 	public byte[] marshalExportFile(ExportBatch batch, List<Exposure> exposures, int batchNum, int batchSize, List<SignatureInfo> exportSigners) throws IOException, GeneralSecurityException {
 		// create main exposure key export binary
 		byte[] expContents = marshalContents(batch, exposures, batchNum, batchSize, exportSigners);
@@ -115,7 +128,7 @@ public class ExportService {
 
 	private byte[] marshalSignature(ExportBatch batch, byte[] exportContents, int batchNum, int batchSize, List<SignatureInfo> exportSigners) throws IOException, GeneralSecurityException {
 		List<Export.TEKSignature> signatures = new ArrayList<>();
-		byte[] signature = signer.signature(exportContents);
+		byte[] signature = signer.sign(exportContents);
 
 		for (SignatureInfo si : exportSigners) {
 			Export.SignatureInfo.Builder signatureInfoBuilder = Export.SignatureInfo.newBuilder()
