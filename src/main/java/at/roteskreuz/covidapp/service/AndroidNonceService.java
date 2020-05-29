@@ -9,8 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- *
- * @author zolika
+ * Calculates a nonce for a publish request
+ * 
+ * @author Zoltán Puskai
  */
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,11 @@ public class AndroidNonceService {
 	
 	private final Sha256Service sha256Service;
 
+	/**
+	 * Calculate the nonce
+	 * @param publish request used by the calculation
+	 * @return 
+	 */
 	public String nonce(Publish publish) {
 			
 		String sortedKeys = publish.getKeys().stream()

@@ -8,8 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- *
- * @author zolika
+ * Service class that processes publish requests
+ * 
+ * @author Zoltán Puskai
  */
 @Service
 @RequiredArgsConstructor
@@ -17,6 +18,13 @@ public class PublishService {
 
 	private final ExposureService exposureService;
 
+	/**
+	 * Processes publish requests.
+	 * Saves the exposures from the publish request
+	 * 
+	 * @param publish publish request
+	 * @return 
+	 */
 	public ApiResponse publish(Publish publish) {
 
 		LocalDateTime now = LocalDateTime.now();

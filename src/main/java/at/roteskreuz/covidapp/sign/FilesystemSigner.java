@@ -8,17 +8,26 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 
 /**
- *
- * @author roesslerb
+ * Signer that gets the private key from filesystem.
+ * 
+ * @author Bernhard Roessler
  */
+
 @Slf4j
 @RequiredArgsConstructor
 public class FilesystemSigner extends AbstractSigner {
 
 	private final SignatureProperties signatureProperties;
 
+	/**
+	 * Signs data
+	 * @param data data to be signed
+	 * @return signed data
+	 * @throws GeneralSecurityException
+	 * @throws IOException 
+	 */
 	@Override
-	public byte[] signature(byte[] data) throws GeneralSecurityException, IOException {
+	public byte[] sign(byte[] data) throws GeneralSecurityException, IOException {
 		return signature(data, new ClassPathResource(signatureProperties.getFilePrivateKeyLocation()).getInputStream(),
 							signatureProperties.getSignatureAlgorithm(), signatureProperties.getSignatureKeyType());
 	}

@@ -18,8 +18,9 @@ import org.springframework.stereotype.Service;
 
 
 /**
- *
- * @author zolika
+ * Service for sending push notifications
+ * 
+ * @author Bernhard Roessler
  */
 @Service
 @RequiredArgsConstructor
@@ -28,6 +29,11 @@ public class PushNotificationService {
 	
 	private final PushNotificationProperties pushNotificationProperties;
 
+	/**
+	 * Sends a push notification
+	 * @param message message to be sent
+	 * @return 
+	 */
 	public boolean sendNotification(String message) {
 		FirebaseApp firebaseApp = getFirebaseApp();
 		if(firebaseApp != null) {
@@ -51,7 +57,7 @@ public class PushNotificationService {
 		return false;
 	}
 
-	public FirebaseApp getFirebaseApp() {
+	private FirebaseApp getFirebaseApp() {
 		if(FirebaseApp.getApps() != null && !FirebaseApp.getApps().isEmpty()){
 			return FirebaseApp.getInstance();
 		}

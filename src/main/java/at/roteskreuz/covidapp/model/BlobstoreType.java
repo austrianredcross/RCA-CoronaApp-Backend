@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- *
- * @author zolika
+ * The different types of blobstores
+ * 
+ * @author Zoltán Puskai
  */
 @AllArgsConstructor
 @Getter

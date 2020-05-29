@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- *
- * @author zolika
+ * Representation of an exposure key in a publish request
+ * 
+ * @author Zoltán Puskai
  */
 @Getter
 @Setter

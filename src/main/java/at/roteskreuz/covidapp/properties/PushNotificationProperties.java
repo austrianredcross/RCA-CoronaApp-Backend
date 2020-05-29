@@ -1,14 +1,14 @@
 package at.roteskreuz.covidapp.properties;
 
-import at.roteskreuz.covidapp.model.SignatureType;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 
 /**
- *
- * @author roesslerb
+ * Represents  push notification related external configuration
+ * 
+ * @author Bernhard Roessler
  */
 @Getter
 @Setter

@@ -11,9 +11,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * Exposure represents the record as stored in the database
  *
- * @author zolika
- */
+ * @author Zoltán Puskai
+ */	
 @Entity
 @Getter
 @Setter

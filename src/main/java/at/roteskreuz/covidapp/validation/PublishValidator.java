@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 /**
- * Validator for checking Publish objects
+ * Validates publish objects
  *
  * @author Zoltán Puskai
  */
@@ -38,6 +38,12 @@ public class PublishValidator extends AbstractValidator implements ConstraintVal
 	public void initialize(ValidPublish constraintAnnotation) {
 	}
 
+	/**
+	 * Validates a publish request
+	 * @param publish request to be validate
+	 * @param context validation context
+	 * @return 
+	 */
 	@Override
 	public boolean isValid(Publish publish, ConstraintValidatorContext context) {
 		boolean result = true;

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
  * 
  * @author Zoltán Puskai
  */
-
 @Service
 @RequiredArgsConstructor
 public class ClientConfigurationService {

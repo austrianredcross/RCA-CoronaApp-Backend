@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 /**
- * Controller for storing published exposure keys
+ * Controller for generating batches and export files
  *
  * @author Zoltán Puskai
  */
@@ -32,6 +32,10 @@ public class ExportController {
 	private final BatchService batchService;
 	private final WorkerService workerService;
 
+	/**
+	 * Creates batches
+	 * @return Api response
+	 */
 	@ApiOperation(value = "Creates batches.)", authorizations = {
 		@Authorization(value = "AuthorizationKey")})
 	@ApiImplicitParams({
@@ -48,6 +52,11 @@ public class ExportController {
 		return ResponseEntity.status(response.getStatus()).body(response);
 	}
 
+	/**
+	 * Exports exposures
+	 * @return Api response
+	 * @throws Exception 
+	 */
 	@ApiOperation(value = "Creates the export files.)", authorizations = {
 		@Authorization(value = "AuthorizationKey")})
 	@ApiImplicitParams({

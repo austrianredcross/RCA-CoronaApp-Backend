@@ -11,8 +11,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * ExportBatch represents a a file from exposures export.
  *
- * @author zolika
+ * @author Zoltán Puskai
  */
 @Entity
 @Getter

@@ -12,10 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
- *
- * @author zolika
+ * Service class to manage exposures
+ * 
+ * @author Zoltán Puskai
  */
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -23,6 +23,10 @@ public class ExposureService {
 
 	private final ExposureRepository exposureRepository;
 
+	/**
+	 * Saves an exposure
+	 * @param exposure exposure to be saved
+	 */
 	public void save(Exposure exposure) {
 		Exposure existingExposure = exposureRepository.findById(exposure.getExposureKey()).orElse(null);
 		if (existingExposure != null) {
@@ -43,13 +47,23 @@ public class ExposureService {
 			exposureRepository.save(exposure);
 		}
 	}
-	
+	/**
+	 * Finds exposures belonging to a batch
+	 * @param batch batch for which the exposures belong
+	 * @return 
+	 */
 	public List<Exposure> findExposuresForBatch(ExportBatch batch) {
  		ExposureCriteria criteria  = new ExposureCriteria(batch.getRegion(), batch.getStartTimestamp(), batch.getEndTimestamp(), false);
 		ExposureSpecificationsBuilder builder = new ExposureSpecificationsBuilder(criteria);
 		return exposureRepository.findAll(builder.build());
 	}
 
+	/**
+	 * Deletes exposures that are older than cleanupTtl
+	 * 
+	 * @param cleanupTtl
+	 * @return 
+	 */
 	public List<Exposure> cleanUpExposures(LocalDateTime cleanupTtl){
 		return exposureRepository.deleteAllByCreatedAtIsLessThan(cleanupTtl);
 	}

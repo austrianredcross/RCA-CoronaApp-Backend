@@ -1,8 +1,9 @@
 package at.roteskreuz.covidapp.exception;
 
 /**
+ * Base class for exceptions used in this application
  *
- * @author zolika
+ * @author Zoltán Puskai
  */
 public class AbstractCovidException extends Exception {
 

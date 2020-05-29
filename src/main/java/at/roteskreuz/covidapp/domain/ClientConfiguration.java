@@ -15,8 +15,6 @@ import lombok.Setter;
  * 
  * @author Zoltán Puskai
  */
-
-
 @Entity
 @Getter
 @Setter

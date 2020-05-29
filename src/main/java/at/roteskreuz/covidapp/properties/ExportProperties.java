@@ -7,8 +7,9 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- *
- * @author zolika
+ * Represents export related external configuration
+ * 
+ * @author Zoltán Puskai
  */
 @Getter
 @Setter

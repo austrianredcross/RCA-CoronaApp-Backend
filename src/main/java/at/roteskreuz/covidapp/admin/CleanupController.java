@@ -34,6 +34,10 @@ public class CleanupController {
 		return ResponseEntity.status(response.getStatus()).body(response);
 	}
 
+	/**
+	 * Cleans up old exposure records
+	 * @return Api response
+	 */
 	@GetMapping(value = "/cleanup-exposure", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponse> cleanupExposure()  {
 		ApiResponse response = cleanupService.cleanupExposure();

@@ -8,7 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 
 /**
- * Blobstore to store files in the Azure Blobstore
+ * Blobstore implements the Blob interface and provides the ability
+ * write files to Azure Blobstore
  *
  * @author Zoltán Puskai
  */
