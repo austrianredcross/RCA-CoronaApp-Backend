@@ -7,14 +7,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
 
 /**
+ * Configuration class that provides application config
  *
- * @author zolika
+ * @author Zoltán Puskai
  */
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
 	
-	
+	/**
+	 * Constructor that ensures configuration is valid
+	 * @param publishProperties properties used for the exposures publishing
+	 */
 	public ApplicationConfig(PublishProperties publishProperties) {
 		int maxExposureKeys = publishProperties.getMaxKeysOnPublish();
 		Assert.isTrue((maxExposureKeys>= 0 && maxExposureKeys <= MAX_KEYS_PER_PUBLISH), String.format("maxExposureKeys must be > 0 and <= %s, got %s", MAX_KEYS_PER_PUBLISH, maxExposureKeys));

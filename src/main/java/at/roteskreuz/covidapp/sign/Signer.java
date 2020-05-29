@@ -7,7 +7,7 @@ import java.security.GeneralSecurityException;
  *
  * @author roesslerb
  */
-public interface Sign {
+public interface Signer {
 
 	byte[] signature(byte[] data) throws GeneralSecurityException, IOException;
 

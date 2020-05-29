@@ -30,7 +30,6 @@ public class Exposure implements Serializable {
 	
 	private String appPackageName;
 	
-	//@Convert(converter = StringToListConverter.class)
 	private String regions;
 	
 	private Integer intervalNumber;

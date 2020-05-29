@@ -14,7 +14,6 @@ import lombok.Setter;
  * Client configuration holds a JSON structure to configure Android and IOS clients
  * 
  * @author Zoltán Puskai
- * @since 0.0.1-SNAPSHOT
  */
 
 
