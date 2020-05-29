@@ -1,9 +1,7 @@
 package at.roteskreuz.covidapp.service;
 
-import at.roteskreuz.covidapp.model.Publish;
 import at.roteskreuz.covidapp.properties.PushNotificationProperties;
 import com.google.api.client.json.GenericJson;
-import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -11,20 +9,13 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Base64;
-import java.util.Comparator;
-import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
 /**
  *

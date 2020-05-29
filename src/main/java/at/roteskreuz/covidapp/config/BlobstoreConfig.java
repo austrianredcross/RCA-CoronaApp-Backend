@@ -11,8 +11,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * Class that configures the blobstore
  *
- * @author zolika
+ * @author Zoltán Puskai
  */
 @Configuration
 @Slf4j
@@ -21,6 +22,10 @@ public class BlobstoreConfig {
 
 	private final ExportProperties exportProperties;
 
+	/**
+	 * Instantiates a blobstore
+	 * @return blobstore according to the configuration
+	 */	
 	@Bean
 	public Blobstore blobstore() {
 

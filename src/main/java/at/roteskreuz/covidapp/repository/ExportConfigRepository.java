@@ -10,7 +10,6 @@ import org.springframework.data.repository.CrudRepository;
  * Repository for persisting authorized apps
  * 
  * @author Zoltán Puskai
- * @since 0.0.1-SNAPSHOT
  */
 
 public interface ExportConfigRepository extends CrudRepository<ExportConfig, Long> {

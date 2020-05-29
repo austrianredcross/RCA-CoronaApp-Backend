@@ -10,7 +10,6 @@ import lombok.Setter;
  * Request to validate a TAN with a phone number
  * 
  * @author Zoltán Puskai
- * @since 0.0.1-SNAPSHOT
  */
 
 @Getter

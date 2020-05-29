@@ -11,9 +11,7 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
  * Web configuration 
  *
  * @author Zoltán Puskai
- * @since 0.0.1-SNAPSHOT
  */
-
 @Configuration
 public class WebConfig {
 

@@ -25,10 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller for storing published exposure keys
  *
  * @author Zoltán Puskai
- * @since 0.0.1-SNAPSHOT
  */
-
-
 @RestController
 @RequestMapping(path = "/api/v${application.api.version}")
 @RequiredArgsConstructor
@@ -38,6 +35,13 @@ public class PublishController {
 	private final PublishService publishService;
 	private final TanService tanService;
 
+	
+	/**
+	 * Stores exposures published by the clients
+	 * @param publish request containing exposures and validation data
+	 * @return Api response
+	 * @throws InvalidTanException if the Tan validation fails
+	 */
 	@PostMapping(value = "/publish", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Publishes infection information.", authorizations = {
 		@Authorization(value = "AuthorizationKey")})

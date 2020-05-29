@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
  * Service for retrieving the client configuration
  * 
  * @author Zoltán Puskai
- * @since 0.0.1-SNAPSHOT
  */
 
 @Service
