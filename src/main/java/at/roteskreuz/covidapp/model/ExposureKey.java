@@ -29,7 +29,7 @@ public class ExposureKey {
 	private String password;
 	
 	
-	public String getBinKey() {
+	public String binKey() {
 		if (key == null) {
 			return null;
 		}

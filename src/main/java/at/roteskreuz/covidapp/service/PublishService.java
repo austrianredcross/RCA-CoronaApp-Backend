@@ -35,7 +35,7 @@ public class PublishService {
 		publish.getKeys().forEach(k -> {
 			exposureService.save(
 				new Exposure(
-					k.getBinKey(),
+					k.binKey(),
 					k.getPassword(),
 					k.getTransmissionRisk(),
 					publish.getAppPackageName(),
