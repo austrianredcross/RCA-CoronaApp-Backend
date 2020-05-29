@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
  * 
  * @author Zoltán Puskai
  */
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -33,7 +32,9 @@ public class SchedulerService {
 	}
 
 	
-	
+	/**
+	 * Creates batches
+	 */
 	@Scheduled(cron = "${application.schedule.cron.create.batches}")
 	public void createBatches() {
 		log.debug("Creating batches");
@@ -46,12 +47,18 @@ public class SchedulerService {
 		workerService.doWork();
 	}
 
+	/**
+	 * Cleans up files
+	 */
 	@Scheduled(cron = "${application.schedule.cron.cleanup.files}")
 	public void cleanupFiles() {
 		log.debug("Cleaning up files");
 		cleanupService.cleanupExport();
 	}
-
+	
+	/**
+	 * Cleans up exposures
+	 */
 	@Scheduled(cron = "${application.schedule.cron.cleanup.exposures}")
 	public void cleanupExposures() {
 		log.debug("Cleaning up exposures");

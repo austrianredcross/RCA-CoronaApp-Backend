@@ -17,8 +17,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
- *
- * @author zolika
+ * Cleans up old files and old exposures
+ * Exported files are signed with private keys during the export process.
+ * 
+ * @author Bernhard Roessler
  */
 @Service
 @RequiredArgsConstructor
@@ -35,6 +37,10 @@ public class CleanupService {
 	private final ExportFileRepository exportFileRepository;
 	private final Blobstore blobstore;
 
+	/**
+	 * Cleans up old files older
+	 * @return API response
+	 */
 	public ApiResponse cleanupExport() {
 		List<ExportBatch> delExportBatches = exportBatchRepository.findByEndTimestampBeforeAndStatusIsNot(getCutOffDate(), ExportBatchStatus.EXPORT_BATCH_DELETED);
 		if(delExportBatches != null) {
@@ -65,7 +71,10 @@ public class CleanupService {
 		}
 		return ApiResponse.ok();
 	}
-
+	/**
+	 * Cleans up old exposures
+	 * @return API response
+	 */
 	public ApiResponse cleanupExposure() {
 		List<Exposure> delExposures = exposureService.cleanUpExposures(getCutOffDate());
 		log.info(String.format("%d Exposures deleted", delExposures == null ? 0 : delExposures.size()));

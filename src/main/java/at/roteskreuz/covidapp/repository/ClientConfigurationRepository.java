@@ -8,7 +8,6 @@ import org.springframework.data.repository.CrudRepository;
  * 
  * @author Zoltán Puskai
  */
-
 public interface ClientConfigurationRepository extends CrudRepository<ClientConfiguration, Long> {
 
 	

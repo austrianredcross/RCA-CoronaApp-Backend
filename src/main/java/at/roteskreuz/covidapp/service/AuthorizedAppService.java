@@ -6,10 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- *
- * @author zolika
+ * Service class to manage authorized apps 
+ * 
+ * @author Zoltán Puskai
  */
-
 @Service
 @RequiredArgsConstructor
 public class AuthorizedAppService {
@@ -19,6 +19,11 @@ public class AuthorizedAppService {
 	
 	private final AuthorizedAppRepository authorizedAppRepository;
 
+	/**
+	 * Finds an authorized app by id
+	 * @param id
+	 * @return 
+	 */
 	public AuthorizedApp findById(String id) {
 		return authorizedAppRepository.findById(id).orElse(null);
 	}

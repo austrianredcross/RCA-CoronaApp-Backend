@@ -12,8 +12,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * AuthorizedApp represents the configuration for a single exposure notification
+ * application and their access to and requirements for using the API. DB times
+ * of 0 are interpreted to be "unbounded" in that direction.
  *
- * @author zolika
+ * @author Zoltán Puskai
  */
 @Entity
 @Getter

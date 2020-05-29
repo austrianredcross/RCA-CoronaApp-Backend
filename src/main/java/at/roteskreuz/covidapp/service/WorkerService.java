@@ -29,8 +29,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
- *
- * @author zolika
+ * Service for exporting files
+ * 
+ * @author Zoltán Puskai
  */
 @Service
 @RequiredArgsConstructor
@@ -48,6 +49,11 @@ public class WorkerService {
 	private final ExportFileRepository exportFileRepository;
 	private final LockService lockService;
 
+	/**
+	 * Exports the service files
+	 * @return API response
+	 * @throws Exception 
+	 */
 	public ApiResponse doWork() throws Exception {
 		boolean emitIndexForEmptyBatch = true;
 		while (true) {

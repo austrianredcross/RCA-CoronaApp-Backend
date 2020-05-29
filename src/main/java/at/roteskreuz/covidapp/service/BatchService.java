@@ -22,8 +22,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 /**
- *
- * @author zolika
+ * Service class to manage export batches
+ * 
+ * @author Zoltán Puskai
  */
 @Slf4j
 @Service
@@ -41,6 +42,10 @@ public class BatchService {
 	private final TimeCalculationService timeCalculationService;
 	private final ExportProperties exportProperties;
 
+	/**
+	 * Creates batches that later will be used when exporting files
+	 * @return API response
+	 */
 	public ApiResponse createBratches() {
 		
 		String lockId = "create_batches";
@@ -69,7 +74,13 @@ public class BatchService {
 		}
 		return ApiResponse.ok();
 	}
-	
+	/**
+	 * Leases batches.
+	 * Gets the next batch to be processed. The batch is than leased for a time (ttl) starting now
+	 * @param ttl 
+	 * @param now
+	 * @return 
+	 */
 	public ExportBatch leaseBatch(Duration ttl, LocalDateTime now) {
 		// Query for batches that are OPEN or PENDING with expired lease. Also, only return batches with end timestamp
 		// in the past (i.e., the batch is complete).
@@ -93,7 +104,11 @@ public class BatchService {
 		// We didn't manage to lease any of the candidates, so return no work to be done (nil).
 		return null;
 	}
-	
+	/**
+	 * Saves a batch
+	 * @param batch batch to be saved
+	 * @return 
+	 */
 	public ExportBatch saveBatch(ExportBatch batch) {
 		return exportBatchRepository.save(batch);
 	}

@@ -11,8 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- *
- * @author roesslerb
+ * Signer that gets the private key from Azure Key Vault
+ * 
+ * @author Bernhard Roessler
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -20,8 +21,15 @@ public class AzureSigner extends AbstractSigner {
 
 	private final SignatureProperties signatureProperties;
 
+	/**
+	 * Signs data
+	 * @param data data to be signed
+	 * @return signed data
+	 * @throws GeneralSecurityException
+	 * @throws IOException 
+	 */
 	@Override
-	public byte[] signature(byte[] data) throws GeneralSecurityException, IOException {
+	public byte[] sign(byte[] data) throws GeneralSecurityException, IOException {
 		String secret = getAzureSecret();
 		return signature(data, new ByteArrayInputStream(secret.getBytes()),
 							signatureProperties.getSignatureAlgorithm(), signatureProperties.getSignatureKeyType());

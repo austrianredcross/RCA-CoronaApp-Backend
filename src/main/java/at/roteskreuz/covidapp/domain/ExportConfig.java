@@ -14,8 +14,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * ExportConfig represents configuration for exporting exposures.
  *
- * @author zolika
+ * @author Zoltán Puskai
  */
 @Entity
 @Getter

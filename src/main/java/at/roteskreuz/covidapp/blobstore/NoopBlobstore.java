@@ -3,7 +3,7 @@ package at.roteskreuz.covidapp.blobstore;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Blobstore implementation that does not store or delete items
+ * Blobstore that does nothing.
  *
  * @author Zoltán Puskai
  */

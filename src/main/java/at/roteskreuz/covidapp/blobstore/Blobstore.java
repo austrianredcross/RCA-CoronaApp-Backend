@@ -1,7 +1,7 @@
 package at.roteskreuz.covidapp.blobstore;
 
 /**
- * Blobstore interface
+ * Blobstore defines the minimum interface for a blob storage system
  *
  * @author Zoltán Puskai
  */

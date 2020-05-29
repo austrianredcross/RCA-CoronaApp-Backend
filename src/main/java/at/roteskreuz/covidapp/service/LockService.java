@@ -11,8 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
- * @author zolika
+ * Service for handling locks use to avoid parallel execution
+ * 
+ * @author Zoltán Puskai
  */
 @Service
 @Slf4j
@@ -22,7 +23,13 @@ public class LockService {
 	
 	private final LockRepository lockRepository;
 	
-	
+	/**
+	 * Acquires a lock for aa time period
+	 * @param lockId id of the lock
+	 * @param ttl time period
+	 * @return
+	 * @throws LockNotAcquiredException 
+	 */
 	public LocalDateTime acquireLock(String lockId, Duration ttl) throws LockNotAcquiredException {
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime expiresAt = now.plus(ttl);
@@ -41,6 +48,12 @@ public class LockService {
 		return expiresAt;
 	}
 	
+	/**
+	 * Releases a lock that was made until a timestamp
+	 * @param lockId id of the lock
+	 * @param timestamp timestamp until the lock should be valid
+	 * @return 
+	 */
 	public boolean releaseLock(String lockId, LocalDateTime timestamp) {
 		Lock lock = lockRepository.findById(lockId).orElse(null);
 		if (lock != null) {

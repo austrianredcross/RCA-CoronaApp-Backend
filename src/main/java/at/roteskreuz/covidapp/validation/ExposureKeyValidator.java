@@ -10,7 +10,7 @@ import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Validator for checking Exposure key objects
+ * Validates Exposure key objects
  *
  * @author Zoltán Puskai
  */
@@ -28,7 +28,12 @@ public class ExposureKeyValidator extends AbstractValidator implements Constrain
 	@Override
 	public void initialize(ValidExposureKey constraintAnnotation) {
 	}
-	
+	/**
+	 * Validate an exposure key
+	 * @param exposureKey key to be validated
+	 * @param context validation context
+	 * @return 
+	 */
 	@Override
 	public boolean isValid(ExposureKey exposureKey, ConstraintValidatorContext context) {
 		boolean result = true;

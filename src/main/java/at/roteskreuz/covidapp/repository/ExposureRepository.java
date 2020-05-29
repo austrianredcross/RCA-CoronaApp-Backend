@@ -8,13 +8,17 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Repository for persisting authorized apps
+ * Repository for persisting exposures
  * 
  * @author Zoltán Puskai
  */
-
 public interface ExposureRepository extends CrudRepository<Exposure, String>, JpaSpecificationExecutor<Exposure> {
 
+	/**
+	 * Deletes all exposures older than..
+	 * @param createdAt creation date
+	 * @return 
+	 */
     @Transactional
     List<Exposure> deleteAllByCreatedAtIsLessThan(LocalDateTime createdAt);
 	

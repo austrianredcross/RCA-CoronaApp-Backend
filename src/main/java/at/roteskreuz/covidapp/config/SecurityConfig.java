@@ -10,10 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  * Class for configuring security
  *
  * @author Zoltán Puskai
- * @since 0.0.1-SNAPSHOT
  */
-
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {

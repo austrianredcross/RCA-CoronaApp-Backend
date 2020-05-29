@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- *
- * @author zolika
+ * The different states of export batches
+ * 
+ * @author Zoltán Puskai
  */
 @AllArgsConstructor
 @Getter

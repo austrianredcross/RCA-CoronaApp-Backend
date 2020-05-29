@@ -6,9 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * ExposureCriteria represents criteria for searching exposures
  *
- * @author zolika
- */
+ * @author Zoltán Puskai
+ */	
 @Getter
 @Setter
 @AllArgsConstructor
