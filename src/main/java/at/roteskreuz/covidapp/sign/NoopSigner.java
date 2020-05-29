@@ -1,16 +1,15 @@
 package at.roteskreuz.covidapp.sign;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  *
  * @author roesslerb
  */
 @Slf4j
-public class NoopSign implements Sign {
+public class NoopSigner implements Signer {
 
 	@Override
 	public byte[] signature(byte[] data) throws GeneralSecurityException, IOException {

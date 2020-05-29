@@ -1,4 +1,4 @@
-package at.roteskreuz.covidapp.api;
+package at.roteskreuz.covidapp.admin;
 
 
 import at.roteskreuz.covidapp.model.ApiResponse;
@@ -22,10 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller for storing published exposure keys
  *
  * @author Zoltán Puskai
- * @since 0.0.1-SNAPSHOT
  */
 @RestController
-@RequestMapping(path = "/api/v${application.api.version}/export")
+@RequestMapping(path = "/admin/export")
 @RequiredArgsConstructor
 @Api(tags = "Export", description = "Endpoint that exports batches.")
 public class ExportController {
@@ -64,6 +63,4 @@ public class ExportController {
 		ApiResponse response = workerService.doWork();
 		return ResponseEntity.status(response.getStatus()).body(response);
 	}
-
-
 }

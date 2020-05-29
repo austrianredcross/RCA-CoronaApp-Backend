@@ -19,7 +19,6 @@ import org.springframework.web.client.RestTemplate;
  * external personal data strage: url, authorization key, authorization value, sha256 key can be configured in the application.properties
  * 
  * @author Zoltán Puskai
- * @since 0.0.1-SNAPSHOT
  */
 
 @Service

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
  * client.configuration.cache.ttl -  the number of milliseconds between 2 calls can be configured in the application.properties
  * 
  * @author Zoltán Puskai
- * @since 0.0.1-SNAPSHOT
  */
 
 @Service

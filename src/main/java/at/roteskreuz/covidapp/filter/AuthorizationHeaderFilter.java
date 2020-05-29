@@ -14,7 +14,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * Filter that checks the authorization header
  * 
  * @author Zoltán Puskai
- * @since 0.0.1-SNAPSHOT
  */
 @Component
 public class AuthorizationHeaderFilter extends OncePerRequestFilter {

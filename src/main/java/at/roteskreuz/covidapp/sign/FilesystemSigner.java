@@ -1,12 +1,11 @@
 package at.roteskreuz.covidapp.sign;
 
 import at.roteskreuz.covidapp.properties.SignatureProperties;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
-
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 
 /**
  *
@@ -14,7 +13,7 @@ import java.security.GeneralSecurityException;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class FilesystemSign extends AbstractSign {
+public class FilesystemSigner extends AbstractSigner {
 
 	private final SignatureProperties signatureProperties;
 

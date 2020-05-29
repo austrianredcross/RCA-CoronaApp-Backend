@@ -10,7 +10,6 @@ import lombok.Setter;
  * Standard API response
  * 
  * @author Zoltán Puskai
- * @since 0.0.1-SNAPSHOT
  */
 
 @Getter

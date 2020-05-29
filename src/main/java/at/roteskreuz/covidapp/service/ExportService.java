@@ -6,7 +6,7 @@ import at.roteskreuz.covidapp.domain.SignatureInfo;
 import at.roteskreuz.covidapp.protobuf.Export;
 import at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKey;
 import at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKeyExport;
-import at.roteskreuz.covidapp.sign.Sign;
+import at.roteskreuz.covidapp.sign.Signer;
 import com.google.protobuf.ByteString;
 import io.micrometer.core.instrument.util.StringUtils;
 import java.io.ByteArrayOutputStream;
@@ -33,7 +33,7 @@ public class ExportService {
 	private static final String EXPORT_SIGNATURE_NAME = "export.sig";
 	private static final String ALGORITHM = "1.2.840.10045.4.3.2";
 
-	private final Sign sign;
+	private final Signer signer;
 
 	//MarshalExportFile converts the inputs into an encoded byte array.
 	public byte[] marshalExportFile(ExportBatch batch, List<Exposure> exposures, int batchNum, int batchSize, List<SignatureInfo> exportSigners) throws IOException, GeneralSecurityException {
@@ -115,7 +115,7 @@ public class ExportService {
 
 	private byte[] marshalSignature(ExportBatch batch, byte[] exportContents, int batchNum, int batchSize, List<SignatureInfo> exportSigners) throws IOException, GeneralSecurityException {
 		List<Export.TEKSignature> signatures = new ArrayList<>();
-		byte[] signature = sign.signature(exportContents);
+		byte[] signature = signer.signature(exportContents);
 
 		for (SignatureInfo si : exportSigners) {
 			Export.SignatureInfo.Builder signatureInfoBuilder = Export.SignatureInfo.newBuilder()

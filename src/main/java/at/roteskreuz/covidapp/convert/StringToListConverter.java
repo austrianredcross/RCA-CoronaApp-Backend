@@ -8,8 +8,9 @@ import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
 /**
+ * Converter class for converting list of String into String and  the other way a	round
  *
- * @author zolika
+ * @author Zoltán Puskai
  */
 @Converter
 public class StringToListConverter implements AttributeConverter<List<String>, String> {

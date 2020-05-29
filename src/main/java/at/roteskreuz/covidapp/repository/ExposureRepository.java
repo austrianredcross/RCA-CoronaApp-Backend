@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
  * Repository for persisting authorized apps
  * 
  * @author Zoltán Puskai
- * @since 0.0.1-SNAPSHOT
  */
 
 public interface ExposureRepository extends CrudRepository<Exposure, String>, JpaSpecificationExecutor<Exposure> {

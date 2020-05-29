@@ -21,10 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
  * Controller for exposing client configuration via {@code /api/v?/configuration}.
  *
  * @author Zoltán Puskai
- * @since 0.0.1-SNAPSHOT
  */
-
-
 @RestController
 @RequestMapping(path = "/api/v${application.api.version}")
 @RequiredArgsConstructor
