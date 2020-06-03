@@ -8,12 +8,12 @@ import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
 /**
- * Converter class for converting list of String into String and  the other way a	round
+ * Converter class for converting list of String into String and  the other way around
  *
  * @author Zoltán Puskai
  */
 @Converter
-public class StringToListConverter implements AttributeConverter<List<String>, String> {
+public class ListToStringConverter implements AttributeConverter<List<String>, String> {
 
 	/**
 	 * Converts list of Strings to database column
