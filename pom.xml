@@ -94,6 +94,12 @@
 	</dependency>
 
 	<dependency>
+		<artifactId>json-smart</artifactId>
+		<groupId>net.minidev</groupId>
+		<version>2.3</version>
+	</dependency>
+
+	<dependency>
 	    <groupId>org.hibernate</groupId>
 	    <artifactId>hibernate-jpamodelgen</artifactId>
 	    <version>${hibernate-jpamodelgen.version}</version>
@@ -173,10 +179,14 @@
 	    <artifactId>spring-boot-starter-test</artifactId>
 	    <scope>test</scope>
 	    <exclusions>
-		<exclusion>
-		    <groupId>org.junit.vintage</groupId>
-		    <artifactId>junit-vintage-engine</artifactId>
-		</exclusion>
+			<exclusion>
+				<groupId>org.junit.vintage</groupId>
+				<artifactId>junit-vintage-engine</artifactId>
+			</exclusion>
+			<exclusion>
+				<artifactId>json-smart</artifactId>
+				<groupId>net.minidev</groupId>
+			</exclusion>
 	    </exclusions>
 	</dependency>
 
