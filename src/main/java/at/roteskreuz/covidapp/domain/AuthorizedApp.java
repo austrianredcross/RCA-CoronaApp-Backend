@@ -1,6 +1,6 @@
 package at.roteskreuz.covidapp.domain;
 
-import at.roteskreuz.covidapp.convert.StringToListConverter;
+import at.roteskreuz.covidapp.convert.ListToStringConverter;
 import java.io.Serializable;
 import java.time.Duration;
 import java.util.List;
@@ -33,7 +33,7 @@ public class AuthorizedApp implements Serializable {
 
 	// AllowedRegions is the list of allowed regions for this app. If the list is
 	// empty, all regions are permitted.
-	@Convert(converter = StringToListConverter.class)
+	@Convert(converter = ListToStringConverter.class)
 	List<String> allowedRegions;
 
 	// SafetyNet configuration.

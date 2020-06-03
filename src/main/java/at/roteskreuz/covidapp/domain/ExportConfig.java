@@ -1,10 +1,12 @@
 package at.roteskreuz.covidapp.domain;
 
+import at.roteskreuz.covidapp.convert.DutarionToStringConverter;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
@@ -29,6 +31,8 @@ public class ExportConfig implements Serializable {
 	private Long id;
 	private String bucketName;
 	private String filenameRoot;
+	
+	@Convert(converter = DutarionToStringConverter.class)
 	private Duration period; // duration in seconds
 	private String region;
 	@Column(name="from_timestamp")
