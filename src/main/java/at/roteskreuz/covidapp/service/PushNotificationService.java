@@ -72,6 +72,7 @@ public class PushNotificationService {
 
 		if(StringUtils.isNotEmpty(googleCredentialsJson)) {
 			try {
+				log.error("Init Firebase App Options!");
 				FirebaseOptions options = new FirebaseOptions.Builder()
 						.setCredentials(
 								GoogleCredentials.fromStream(
@@ -80,11 +81,15 @@ public class PushNotificationService {
 								pushNotificationProperties.getFirebaseCloudMessageGoogleAccessTokenScope()))
 						.build();
 
+				log.error("Init Firebase App!!");
 				return FirebaseApp.initializeApp(options);
 			} catch (IOException ex) {
+				log.error("Couldn't init FirebaseApp with Credentials");
+				log.error("Couldn't init FirebaseApp with Credentials " + ex.getMessage());
 				log.error("Couldn't init FirebaseApp with Credentials", ex);
 			}
 		}
+		log.error("Init Firebase App -> return null! - " + googleCredentialsJson);
 		return null;
 	}
 
