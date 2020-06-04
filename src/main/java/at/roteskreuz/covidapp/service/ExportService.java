@@ -6,20 +6,12 @@ import at.roteskreuz.covidapp.domain.SignatureInfo;
 import at.roteskreuz.covidapp.protobuf.Export;
 import at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKey;
 import at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKeyExport;
+import at.roteskreuz.covidapp.sign.Signer;
 import com.google.protobuf.ByteString;
 import io.micrometer.core.instrument.util.StringUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SecureRandom;
-import java.security.Signature;
-import java.security.SignatureException;
-import java.security.spec.ECGenParameterSpec;
+import java.security.*;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -30,22 +22,34 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- *
- * @author zolika
+ * Service class that exports exposures
+ * 
+ * @author Zoltán Puskai
  */
 @Service
 @RequiredArgsConstructor
 public class ExportService {
 
-	private static final Integer FIXED_HEADER_WIDTH = 16;
 	private static final String EXPORT_BINARY_NAME = "export.bin";
 	private static final String EXPORT_SIGNATURE_NAME = "export.sig";
 	private static final String ALGORITHM = "1.2.840.10045.4.3.2";
 
-	private final Sha256Service sha256Service;
+	private final Signer signer;
 
-	//MarshalExportFile converts the inputs into an encoded byte array.
-	public byte[] marshalExportFile(ExportBatch batch, List<Exposure> exposures, int batchNum, int batchSize, List<SignatureInfo> exportSigners) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, SignatureException, IOException {
+	/**
+	 * Converts the inputs into an encoded byte array.
+	 * 
+	 * @param batch batch to be exported
+	 * @param exposures exposures to be exported
+	 * @param batchNum batch number
+	 * @param batchSize batch size
+	 * @param exportSigners signers to sign exported data
+	 * @return
+	 * @throws IOException
+	 * @throws GeneralSecurityException 
+	 */
+	//MarshalExportFile converts the inputs into an encoded byte array.	
+	public byte[] marshalExportFile(ExportBatch batch, List<Exposure> exposures, int batchNum, int batchSize, List<SignatureInfo> exportSigners) throws IOException, GeneralSecurityException {
 		// create main exposure key export binary
 		byte[] expContents = marshalContents(batch, exposures, batchNum, batchSize, exportSigners);
 		// create signature file
@@ -122,9 +126,9 @@ public class ExportService {
 		return output.toByteArray();
 	}
 
-	private byte[] marshalSignature(ExportBatch batch, byte[] exportContents, int batchNum, int batchSize, List<SignatureInfo> exportSigners) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, SignatureException, IOException {
+	private byte[] marshalSignature(ExportBatch batch, byte[] exportContents, int batchNum, int batchSize, List<SignatureInfo> exportSigners) throws IOException, GeneralSecurityException {
 		List<Export.TEKSignature> signatures = new ArrayList<>();
-		byte[] signiture = generateSignature(exportContents);
+		byte[] signature = signer.sign(exportContents);
 
 		for (SignatureInfo si : exportSigners) {
 			Export.SignatureInfo.Builder signatureInfoBuilder = Export.SignatureInfo.newBuilder()
@@ -146,7 +150,7 @@ public class ExportService {
 					.setSignatureInfo(signatureInfoBuilder.build())
 					.setBatchNum(batchNum)
 					.setBatchSize(batchSize)
-					.setSignature(ByteString.copyFrom(signiture))
+					.setSignature(ByteString.copyFrom(signature))
 					.build();
 			signatures.add(teks);
 		}
@@ -155,26 +159,4 @@ public class ExportService {
 		signatureList.writeTo(output);
 		return output.toByteArray();
 	}
-
-	public byte[] generateSignature(byte[] data) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, SignatureException, IOException {
-		//ECGenParameterSpec
-		byte[] digest = sha256Service.sha256(data);
-		KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");
-		keyGen.initialize(new ECGenParameterSpec("secp256r1"), new SecureRandom());
-		KeyPair pair = keyGen.generateKeyPair();
-		Signature ecdsa = Signature.getInstance("SHA256withECDSA");
-		ecdsa.initSign(pair.getPrivate());
-//
-//		System.out.println("-----BEGIN EC PRIVATE KEY-----\n"
-//				+ Base64.getEncoder().encodeToString((pair.getPrivate().getEncoded()))
-//				+ "\n-----END EC PRIVATE KEY-----\n");
-//		System.out.println("");
-//		System.out.println("");
-//		System.out.println("-----BEGIN PUBLIC KEY-----\n"
-//				+ Base64.getEncoder().encodeToString((pair.getPublic().getEncoded()))
-//				+ "\n-----END PUBLIC KEY-----\n");	
-		ecdsa.update(digest);
-		return ecdsa.sign();
-	}
-
 }

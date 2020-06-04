@@ -1,24 +1,25 @@
 package at.roteskreuz.covidapp.validation;
 
+import at.roteskreuz.covidapp.config.ApplicationConfig;
 import at.roteskreuz.covidapp.model.ExposureKey;
-import at.roteskreuz.covidapp.properties.ExposureKeyProperties;
+import at.roteskreuz.covidapp.properties.PublishProperties;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Validator for checking Exposure key objects
+ * Validates Exposure key objects
  *
  * @author Zoltán Puskai
  */
 public class ExposureKeyValidator extends AbstractValidator implements ConstraintValidator<ValidExposureKey, ExposureKey> {
 	
 	@Autowired
-	private ExposureKeyProperties properties;
-
+	private PublishProperties publishProperties;
+	
+	
 	/**
 	 * Initializes the validator
 	 *
@@ -27,25 +28,30 @@ public class ExposureKeyValidator extends AbstractValidator implements Constrain
 	@Override
 	public void initialize(ValidExposureKey constraintAnnotation) {
 	}
-	
+	/**
+	 * Validate an exposure key
+	 * @param exposureKey key to be validated
+	 * @param context validation context
+	 * @return 
+	 */
 	@Override
 	public boolean isValid(ExposureKey exposureKey, ConstraintValidatorContext context) {
 		boolean result = true;
 		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime truncated = now.truncatedTo(ChronoUnit.HOURS);
+		//LocalDateTime truncated = now.truncatedTo(ChronoUnit.HOURS);
 		
-		long minIntervalNumber = now.minus(properties.getMaxIntervalStartAge()).toInstant(ZoneOffset.UTC).getEpochSecond() / properties.getIntervalLength().getSeconds();
+		long minIntervalNumber = now.minus(publishProperties.getMaxIntervalAgeOnPublish()).toInstant(ZoneOffset.UTC).getEpochSecond() / ApplicationConfig.INTERVAL_LENGTH.getSeconds();
 		// And have an interval <= maxInterval (configured allowed clock skew)
-		long maxIntervalNumber = now.toInstant(ZoneOffset.UTC).getEpochSecond() / properties.getIntervalLength().getSeconds();
+		long maxIntervalNumber = now.toInstant(ZoneOffset.UTC).getEpochSecond() /  ApplicationConfig.INTERVAL_LENGTH.getSeconds();
 		
-		String binKey =exposureKey.getBinKey();
-		if (binKey.length() != properties.getKeyLength()) {
-			addErrorMessage(context, "invalid key length, " + binKey.length() + ", must be " + properties.getKeyLength());
+		String key =exposureKey.binKey();
+		if (key.length() != ApplicationConfig.KEY_LENGTH) {
+			addErrorMessage(context, "invalid key length, " + key.length() + ", must be " + ApplicationConfig.KEY_LENGTH);
 			result = false;
 			
 		}
-		if (exposureKey.getIntervalCount() < properties.getMinIntervalCount() || exposureKey.getIntervalCount() > properties.getMaxIntervalCount()) {
-			addErrorMessage(context, String.format("invalid interval count, %s, must be >= %s && <= %s", exposureKey.getIntervalCount(), properties.getMinIntervalCount(), properties.getMaxIntervalCount()));
+		if (exposureKey.getIntervalCount() < ApplicationConfig.MIN_INTERVAL_COUNT || exposureKey.getIntervalCount() > ApplicationConfig.MAX_INTERVAL_COUNT ) {
+			addErrorMessage(context, String.format("invalid interval count, %s, must be >= %s && <= %s", exposureKey.getIntervalCount(), ApplicationConfig.MIN_INTERVAL_COUNT, ApplicationConfig.MAX_INTERVAL_COUNT));
 			result = false;
 		}
 		if (exposureKey.getIntervalNumber() < minIntervalNumber) {
@@ -56,8 +62,8 @@ public class ExposureKeyValidator extends AbstractValidator implements Constrain
 			addErrorMessage(context, String.format("interval number %s is in the future, must be < %s", exposureKey.getIntervalNumber(), minIntervalNumber));
 			result = false;
 		}		
-		if (exposureKey.getTransmissionRisk() < properties.getMinTransmissionRisk() || exposureKey.getTransmissionRisk() > properties.getMaxTransmissionRisk()) {
-			addErrorMessage(context, String.format("invalid transmission risk: %s, must be >= %s && <= %s", exposureKey.getTransmissionRisk(), properties.getMinTransmissionRisk(), properties.getMaxTransmissionRisk()));
+		if (exposureKey.getTransmissionRisk() < ApplicationConfig.MIN_TRANSMISSION_RISK || exposureKey.getTransmissionRisk() > ApplicationConfig.MAX_TRANSMISSION_RISK) {
+			addErrorMessage(context, String.format("invalid transmission risk: %s, must be >= %s && <= %s", exposureKey.getTransmissionRisk(),  ApplicationConfig.MIN_TRANSMISSION_RISK,  ApplicationConfig.MAX_TRANSMISSION_RISK));
 			result = false;
 		}		
 		return result;
