@@ -52,7 +52,7 @@ public class PushNotificationService {
 				log.error("Firebase Message Error: ", ex);
 			}
 		} else {
-			log.error("Firebase not configured");
+			log.error("Firebase not configured. PushnotificationProperties " + pushNotificationProperties.toString() + ". GoogleCredentialsJson: " + getGoogleCredentialsJson());
 		}
 		return false;
 	}
