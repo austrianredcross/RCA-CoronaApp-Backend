@@ -1,4 +1,4 @@
-package at.roteskreuz.covidapp.api;
+package at.roteskreuz.covidapp.admin;
 
 import at.roteskreuz.covidapp.service.PushNotificationService;
 import io.swagger.annotations.Api;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Bernhard Roessler
  */
 @RestController
-@RequestMapping(path = "/api/v${application.api.version}")
+@RequestMapping(path = "/admin/push")
 @RequiredArgsConstructor
 @Api(tags = "PushNotification", description = "Endpoint for Push Notifications.")
 public class PushNotificationController {
@@ -28,7 +28,7 @@ public class PushNotificationController {
 	 * Sends out push notifications
 	 * @return 200 (OK) or 400 (Bad request), if notification cannot be sent
 	 */			
-	@GetMapping(value = "/push-notification", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/notification", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> pushNotification()  {
 		return pushNotificationService.sendNotification(UUID.randomUUID().toString()) ?
 						ResponseEntity.ok().build() :
