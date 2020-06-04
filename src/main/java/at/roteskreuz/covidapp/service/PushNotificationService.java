@@ -61,7 +61,11 @@ public class PushNotificationService {
 
 	private FirebaseApp getFirebaseApp() {
 		if(FirebaseApp.getApps() != null && !FirebaseApp.getApps().isEmpty()){
-			return FirebaseApp.getInstance();
+			log.error("Firebase App Not Init! Apps-Size: " + FirebaseApp.getApps().size());
+			FirebaseApp firebaseApp = FirebaseApp.getInstance();
+			if(firebaseApp != null){
+				return firebaseApp;
+			}
 		}
 
 		String googleCredentialsJson = getGoogleCredentialsJson();
