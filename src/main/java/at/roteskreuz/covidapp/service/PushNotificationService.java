@@ -53,26 +53,19 @@ public class PushNotificationService {
 			}
 		} else {
 			log.error("Firebase not configured.");
-			log.error("PushnotificationProperties " + pushNotificationProperties.toString());
-			log.error(". GoogleCredentialsJson: " + getGoogleCredentialsJson());
 		}
 		return false;
 	}
 
 	private FirebaseApp getFirebaseApp() {
 		if(FirebaseApp.getApps() != null && !FirebaseApp.getApps().isEmpty()){
-			log.error("Firebase App Not Init! Apps-Size: " + FirebaseApp.getApps().size());
-			FirebaseApp firebaseApp = FirebaseApp.getInstance();
-			if(firebaseApp != null){
-				return firebaseApp;
-			}
+			return FirebaseApp.getInstance();
 		}
 
 		String googleCredentialsJson = getGoogleCredentialsJson();
 
 		if(StringUtils.isNotEmpty(googleCredentialsJson)) {
 			try {
-				log.error("Init Firebase App Options!");
 				FirebaseOptions options = new FirebaseOptions.Builder()
 						.setCredentials(
 								GoogleCredentials.fromStream(
@@ -81,15 +74,12 @@ public class PushNotificationService {
 								pushNotificationProperties.getFirebaseCloudMessageGoogleAccessTokenScope()))
 						.build();
 
-				log.error("Init Firebase App!!");
 				return FirebaseApp.initializeApp(options);
 			} catch (IOException ex) {
-				log.error("Couldn't init FirebaseApp with Credentials");
 				log.error("Couldn't init FirebaseApp with Credentials " + ex.getMessage());
 				log.error("Couldn't init FirebaseApp with Credentials", ex);
 			}
 		}
-		log.error("Init Firebase App -> return null! - " + googleCredentialsJson);
 		return null;
 	}
 
@@ -109,7 +99,7 @@ public class PushNotificationService {
 			json.put("type", pushNotificationProperties.getFirebaseCloudMessageType());
 			json.put("project_id", pushNotificationProperties.getFirebaseCloudMessageProjectId());
 			json.put("private_key_id", pushNotificationProperties.getFirebaseCloudMessagePrivateKeyId());
-			json.put("private_key", pushNotificationProperties.getFirebaseCloudMessagePrivateKey());
+			json.put("private_key", pushNotificationProperties.getFirebaseCloudMessagePrivateKey().replace("\\n", "\n"));
 			json.put("client_email", pushNotificationProperties.getFirebaseCloudMessageClientEmail());
 			json.put("client_id", pushNotificationProperties.getFirebaseCloudMessageClientId());
 			json.put("auth_uri", pushNotificationProperties.getFirebaseCloudMessageAuthUri());
