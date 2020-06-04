@@ -1,28 +1,51 @@
 package at.roteskreuz.covidapp.model;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- *
- * @author zolika
+ * Standard API response
+ * 
+ * @author Zoltán Puskai
  */
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse {
 
-	private Integer status;
+	/**
+	 * Constructor to build the response
+	 * 
+	 * @param status HTTP status
+	 * @param error error message
+	 * @param message detailed message
+	 * @param path context path of the called API endpoint
+	 */
+	public ApiResponse(int status, String error, String message, String path) {
+		this.status = status;
+		this.error = error;
+		this.message = message;
+		this.path = path;
+		this.timestamp = LocalDateTime.now();
+	}
 	
+	private int status;
+	private String error;
 	private String message;
-	
-	private String metric;
-	
-	private Integer count;
-	
-	private Boolean errorInProd;
+	private String path;
+	private LocalDateTime timestamp;
 
+	/**
+	 * OK response. Used when the request was processed well.
+	 * 
+	 * @return OK response with HTTP status 200
+	 */
+	public static ApiResponse ok() {
+		return new ApiResponse(200, null, "OK", null);
+	}
+	
 }

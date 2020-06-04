@@ -10,9 +10,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * SignatureInfo represents signature information used when signing the exported files
  *
- * @author zolika
- */
+ * @author Zoltán Puskai
+ */	
 @Entity
 @Getter
 @Setter
