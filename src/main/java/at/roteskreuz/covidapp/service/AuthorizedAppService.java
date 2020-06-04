@@ -1,16 +1,15 @@
 package at.roteskreuz.covidapp.service;
 
 import at.roteskreuz.covidapp.domain.AuthorizedApp;
-import at.roteskreuz.covidapp.exception.AuthorizedAppNotFoundException;
 import at.roteskreuz.covidapp.repository.AuthorizedAppRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- *
- * @author zolika
+ * Service class to manage authorized apps 
+ * 
+ * @author Zoltán Puskai
  */
-
 @Service
 @RequiredArgsConstructor
 public class AuthorizedAppService {
@@ -20,7 +19,12 @@ public class AuthorizedAppService {
 	
 	private final AuthorizedAppRepository authorizedAppRepository;
 
-	public AuthorizedApp findById(String id) throws AuthorizedAppNotFoundException {
-		return authorizedAppRepository.findById(id).orElseThrow(() -> {return new AuthorizedAppNotFoundException();});
+	/**
+	 * Finds an authorized app by id
+	 * @param id
+	 * @return 
+	 */
+	public AuthorizedApp findById(String id) {
+		return authorizedAppRepository.findById(id).orElse(null);
 	}
 }

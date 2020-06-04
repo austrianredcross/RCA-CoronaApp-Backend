@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import org.springframework.stereotype.Service;
 
 /**
- * SZervice class to create sha256 hash
+ * Service class to create SHA256 hash
  *
  * @author Zoltán Puskai
  */
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class Sha256Service {
 
 	/**
-	 * Creates a sha256 hash for the given key
+	 * Creates a SHA256 hash for the given key
 	 * @param key key for hashing
 	 * @return hash
 	 */
@@ -28,7 +28,7 @@ public class Sha256Service {
 	}
 	
 	/**
-	 * Creates a sha256 hash for the given key
+	 * Creates a SHAA256 hash for the given key
 	 * @param key key for hashing
 	 * @return hash
 	 */

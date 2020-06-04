@@ -4,8 +4,9 @@ import java.time.LocalDateTime;
 import lombok.Value;
 
 /**
- *
- * @author zolika
+ * BatchRange represents a rang for batches
+ * 
+ * @author Zoltán Puskai
  */
 @Value
 public class BatchRange {

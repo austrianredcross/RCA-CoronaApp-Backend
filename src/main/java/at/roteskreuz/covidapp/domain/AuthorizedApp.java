@@ -1,6 +1,6 @@
 package at.roteskreuz.covidapp.domain;
 
-import at.roteskreuz.covidapp.convert.StringToListConverter;
+import at.roteskreuz.covidapp.convert.ListToStringConverter;
 import java.io.Serializable;
 import java.time.Duration;
 import java.util.List;
@@ -12,8 +12,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * AuthorizedApp represents the configuration for a single exposure notification
+ * application and their access to and requirements for using the API. DB times
+ * of 0 are interpreted to be "unbounded" in that direction.
  *
- * @author zolika
+ * @author Zoltán Puskai
  */
 @Entity
 @Getter
@@ -30,7 +33,7 @@ public class AuthorizedApp implements Serializable {
 
 	// AllowedRegions is the list of allowed regions for this app. If the list is
 	// empty, all regions are permitted.
-	@Convert(converter = StringToListConverter.class)
+	@Convert(converter = ListToStringConverter.class)
 	List<String> allowedRegions;
 
 	// SafetyNet configuration.

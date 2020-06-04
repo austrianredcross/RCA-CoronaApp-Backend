@@ -1,11 +1,8 @@
 package at.roteskreuz.covidapp.domain;
 
-import at.roteskreuz.covidapp.convert.StringToListConverter;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import lombok.AllArgsConstructor;
@@ -14,9 +11,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * Exposure represents the record as stored in the database
  *
- * @author zolika
- */
+ * @author Zoltán Puskai
+ */	
 @Entity
 @Getter
 @Setter
@@ -26,13 +24,14 @@ public class Exposure implements Serializable {
 	
 	@Id
 	private String exposureKey;
+	
+	private String password;
 
 	private Integer transmissionRisk;
 	
 	private String appPackageName;
 	
-	@Convert(converter = StringToListConverter.class)
-	List<String> regions;
+	private String regions;
 	
 	private Integer intervalNumber;
 	
@@ -43,6 +42,22 @@ public class Exposure implements Serializable {
 	private Boolean localProvenance;
 	
 	@Column(name = "sync_id")
-	private Long federationSyncID;
+	private Long federationSyncID;	
+	
+	private String diagnosisType;
+
+	private LocalDateTime updatedAt;
+
+
+	public Exposure(String exposureKey, String password, Integer transmissionRisk, String regions, Integer intervalNumber, Integer intervalCount) {
+		this.exposureKey = exposureKey;
+		this.password = password;
+		this.transmissionRisk = transmissionRisk;
+		this.regions = regions;
+		this.intervalNumber = intervalNumber;
+		this.intervalCount = intervalCount;
+	}
+	
+	
 
 }
