@@ -5,11 +5,10 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 /**
- * Annotation for validating phone numbers
+ * Annotation for validating publish requests
  * 
  * @author Zoltán Puskai
  */
-
 @Documented
 @Constraint(validatedBy = PublishValidator.class)
 @Target({ElementType.TYPE})
