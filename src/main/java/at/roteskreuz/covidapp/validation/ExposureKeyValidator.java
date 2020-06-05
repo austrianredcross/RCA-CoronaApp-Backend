@@ -62,10 +62,10 @@ public class ExposureKeyValidator extends AbstractValidator implements Constrain
 			addErrorMessage(context, String.format("interval number %s is in the future, must be < %s", exposureKey.getIntervalNumber(), minIntervalNumber));
 			result = false;
 		}		
-		if (exposureKey.getTransmissionRisk() < ApplicationConfig.MIN_TRANSMISSION_RISK || exposureKey.getTransmissionRisk() > ApplicationConfig.MAX_TRANSMISSION_RISK) {
-			addErrorMessage(context, String.format("invalid transmission risk: %s, must be >= %s && <= %s", exposureKey.getTransmissionRisk(),  ApplicationConfig.MIN_TRANSMISSION_RISK,  ApplicationConfig.MAX_TRANSMISSION_RISK));
-			result = false;
-		}		
+//		if (exposureKey.getTransmissionRisk() < ApplicationConfig.MIN_TRANSMISSION_RISK || exposureKey.getTransmissionRisk() > ApplicationConfig.MAX_TRANSMISSION_RISK) {
+//			addErrorMessage(context, String.format("invalid transmission risk: %s, must be >= %s && <= %s", exposureKey.getTransmissionRisk(),  ApplicationConfig.MIN_TRANSMISSION_RISK,  ApplicationConfig.MAX_TRANSMISSION_RISK));
+//			result = false;
+//		}		
 		return result;
 	}
 

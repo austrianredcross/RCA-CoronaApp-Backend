@@ -17,9 +17,7 @@ import org.springframework.stereotype.Service;
 public class SchedulerService {
 	
 	private final ClientConfigurationService clientConfigService;
-	private final BatchService batchService;
-	private final WorkerService workerService;
-	private final CleanupService cleanupService;
+	private final ExportService exportService;
 			
 	
 	/**
@@ -30,39 +28,12 @@ public class SchedulerService {
 		log.debug("Flushing the client configuration cache");
 		clientConfigService.flushCache();
 	}
-
 	
-	/**
-	 * Creates batches
-	 */
-	@Scheduled(cron = "${application.schedule.cron.create.batches}")
-	public void createBatches() {
-		log.debug("Creating batches");
-		batchService.createBratches();
-	}
 	
 	@Scheduled(cron = "${application.schedule.cron.export.files}")
 	public void exportFiles() throws Exception {
 		log.debug("Exporting files");
-		workerService.doWork();
-	}
-
-	/**
-	 * Cleans up files
-	 */
-	@Scheduled(cron = "${application.schedule.cron.cleanup.files}")
-	public void cleanupFiles() {
-		log.debug("Cleaning up files");
-		cleanupService.cleanupExport();
-	}
-	
-	/**
-	 * Cleans up exposures
-	 */
-	@Scheduled(cron = "${application.schedule.cron.cleanup.exposures}")
-	public void cleanupExposures() {
-		log.debug("Cleaning up exposures");
-		cleanupService.cleanupExposure();
+		exportService.export();
 	}
 	
 }
