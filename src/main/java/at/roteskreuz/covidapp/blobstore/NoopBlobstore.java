@@ -34,5 +34,16 @@ public class NoopBlobstore implements Blobstore {
 		log.info(String.format("Noop blobstore will not delete any file for bucket: %s and objectName: %s",bucket, objectName));
 		return true;
 	}
+	
+	/**
+	 * This method does not copy anything
+	 * @param bucket
+	 * @param sourcePath
+	 * @param destinationPath
+	 * @throws Exception 
+	 */
+	public void copy(String bucket, String sourcePath, String destinationPath) throws Exception {
+		log.info(String.format("Noop blobstore will not copy any file for bucket: %s",bucket));
+	}
 
 }
