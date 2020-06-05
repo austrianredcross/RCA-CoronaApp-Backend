@@ -14,6 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface ExposureRepository extends CrudRepository<Exposure, String>, JpaSpecificationExecutor<Exposure> {
 
+	List<Exposure> findByIntervalNumberGreaterThanEqualAndIntervalNumberLessThanAndDiagnosisTypeAndRegionsLike(Integer since, Integer until, String diagnosisType, String region);
+	
+	
+	
 	/**
 	 * Deletes all exposures older than..
 	 * @param createdAt creation date

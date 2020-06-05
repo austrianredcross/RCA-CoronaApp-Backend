@@ -1,10 +1,9 @@
 package at.roteskreuz.covidapp.domain;
 
-import at.roteskreuz.covidapp.model.ExportBatchStatus;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,11 +24,8 @@ public class ExportFile implements Serializable {
 	@Id
 	private String filename;
 	private String bucketName;
-	@OneToOne
-	private ExportBatch batch;
+	@ManyToOne
+	private ExportConfig config;
 	private String region;
-	private Integer batchNum;
-	private Integer batchSize;
-	private ExportBatchStatus status;
-
+	private long timestamp;
 }
