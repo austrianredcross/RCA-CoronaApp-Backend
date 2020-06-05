@@ -21,7 +21,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.ByteString;
 import io.micrometer.core.instrument.util.StringUtils;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.security.*;
 import java.time.LocalDate;
@@ -88,6 +87,10 @@ public class ExportService {
 			log.error("Could not acquire lock for exporting files");
 			//fail silently
 		}
+		
+		//cleanup exposures and files
+
+		
 		return ApiResponse.ok();
 	}
 
@@ -241,7 +244,7 @@ public class ExportService {
 		fullExportFilenames.forEach((fileName) -> {
 			exportFileRepository.save(new ExportFile(fileName, config.getBucketName(), config, config.getRegion(), fileDate.toEpochSecond(ZoneOffset.UTC)));
 		});
-		indexFile.setFullBatch(new IndexFileBatch(intervalNumber, fullExportFilenames.stream().map(s-> File.separator + config.getBucketName() + File.separator +  s).collect(Collectors.toList())));
+		indexFile.setFullBatch(new IndexFileBatch(intervalNumber, fullExportFilenames.stream().map(s-> "/" + config.getBucketName() + "/" +  s).collect(Collectors.toList())));
 		indexFile.setDailyBatches(new ArrayList<>());
 		LocalDateTime date = fromRed;
 		while (date.isBefore(until)) {
@@ -254,7 +257,7 @@ public class ExportService {
 			dailyExportFilenames.forEach((fileName) -> {
 				exportFileRepository.save(new ExportFile(fileName, config.getBucketName(), config, config.getRegion(), fileDate.toEpochSecond(ZoneOffset.UTC)));
 			});			
-			indexFile.getDailyBatches().add(new IndexFileBatch(startIntervalNumber, dailyExportFilenames.stream().map(s-> File.separator + config.getBucketName() + File.separator +  s).collect(Collectors.toList())));
+			indexFile.getDailyBatches().add(new IndexFileBatch(startIntervalNumber, dailyExportFilenames.stream().map(s-> "/" + config.getBucketName() + "/" +  s).collect(Collectors.toList())));
 			date = date.plusDays(1);
 		}
 		//createIndexFile
