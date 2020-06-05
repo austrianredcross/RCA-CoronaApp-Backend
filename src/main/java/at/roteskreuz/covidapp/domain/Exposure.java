@@ -27,8 +27,6 @@ public class Exposure implements Serializable {
 	
 	private String password;
 
-	private Integer transmissionRisk;
-	
 	private String appPackageName;
 	
 	private String regions;
@@ -49,15 +47,29 @@ public class Exposure implements Serializable {
 	private LocalDateTime updatedAt;
 
 
-	public Exposure(String exposureKey, String password, Integer transmissionRisk, String regions, Integer intervalNumber, Integer intervalCount) {
+	public Exposure(String exposureKey, String password, String regions, Integer intervalNumber, Integer intervalCount, String diagnosisType) {
 		this.exposureKey = exposureKey;
 		this.password = password;
-		this.transmissionRisk = transmissionRisk;
 		this.regions = regions;
 		this.intervalNumber = intervalNumber;
 		this.intervalCount = intervalCount;
+		this.diagnosisType = diagnosisType;
 	}
 	
+	public  Integer getTransmissionRisk() {
+		int result =  0;
+		switch(diagnosisType) {
+			case "red-warning": {
+				result = 2;
+				break;
+			}
+			case "yellow-warning": {
+				result = 5;
+				break;
+			}
+		}
+		return result;
+	}
 	
 
 }
