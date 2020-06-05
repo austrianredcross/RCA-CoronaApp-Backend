@@ -28,7 +28,7 @@ public class AzureBlobstore implements Blobstore {
 	 */
 	@Override
 	public void createObject(String container, String objectName, byte[] contents) throws Exception {
-		log.debug(String.format("Azure blobstore will create file for bucket: %s and objectName: %s",container, objectName));
+		log.debug(String.format("Azure blobstore will create file for container: %s and objectName: %s",container, objectName));
 		CloudStorageAccount cloudStorageAccount = CloudStorageAccount.parse(storageConnectionString);
 		CloudBlobContainer cloudContainer = cloudStorageAccount.createCloudBlobClient().getContainerReference(container);
 		CloudBlockBlob blockBlobReference = cloudContainer.getBlockBlobReference(objectName);
@@ -44,10 +44,26 @@ public class AzureBlobstore implements Blobstore {
 	 */
 	@Override
 	public boolean deleteObject(String container, String objectName) throws Exception  {
-		log.debug(String.format("Azure blobstore will delete file for bucket: %s and objectName: %s",container, objectName));
+		log.debug(String.format("Azure blobstore will delete file for container: %s and objectName: %s",container, objectName));
 		CloudStorageAccount cloudStorageAccount = CloudStorageAccount.parse(storageConnectionString);
 		CloudBlobContainer cloudContainer = cloudStorageAccount.createCloudBlobClient().getContainerReference(container);
 		CloudBlockBlob blockBlobReference = cloudContainer.getBlockBlobReference(objectName);
 		return blockBlobReference.deleteIfExists();
+	}
+	/**
+	 * Copies a file (and replaces if destination exists)
+	 * @param container
+	 * @param sourcePath
+	 * @param destinationPath
+	 * @throws Exception 
+	 */
+	@Override
+	public void copy(String container, String sourcePath, String destinationPath) throws Exception {
+		log.debug(String.format("Azure blobstore will copy the file : %s to: %s in the container: %s", sourcePath, destinationPath, container));	
+		CloudStorageAccount cloudStorageAccount = CloudStorageAccount.parse(storageConnectionString);
+		CloudBlobContainer cloudContainer = cloudStorageAccount.createCloudBlobClient().getContainerReference(container);
+		CloudBlockBlob source = cloudContainer.getBlockBlobReference(sourcePath);		
+		CloudBlockBlob destination = cloudContainer.getBlockBlobReference(destinationPath);
+		destination.startCopy(source);		
 	}
 }
