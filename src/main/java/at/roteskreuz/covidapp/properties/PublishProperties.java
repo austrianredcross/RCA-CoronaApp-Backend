@@ -19,5 +19,7 @@ public class PublishProperties {
 	private Duration targetRequestDuration;
 	private Integer maxKeysOnPublish;
 	private Duration maxIntervalAgeOnPublish;
+	private boolean bypassTanValidation;
+	
 	
 }

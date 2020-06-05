@@ -2,8 +2,7 @@ package at.roteskreuz.covidapp.admin;
 
 
 import at.roteskreuz.covidapp.model.ApiResponse;
-import at.roteskreuz.covidapp.service.BatchService;
-import at.roteskreuz.covidapp.service.WorkerService;
+import at.roteskreuz.covidapp.service.ExportService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -19,38 +18,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 /**
- * Controller for generating batches and export files
+ * Controller for exporting files
  *
  * @author Zoltán Puskai
  */
 @RestController
-@RequestMapping(path = "/admin/export")
+@RequestMapping(path = "/admin")
 @RequiredArgsConstructor
-@Api(tags = "Export", description = "Endpoint that exports batches.")
+@Api(tags = "Export", description = "Endpoint that exports files.")
 public class ExportController {
 	
-	private final BatchService batchService;
-	private final WorkerService workerService;
-
-	/**
-	 * Creates batches
-	 * @return Api response
-	 */
-	@ApiOperation(value = "Creates batches.)", authorizations = {
-		@Authorization(value = "AuthorizationKey")})
-	@ApiImplicitParams({
-	   @ApiImplicitParam(name = "X-AppId", value = "Application id", required = true, dataType = "string", paramType = "header")		
-	 })		
-	@ApiResponses(value = {
-		@io.swagger.annotations.ApiResponse(code = 200, message = "OK", response = ApiResponse.class),
-		@io.swagger.annotations.ApiResponse(code = 400, message = "Bad request"),
-		@io.swagger.annotations.ApiResponse(code = 403, message = "Forbidden"),
-		@io.swagger.annotations.ApiResponse(code = 500, message = "Internal server error")})
-	@GetMapping(value = "/create-batches", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse> createBatches()  {
-		ApiResponse response = batchService.createBratches();
-		return ResponseEntity.status(response.getStatus()).body(response);
-	}
+	private final ExportService exportService;
 
 	/**
 	 * Exports exposures
@@ -67,9 +45,10 @@ public class ExportController {
 		@io.swagger.annotations.ApiResponse(code = 400, message = "Bad request"),
 		@io.swagger.annotations.ApiResponse(code = 403, message = "Forbidden"),
 		@io.swagger.annotations.ApiResponse(code = 500, message = "Internal server error")})	
-	@GetMapping(value = "/do-work", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse> doWork() throws Exception  {
-		ApiResponse response = workerService.doWork();
+	@GetMapping(value = "/export", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponse> export() throws Exception  {
+		ApiResponse response = exportService.export();
 		return ResponseEntity.status(response.getStatus()).body(response);
-	}
+	}	
+	
 }
