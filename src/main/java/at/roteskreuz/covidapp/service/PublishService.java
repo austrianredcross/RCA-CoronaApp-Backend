@@ -37,7 +37,6 @@ public class PublishService {
 				new Exposure(
 					k.binKey(),
 					k.getPassword(),
-					k.getTransmissionRisk(),
 					publish.getAppPackageName(),
 					regions,
 					k.getIntervalNumber(),

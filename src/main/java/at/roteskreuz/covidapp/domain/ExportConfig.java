@@ -27,13 +27,16 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ExportConfig implements Serializable {
 	@Id
-	@Column(name = "configid")
 	private Long id;
 	private String bucketName;
 	private String filenameRoot;
 	
 	@Convert(converter = DutarionToStringConverter.class)
-	private Duration period; // duration in seconds
+	private Duration periodRedWarnings;
+	
+	@Convert(converter = DutarionToStringConverter.class)
+	private Duration periodYellowWarnings;
+	
 	private String region;
 	@Column(name="from_timestamp")
 	private LocalDateTime from;

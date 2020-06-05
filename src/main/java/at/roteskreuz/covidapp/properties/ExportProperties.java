@@ -19,11 +19,13 @@ public class ExportProperties {
 	private Duration createTimeout;
 	private Duration workerTimeout;
 	private Integer minRecords;
-	private Integer maxRecords;
+	private Integer maxRecords = Integer.MAX_VALUE;
 	private Integer paddingRange;
 	private Duration truncateWindow;
 	private Duration minWindowAge;
 	private BlobstoreType blobstoreType = BlobstoreType.NONE;
+	private boolean exportCurrentDay;
+
 	
 	
 }

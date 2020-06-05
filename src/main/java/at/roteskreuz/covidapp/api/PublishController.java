@@ -4,6 +4,7 @@ package at.roteskreuz.covidapp.api;
 import at.roteskreuz.covidapp.exception.InvalidTanException;
 import at.roteskreuz.covidapp.model.ApiResponse;
 import at.roteskreuz.covidapp.model.Publish;
+import at.roteskreuz.covidapp.properties.PublishProperties;
 import at.roteskreuz.covidapp.service.PublishService;
 import at.roteskreuz.covidapp.service.TanService;
 import io.swagger.annotations.Api;
@@ -34,6 +35,7 @@ public class PublishController {
 
 	private final PublishService publishService;
 	private final TanService tanService;
+	private final PublishProperties publishProperties;
 
 	
 	/**
@@ -49,7 +51,7 @@ public class PublishController {
 	   @ApiImplicitParam(name = "X-AppId", value = "Application id", required = true, dataType = "string", paramType = "header")		
 	 })
 	public ResponseEntity<ApiResponse> publish(@Valid @RequestBody Publish publish) throws InvalidTanException {
-		if (!tanService.validate(publish.getVerificationPayload().getUuid(), publish.getVerificationPayload().getAuthorization(), publish.getDiagnosisType())) {
+		if (!publishProperties.isBypassTanValidation() && !tanService.validate(publish.getVerificationPayload().getUuid(), publish.getVerificationPayload().getAuthorization(), publish.getDiagnosisType())) {
 			throw new InvalidTanException(String.format("TAN is invalid. tan: %s, uuid:%s, type: %s", publish.getVerificationPayload().getUuid(), publish.getVerificationPayload().getAuthorization(), publish.getDiagnosisType()));
 		}
 		ApiResponse response = publishService.publish(publish);
