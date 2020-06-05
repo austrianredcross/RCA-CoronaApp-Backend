@@ -33,7 +33,11 @@ public class ExportConfig implements Serializable {
 	private String filenameRoot;
 	
 	@Convert(converter = DutarionToStringConverter.class)
-	private Duration period; // duration in seconds
+	private Duration periodRedWarnings;
+	
+	@Convert(converter = DutarionToStringConverter.class)
+	private Duration periodYellowWarnings;
+	
 	private String region;
 	@Column(name="from_timestamp")
 	private LocalDateTime from;
