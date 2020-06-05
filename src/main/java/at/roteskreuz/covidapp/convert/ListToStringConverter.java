@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Converter class for converting list of String into String and  the other way around
@@ -34,7 +35,7 @@ public class ListToStringConverter implements AttributeConverter<List<String>, S
 	 */
 	@Override
 	public List<String> convertToEntityAttribute(String joined) {
-		if (joined == null) {
+		if (StringUtils.isBlank(joined)) {
 			return Collections.EMPTY_LIST;
 		}
 		return new ArrayList<>(Arrays.asList(joined.split(",")));

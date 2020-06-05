@@ -1,11 +1,10 @@
 package at.roteskreuz.covidapp.service;
 
-import at.roteskreuz.covidapp.domain.ExportBatch;
+import at.roteskreuz.covidapp.config.ApplicationConfig;
 import at.roteskreuz.covidapp.domain.Exposure;
-import at.roteskreuz.covidapp.domain.ExposureCriteria;
-import at.roteskreuz.covidapp.domain.ExposureSpecificationsBuilder;
 import at.roteskreuz.covidapp.repository.ExposureRepository;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +35,6 @@ public class ExposureService {
 				existingExposure.getIntervalCount().equals(exposure.getIntervalCount())) {
 				//checking if update should be made
 				existingExposure.setUpdatedAt(LocalDateTime.now());
-				existingExposure.setTransmissionRisk(exposure.getTransmissionRisk());
 				existingExposure.setDiagnosisType(exposure.getDiagnosisType());
 				exposureRepository.save(existingExposure);
 			} else {
@@ -47,16 +45,25 @@ public class ExposureService {
 			exposureRepository.save(exposure);
 		}
 	}
+
+
 	/**
-	 * Finds exposures belonging to a batch
-	 * @param batch batch for which the exposures belong
+	 * Finds exposures belonging wit red warnings
+	 * @param start start timestamp
+	 * @param end end timestamp
+	 * @param diagnosisType  diagnosis type
+	 * @param region region
 	 * @return 
 	 */
-	public List<Exposure> findExposuresForBatch(ExportBatch batch) {
- 		ExposureCriteria criteria  = new ExposureCriteria(batch.getRegion(), batch.getStartTimestamp(), batch.getEndTimestamp(), false);
-		ExposureSpecificationsBuilder builder = new ExposureSpecificationsBuilder(criteria);
-		return exposureRepository.findAll(builder.build());
+	public List<Exposure> findExposuresForExport(LocalDateTime start, LocalDateTime end, String diagnosisType, String region) {
+		
+		int since = (int)(start.toInstant(ZoneOffset.UTC).getEpochSecond() /  ApplicationConfig.INTERVAL_LENGTH.getSeconds());
+		int until = (int)(end.toInstant(ZoneOffset.UTC).getEpochSecond() /  ApplicationConfig.INTERVAL_LENGTH.getSeconds());
+		return exposureRepository.findByIntervalNumberGreaterThanEqualAndIntervalNumberLessThanAndDiagnosisTypeAndRegionsLike(since, until, diagnosisType, "%," + region + ",%");
 	}
+	
+	
+	
 
 	/**
 	 * Deletes exposures that are older than cleanupTtl

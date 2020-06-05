@@ -24,7 +24,7 @@ public class ExposureKey {
 
 	private Integer intervalCount;
 	
-	private Integer transmissionRisk;
+	//private Integer transmissionRisk;
 	
 	private String password;
 	
