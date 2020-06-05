@@ -1,12 +1,8 @@
 package at.roteskreuz.covidapp.service;
 
 import at.roteskreuz.covidapp.blobstore.Blobstore;
-import at.roteskreuz.covidapp.domain.ExportBatch;
-import at.roteskreuz.covidapp.domain.ExportFile;
 import at.roteskreuz.covidapp.domain.Exposure;
 import at.roteskreuz.covidapp.model.ApiResponse;
-import at.roteskreuz.covidapp.model.ExportBatchStatus;
-import at.roteskreuz.covidapp.repository.ExportBatchRepository;
 import at.roteskreuz.covidapp.repository.ExportFileRepository;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -33,7 +29,6 @@ public class CleanupService {
 	private Duration cleanupTtl;
 
 	private final ExposureService exposureService;
-	private final ExportBatchRepository exportBatchRepository;
 	private final ExportFileRepository exportFileRepository;
 	private final Blobstore blobstore;
 
@@ -42,33 +37,7 @@ public class CleanupService {
 	 * @return API response
 	 */
 	public ApiResponse cleanupExport() {
-		List<ExportBatch> delExportBatches = exportBatchRepository.findByEndTimestampBeforeAndStatusIsNot(getCutOffDate(), ExportBatchStatus.EXPORT_BATCH_DELETED);
-		if(delExportBatches != null) {
-			delExportBatches.forEach((exportBatch) -> {
-				boolean allCurBatchDeleted = true;
-				List<ExportFile> exportFiles = exportFileRepository.findAllByBatchIsAndStatusIsNot(exportBatch, ExportBatchStatus.EXPORT_BATCH_DELETED);
-				if(exportFiles != null) {
-					for (ExportFile exportFile : exportFiles) {
-						try {
-							if (!blobstore.deleteObject(exportFile.getBucketName(), exportFile.getFilename())) {
-								allCurBatchDeleted = false;
-								log.error("Couldn't delete exportFile: " + exportFile.toString());
-							} else {
-								exportFile.setStatus(ExportBatchStatus.EXPORT_BATCH_DELETED);
-								exportFileRepository.save(exportFile);
-								log.info("Deleted exportFile: " + exportFile.toString());
-							}
-						} catch (Exception ex) {
-							log.error("Couldn't delete exportFile: " + exportFile.toString(), ex);
-						}
-					}
-				}
-				if (allCurBatchDeleted) {
-					exportBatch.setStatus(ExportBatchStatus.EXPORT_BATCH_DELETED);
-					exportBatchRepository.save(exportBatch);
-				}
-			});
-		}
+
 		return ApiResponse.ok();
 	}
 	/**
