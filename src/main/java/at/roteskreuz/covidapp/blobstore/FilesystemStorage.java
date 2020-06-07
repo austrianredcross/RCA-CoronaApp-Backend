@@ -2,13 +2,15 @@ package at.roteskreuz.covidapp.blobstore;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Comparator;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * FilesystemStorage implements Blobstore and provides the ability write files
- * to the filesystem.
+ * to the file-system.
  *
  * @author Zoltán Puskai
  */
@@ -16,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 public class FilesystemStorage implements Blobstore {
 
 	/**
-	 * Creates a file in the filesystem
+	 * Creates a file in the file-system
 	 *
 	 * @param folder name of the folder
 	 * @param filename name of the file to be stored
@@ -33,7 +35,7 @@ public class FilesystemStorage implements Blobstore {
 	}
 
 	/**
-	 * Deletes a file from the filesystem
+	 * Deletes a file from the file-system
 	 *
 	 * @param folder name of the folder
 	 * @param filename name of the file to be deleted
@@ -45,19 +47,28 @@ public class FilesystemStorage implements Blobstore {
 		String path = folder + File.separator + filename;
 		log.debug(String.format("Filesystem storage will delete file: %s", path));
 		File file = new File(path);
-		return file.delete();
+		if (file.isDirectory()) {
+			Files.walk(Paths.get(path))
+					.sorted(Comparator.reverseOrder())
+					.map(Path::toFile)
+					.forEach(File::delete);
+			return true;
+		} else {
+			return file.delete();
+		}
 	}
 
 	/**
 	 * Copies a file (and replaces if destination exists)
+	 *
 	 * @param folder name of the folder
 	 * @param sourceFileName name of the source file
 	 * @param destinationFileName name of the destination file
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@Override
 	public void copy(String folder, String sourceFileName, String destinationFileName) throws Exception {
-		log.debug(String.format("Filesystem storage will copy the file : %s to: %s", folder + File.separator + sourceFileName, folder + File.separator + destinationFileName));		
+		log.debug(String.format("Filesystem storage will copy the file : %s to: %s", folder + File.separator + sourceFileName, folder + File.separator + destinationFileName));
 		Files.copy(Paths.get(folder + File.separator + sourceFileName), Paths.get(folder + File.separator + destinationFileName), StandardCopyOption.REPLACE_EXISTING);
 	}
 

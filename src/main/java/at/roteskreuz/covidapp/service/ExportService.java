@@ -63,6 +63,7 @@ public class ExportService {
 	private final ExportConfigRepository exportConfigRepository;
 	private final ExportFileRepository exportFileRepository;
 	private final Signer signer;
+	private final CleanupService cleanupService;
 
 	/**
 	 * Exports files for every valid export configuration
@@ -87,11 +88,8 @@ public class ExportService {
 			log.error("Could not acquire lock for exporting files");
 			//fail silently
 		}
-		
 		//cleanup exposures and files
-
-		
-		return ApiResponse.ok();
+		return cleanupService.cleanup();
 	}
 
 	/**
@@ -246,7 +244,7 @@ public class ExportService {
 		});
 		indexFile.setFullBatch(new IndexFileBatch(intervalNumber, fullExportFilenames.stream().map(s-> "/" + config.getBucketName() + "/" +  s).collect(Collectors.toList())));
 		indexFile.setDailyBatches(new ArrayList<>());
-		LocalDateTime date = fromRed;
+		LocalDateTime date = fromRed.isBefore(fromYellow) ? fromRed : fromYellow;
 		while (date.isBefore(until)) {
 			long startIntervalNumber = date.toInstant(ZoneOffset.UTC).getEpochSecond() / ApplicationConfig.INTERVAL_LENGTH.getSeconds();
 			long endIntervalNumber = date.plusDays(1).toInstant(ZoneOffset.UTC).getEpochSecond() / ApplicationConfig.INTERVAL_LENGTH.getSeconds();

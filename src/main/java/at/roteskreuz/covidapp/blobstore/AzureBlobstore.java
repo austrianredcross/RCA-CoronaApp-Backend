@@ -1,8 +1,11 @@
 package at.roteskreuz.covidapp.blobstore;
 
 import com.microsoft.azure.storage.CloudStorageAccount;
+import com.microsoft.azure.storage.blob.CloudBlob;
 import com.microsoft.azure.storage.blob.CloudBlobContainer;
+import com.microsoft.azure.storage.blob.CloudBlobDirectory;
 import com.microsoft.azure.storage.blob.CloudBlockBlob;
+import com.microsoft.azure.storage.blob.ListBlobItem;
 import java.io.ByteArrayInputStream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,8 +50,20 @@ public class AzureBlobstore implements Blobstore {
 		log.debug(String.format("Azure blobstore will delete file for container: %s and objectName: %s",container, objectName));
 		CloudStorageAccount cloudStorageAccount = CloudStorageAccount.parse(storageConnectionString);
 		CloudBlobContainer cloudContainer = cloudStorageAccount.createCloudBlobClient().getContainerReference(container);
-		CloudBlockBlob blockBlobReference = cloudContainer.getBlockBlobReference(objectName);
-		return blockBlobReference.deleteIfExists();
+		try {
+			//try to delete it as a directory
+			CloudBlobDirectory directory = cloudContainer.getDirectoryReference("objectName");
+			for (ListBlobItem item : directory.listBlobs()) {
+				if (item instanceof CloudBlob) {
+					((CloudBlob)item).deleteIfExists();
+				}
+			}
+			return true;
+		} catch (Exception e) {
+			//try to delete it as a file
+			CloudBlockBlob blockBlobReference = cloudContainer.getBlockBlobReference(objectName);
+			return blockBlobReference.deleteIfExists();
+		}
 	}
 	/**
 	 * Copies a file (and replaces if destination exists)
