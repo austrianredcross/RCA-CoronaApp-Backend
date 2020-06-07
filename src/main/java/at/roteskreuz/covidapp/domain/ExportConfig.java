@@ -1,6 +1,7 @@
 package at.roteskreuz.covidapp.domain;
 
 import at.roteskreuz.covidapp.convert.DutarionToStringConverter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -14,18 +15,21 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * ExportConfig represents configuration for exporting exposures.
  *
  * @author Zoltán Puskai
  */
+@Slf4j
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExportConfig implements Serializable {
+	
 	@Id
 	@Column(name = "configid")
 	private Long id;
@@ -37,6 +41,10 @@ public class ExportConfig implements Serializable {
 	
 	@Convert(converter = DutarionToStringConverter.class)
 	private Duration periodYellowWarnings;
+
+	@Convert(converter = DutarionToStringConverter.class)
+	private Duration periodOfKeepingFiles;
+
 	
 	private String region;
 	@Column(name="from_timestamp")
@@ -45,5 +53,17 @@ public class ExportConfig implements Serializable {
 	private LocalDateTime thru;
 	@ManyToMany
 	private List<SignatureInfo> signatureInfos;
+	
+	@JsonIgnore
+	public Duration getExposureCleanupPeriod() {
+		Duration result;
+		if (periodRedWarnings == null || periodYellowWarnings == null) {
+			log.warn(String.format("Periods are not configured well config with id: %d", this,getId()));
+			result = Duration.ZERO;
+		} else {
+			result = periodRedWarnings.compareTo(periodYellowWarnings) > 0 ? periodRedWarnings: periodYellowWarnings;
+		}
+		return result;
+	}
 
 }

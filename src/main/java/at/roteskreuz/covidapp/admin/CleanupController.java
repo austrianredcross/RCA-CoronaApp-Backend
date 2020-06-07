@@ -25,24 +25,14 @@ public class CleanupController {
 	private final CleanupService cleanupService;
 
 	/**
-	 * Cleans up old export files
-	 * @return Api response
+	 * Cleans up old exposures and old export files
+	 * @return API response
+	 * @throws java.lang.Exception
 	 */
-	@GetMapping(value = "/cleanup-export", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse> cleanupExport()  {
-		ApiResponse response = cleanupService.cleanupExport();
+	@GetMapping(value = "/cleanup", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponse> cleanupExport() throws Exception  {
+		ApiResponse response = cleanupService.cleanup();
 		return ResponseEntity.status(response.getStatus()).body(response);
 	}
-
-	/**
-	 * Cleans up old exposure records
-	 * @return Api response
-	 */
-	@GetMapping(value = "/cleanup-exposure", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponse> cleanupExposure()  {
-		ApiResponse response = cleanupService.cleanupExposure();
-		return ResponseEntity.status(response.getStatus()).body(response);
-	}
-
 
 }
