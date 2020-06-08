@@ -5,6 +5,7 @@ import at.roteskreuz.covidapp.properties.*;
 import at.roteskreuz.covidapp.repository.ExposureRepository;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Random;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +54,7 @@ public class CovidappApplication implements CommandLineRunner {
 
 			for (int i = 0; i < count; i++) {
 				String diagnosisType = diagnosisTypes.get(random.nextInt(diagnosisTypes.size()));
-				String exposureKey = randomString(16);
+				String exposureKey = new String(Base64.getEncoder().encode(randomString(16).getBytes()));
 				String password = randomString(8);
 				String appPackageName = "at.roteskreuz.stopcorona.stage";
 				String regions = ",AT,HU,";
