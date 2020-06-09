@@ -1,5 +1,6 @@
 package at.roteskreuz.covidapp.domain;
 
+import at.roteskreuz.covidapp.model.ExportFileStatus;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -28,4 +29,5 @@ public class ExportFile implements Serializable {
 	private ExportConfig config;
 	private String region;
 	private long timestamp;
+	private ExportFileStatus status;
 }
