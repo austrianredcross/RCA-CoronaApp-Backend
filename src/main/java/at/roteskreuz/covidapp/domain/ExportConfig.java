@@ -9,6 +9,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
@@ -51,7 +52,7 @@ public class ExportConfig implements Serializable {
 	private LocalDateTime from;
 	@Column(name="thru_timestamp")
 	private LocalDateTime thru;
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	private List<SignatureInfo> signatureInfos;
 	
 	@JsonIgnore
