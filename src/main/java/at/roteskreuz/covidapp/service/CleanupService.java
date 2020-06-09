@@ -3,9 +3,11 @@ package at.roteskreuz.covidapp.service;
 import at.roteskreuz.covidapp.blobstore.Blobstore;
 import at.roteskreuz.covidapp.config.ApplicationConfig;
 import at.roteskreuz.covidapp.domain.ExportConfig;
+import at.roteskreuz.covidapp.domain.ExportFile;
 import at.roteskreuz.covidapp.domain.Exposure;
 import at.roteskreuz.covidapp.exception.LockNotAcquiredException;
 import at.roteskreuz.covidapp.model.ApiResponse;
+import at.roteskreuz.covidapp.model.ExportFileStatus;
 import at.roteskreuz.covidapp.properties.ExportProperties;
 import at.roteskreuz.covidapp.repository.ExportConfigRepository;
 import at.roteskreuz.covidapp.repository.ExportFileRepository;
@@ -14,8 +16,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -75,9 +75,13 @@ public class CleanupService {
 	private void cleanupFiles(ExportConfig config) throws Exception {
 		LocalDateTime deletionDate = getCutOffDate(config.getPeriodOfKeepingFiles(), MIN_CLEANUP_FILES_TTL);
 		//select directories that are older than deletionDate
-		Set<String> directories = exportFileRepository.findByConfigAndTimestampLessThan(config, deletionDate.toEpochSecond(ZoneOffset.UTC)).stream().map(s-> ""+ s.getTimestamp()).collect(Collectors.toSet());
-		for (String directory : directories) {
-			blobstore.deleteObject(config.getBucketName(), config.getFilenameRoot() + "/" +  directory);
+		List<ExportFile> files = exportFileRepository.findByConfigAndTimestampLessThanAndStatusIsNot(config, deletionDate.toEpochSecond(ZoneOffset.UTC), ExportFileStatus.EXPORT_FILE_DELETED);
+		
+		
+		for (ExportFile file : files) {
+			blobstore.deleteObject(config.getBucketName(), file.getFilename());
+			file.setStatus(ExportFileStatus.EXPORT_FILE_DELETED);
+			exportFileRepository.save(file);
 		}
 	}
 
