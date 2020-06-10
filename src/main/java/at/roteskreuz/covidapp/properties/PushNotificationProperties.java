@@ -1,5 +1,6 @@
 package at.roteskreuz.covidapp.properties;
 
+import java.time.Duration;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -27,5 +28,6 @@ public class PushNotificationProperties {
 	private String firebaseCloudMessageTokenUri;
 	private String firebaseCloudMessageAuthProviderX509CertUrl;
 	private String firebaseCloudMessageClientX509CertUrl;
+	private Duration waitAfterExportPeriod;
 
 }
