@@ -1,15 +1,23 @@
 package at.roteskreuz.covidapp.service;
 
 import at.roteskreuz.covidapp.blobstore.Blobstore;
+import at.roteskreuz.covidapp.config.ApplicationConfig;
+import at.roteskreuz.covidapp.domain.ExportConfig;
+import at.roteskreuz.covidapp.domain.ExportFile;
 import at.roteskreuz.covidapp.domain.Exposure;
+import at.roteskreuz.covidapp.exception.LockNotAcquiredException;
 import at.roteskreuz.covidapp.model.ApiResponse;
+import at.roteskreuz.covidapp.model.ExportFileStatus;
+import at.roteskreuz.covidapp.properties.ExportProperties;
+import at.roteskreuz.covidapp.repository.ExportConfigRepository;
 import at.roteskreuz.covidapp.repository.ExportFileRepository;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,38 +31,74 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class CleanupService {
 
-	private static final Duration MIN_CLEANUP_TTL = Duration.ofDays(10);
-
-	@Value("${cleanup.ttl:P14D}")
-	private Duration cleanupTtl;
+	private static final Duration MIN_CLEANUP_EXPOSURE_TTL = Duration.ofDays(10);	
+	private static final Duration MIN_CLEANUP_FILES_TTL = Duration.ofDays(1);	
 
 	private final ExposureService exposureService;
 	private final ExportFileRepository exportFileRepository;
 	private final Blobstore blobstore;
+	private final LockService lockService;
+	private final ExportProperties exportProperties;
+	private final ExportConfigRepository exportConfigRepository;
 
 	/**
 	 * Cleans up old files older
 	 * @return API response
+	 * @throws java.lang.Exception
 	 */
-	public ApiResponse cleanupExport() {
+	public ApiResponse cleanup() throws Exception {
+		String lockId = "cleanup";
+		try {
+			LocalDateTime releaseTimestamp = lockService.acquireLock(lockId, exportProperties.getCreateTimeout());
+			LocalDateTime now = LocalDateTime.now();
 
+			List<ExportConfig> exportConfigs = exportConfigRepository.findAllByDate(now);
+			for (ExportConfig exportConfig : exportConfigs) {
+				cleanupConfig(exportConfig);
+			}
+			log.info(String.format("Processed %s configs.", exportConfigs.size()));
+			boolean unlocked = lockService.releaseLock(lockId, releaseTimestamp);
+			log.debug(String.format("Removed lock for id: %s with result: %b", lockId, unlocked));
+		} catch (LockNotAcquiredException e) {
+			log.error("Could not acquire lock for cleaning up");
+			//fail silently
+		}	
 		return ApiResponse.ok();
 	}
-	/**
-	 * Cleans up old exposures
-	 * @return API response
-	 */
-	public ApiResponse cleanupExposure() {
-		List<Exposure> delExposures = exposureService.cleanUpExposures(getCutOffDate());
-		log.info(String.format("%d Exposures deleted", delExposures == null ? 0 : delExposures.size()));
-		return ApiResponse.ok();
+	
+	
+	private void cleanupConfig(ExportConfig config) throws Exception {
+		cleanupFiles(config);
+		cleanupExposures(config);
 	}
-
-	private LocalDateTime getCutOffDate() {
-		//Duration cleanupTtl = this.cleanupTtl;
-		if (cleanupTtl.compareTo(MIN_CLEANUP_TTL) < 0) {
-			cleanupTtl = MIN_CLEANUP_TTL;
+	
+	private void cleanupFiles(ExportConfig config) throws Exception {
+		LocalDateTime deletionDate = getCutOffDate(config.getPeriodOfKeepingFiles(), MIN_CLEANUP_FILES_TTL);
+		//select directories that are older than deletionDate
+		List<ExportFile> files = exportFileRepository.findByConfigAndTimestampLessThanAndStatusIsNot(config, deletionDate.toEpochSecond(ZoneOffset.UTC), ExportFileStatus.EXPORT_FILE_DELETED);
+		
+		
+		for (ExportFile file : files) {
+			blobstore.deleteObject(config.getBucketName(), file.getFilename());
+			file.setStatus(ExportFileStatus.EXPORT_FILE_DELETED);
+			exportFileRepository.save(file);
 		}
-		return LocalDateTime.now().minus(cleanupTtl);
 	}
+
+	private void cleanupExposures(ExportConfig config) {
+		LocalDateTime deletionDate = getCutOffDate(config.getExposureCleanupPeriod(), MIN_CLEANUP_EXPOSURE_TTL);
+		long intervalNumber = deletionDate.toInstant(ZoneOffset.UTC).getEpochSecond() / ApplicationConfig.INTERVAL_LENGTH.getSeconds();
+		List<Exposure> delExposures = exposureService.cleanUpExposures((int)intervalNumber, config.getRegion());
+		log.info(String.format("%d Exposures deleted for config %d", delExposures == null ? 0 : delExposures.size(), config.getId()));
+	}	
+	
+
+	private LocalDateTime getCutOffDate(Duration cleanupTtl, Duration minimumDuration) {
+			if (cleanupTtl.compareTo(minimumDuration) < 0) {
+			cleanupTtl = minimumDuration;
+		}
+		return LocalDate.now().atStartOfDay().minus(cleanupTtl);
+	}
+
+
 }
