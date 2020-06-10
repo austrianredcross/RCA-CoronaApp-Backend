@@ -8,6 +8,7 @@ import at.roteskreuz.covidapp.domain.Exposure;
 import at.roteskreuz.covidapp.domain.SignatureInfo;
 import at.roteskreuz.covidapp.exception.LockNotAcquiredException;
 import at.roteskreuz.covidapp.model.ApiResponse;
+import at.roteskreuz.covidapp.model.ExportFileStatus;
 import at.roteskreuz.covidapp.model.IndexFile;
 import at.roteskreuz.covidapp.model.IndexFileBatch;
 import at.roteskreuz.covidapp.properties.ExportProperties;
@@ -23,21 +24,25 @@ import io.micrometer.core.instrument.util.StringUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.*;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -63,6 +68,11 @@ public class ExportService {
 	private final ExportConfigRepository exportConfigRepository;
 	private final ExportFileRepository exportFileRepository;
 	private final Signer signer;
+	private final CleanupService cleanupService;
+	private final PushNotificationService pushNotificationService;
+
+	@Value("${application.pushnotification.waitAfterExportPeriod:PT90S}")
+	private Duration pushnotificationWaitAfterExportPeriod;
 
 	/**
 	 * Exports files for every valid export configuration
@@ -87,7 +97,15 @@ public class ExportService {
 			log.error("Could not acquire lock for exporting files");
 			//fail silently
 		}
-		return ApiResponse.ok();
+		//cleanup exposures and files
+		ApiResponse result = cleanupService.cleanup();
+
+		log.info(String.format("Waiting %d seconds to call the push notification service", pushnotificationWaitAfterExportPeriod.getSeconds()));
+		Thread.sleep(pushnotificationWaitAfterExportPeriod.toMillis());
+
+		pushNotificationService.sendNotification(UUID.randomUUID().toString());
+
+		return result;
 	}
 
 	/**
@@ -138,7 +156,7 @@ public class ExportService {
 
 		exposures.forEach(exp -> {
 			TemporaryExposureKey.Builder exposureKeyBuilder = TemporaryExposureKey.newBuilder()
-					.setKeyData(ByteString.copyFrom(exp.getExposureKey().getBytes()))
+					.setKeyData(ByteString.copyFrom(Base64.getDecoder().decode(exp.getExposureKey().getBytes())))
 					.setTransmissionRiskLevel(exp.getTransmissionRisk());
 			if (exp.getIntervalNumber() != null) {
 				exposureKeyBuilder.setRollingStartIntervalNumber(exp.getIntervalNumber());
@@ -219,7 +237,7 @@ public class ExportService {
 	private void exportConfig(ExportConfig config) throws Exception {
 		//create the new export files
 		LocalDateTime fileDate = LocalDateTime.now();
-		
+
 		IndexFile indexFile = new IndexFile();
 		LocalDateTime startDate = LocalDate.now().atStartOfDay();
 		LocalDateTime fromYellow = startDate.minus(config.getPeriodYellowWarnings());
@@ -238,39 +256,40 @@ public class ExportService {
 		List<String> fullExportFilenames = exportExposures("batch_full", fileDate, config, startDate, until, intervalNumber, allExposures);
 		//Writing files to database
 		fullExportFilenames.forEach((fileName) -> {
-			exportFileRepository.save(new ExportFile(fileName, config.getBucketName(), config, config.getRegion(), fileDate.toEpochSecond(ZoneOffset.UTC)));
+			exportFileRepository.save(new ExportFile(fileName, config.getBucketName(), config, config.getRegion(), fileDate.toEpochSecond(ZoneOffset.UTC), ExportFileStatus.EXPORT_FILE_CREATED));
 		});
-		indexFile.setFullBatch(new IndexFileBatch(intervalNumber, fullExportFilenames));
+		indexFile.setFullBatch(new IndexFileBatch(intervalNumber, fullExportFilenames.stream().map(s -> "/" + config.getBucketName() + "/" + s).collect(Collectors.toList())));
 		indexFile.setDailyBatches(new ArrayList<>());
-		LocalDateTime date = fromRed;
+		LocalDateTime date = fromRed.isBefore(fromYellow) ? fromRed : fromYellow;
 		while (date.isBefore(until)) {
 			long startIntervalNumber = date.toInstant(ZoneOffset.UTC).getEpochSecond() / ApplicationConfig.INTERVAL_LENGTH.getSeconds();
 			long endIntervalNumber = date.plusDays(1).toInstant(ZoneOffset.UTC).getEpochSecond() / ApplicationConfig.INTERVAL_LENGTH.getSeconds();
 			List<Exposure> exposuresForDate = allExposures.stream().filter(s -> s.getIntervalNumber() >= startIntervalNumber && s.getIntervalNumber() < endIntervalNumber).collect(Collectors.toList());
 			log.info("Creating daily export file with start date: " + date.format(DateTimeFormatter.ofPattern("yyyy.MM.dd.")));
 			log.trace("Creating file for intervals: " + startIntervalNumber + " - " + endIntervalNumber);
-			List<String> dailyExportFilenames = exportExposures("batch",fileDate, config, startDate, date.plusDays(1), startIntervalNumber, exposuresForDate);
+			LocalDateTime endDate = date.plusDays(1);
+			if (endDate.isAfter(fileDate)) {
+				endDate = fileDate;
+			}
+			List<String> dailyExportFilenames = exportExposures("batch", fileDate, config, date, endDate, startIntervalNumber, exposuresForDate);
 			dailyExportFilenames.forEach((fileName) -> {
-				exportFileRepository.save(new ExportFile(fileName, config.getBucketName(), config, config.getRegion(), fileDate.toEpochSecond(ZoneOffset.UTC)));
-			});			
-			indexFile.getDailyBatches().add(new IndexFileBatch(startIntervalNumber, dailyExportFilenames));
+				exportFileRepository.save(new ExportFile(fileName, config.getBucketName(), config, config.getRegion(), fileDate.toEpochSecond(ZoneOffset.UTC), ExportFileStatus.EXPORT_FILE_CREATED));
+			});
+			indexFile.getDailyBatches().add(new IndexFileBatch(startIntervalNumber, dailyExportFilenames.stream().map(s -> "/" + config.getBucketName() + "/" + s).collect(Collectors.toList())));
 			date = date.plusDays(1);
 		}
 		//createIndexFile
-		String indexFileContent =objectMapper.writeValueAsString(indexFile);
+		String indexFileContent = objectMapper.writeValueAsString(indexFile);
 		String indexFileName = createIndexFile(fileDate, config, indexFileContent.getBytes());
-		
+		exportFileRepository.save(new ExportFile(indexFileName, config.getBucketName(), config, config.getRegion(), fileDate.toEpochSecond(ZoneOffset.UTC), ExportFileStatus.EXPORT_FILE_CREATED));
+
 		//Copy over the index file;
 		String commonIndexFileName = commonIndexFilename(config);
-		blobstore.copy(config.getBucketName(), indexFileName, commonIndexFileName);		
+		blobstore.copy(config.getBucketName(), indexFileName, commonIndexFileName);
 		log.info(String.format("Config %s completed", config.getId()));
-		
-		
-		
-		
 	}
 
-	private List<String> exportExposures(String filePrefix, LocalDateTime fileDate,  ExportConfig config, LocalDateTime startTimestamp, LocalDateTime endTimestamp, long intervalNumber, List<Exposure> exposuresToExport) throws NoSuchAlgorithmException, Exception {
+	private List<String> exportExposures(String filePrefix, LocalDateTime fileDate, ExportConfig config, LocalDateTime startTimestamp, LocalDateTime endTimestamp, long intervalNumber, List<Exposure> exposuresToExport) throws NoSuchAlgorithmException, Exception {
 
 		List<Exposure> exposures = new ArrayList<>();
 		List<List<Exposure>> groups = new ArrayList<>();
@@ -286,21 +305,23 @@ public class ExportService {
 		if (!exposures.isEmpty()) {
 			groups.add(exposures);
 		}
-		if (groups.isEmpty()) {
-			log.info(String.format("No records for export config %s", config.getId()));
-		}
-		ensureMinNumExposures(exposures, config.getRegion(), exportProperties.getMinRecords(), exportProperties.getPaddingRange());
-		// Load the non-expired signature infos associated with this export batch. - in our case we already have them, just have to filter them	
-		List<SignatureInfo> sigInfos = config.getSignatureInfos().stream().filter(si -> si.getEndTimestamp() == null || !si.getEndTimestamp().isBefore(LocalDateTime.now())).collect(Collectors.toList());
-
-		// Create the export files.
-		int batchSize = groups.size();
 		List<String> objectNames = new ArrayList<>();
-		for (int i = 0; i < groups.size(); i++) {
-			List<Exposure> group = groups.get(i);
-			String objectName = createFile(filePrefix, fileDate, config, startTimestamp, endTimestamp, intervalNumber, group, i + 1, batchSize, sigInfos);
-			log.info(String.format("Wrote export file %s for config %s", objectName, config.getId()));
-			objectNames.add(objectName);
+		if (groups.isEmpty()) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyy.MM.dd HH:mm");
+			log.info(String.format("No records for export config %d in the time range %s - %s", config.getId(), startTimestamp.format(dtf), endTimestamp.format(dtf)));
+		} else {
+			ensureMinNumExposures(exposures, config.getRegion(), exportProperties.getMinRecords(), exportProperties.getPaddingRange());
+			// Load the non-expired signature infos associated with this export batch. - in our case we already have them, just have to filter them	
+			List<SignatureInfo> sigInfos = config.getSignatureInfos().stream().filter(si -> si.getEndTimestamp() == null || !si.getEndTimestamp().isBefore(LocalDateTime.now())).collect(Collectors.toList());
+
+			// Create the export files.
+			int batchSize = groups.size();
+			for (int i = 0; i < groups.size(); i++) {
+				List<Exposure> group = groups.get(i);
+				String objectName = createFile(filePrefix, fileDate, config, startTimestamp, endTimestamp, intervalNumber, group, i + 1, batchSize, sigInfos);
+				log.info(String.format("Wrote export file %s for config %s", objectName, config.getId()));
+				objectNames.add(objectName);
+			}
 		}
 		return objectNames;
 	}
@@ -333,7 +354,7 @@ public class ExportService {
 			Integer intervalCount = exposures.get(fromIdx).getIntervalCount();
 			String diagnosisType = diagnosisTypes.get(random.nextInt(diagnosisTypes.size()));
 
-			Exposure exposure = new Exposure(new String(bytes), null, region, intervalNumber, intervalCount, diagnosisType);
+			Exposure exposure = new Exposure(new String(Base64.getEncoder().encode(bytes)), null, region, intervalNumber, intervalCount, diagnosisType);
 			// The rest of the publishmodel.Exposure fields are not used in the export file.
 			exposures.add(exposure);
 		}
@@ -346,7 +367,7 @@ public class ExportService {
 		blobstore.createObject(config.getBucketName(), objectName, data);
 		return objectName;
 	}
-	
+
 	private String exportFilename(String filePrefix, ExportConfig config, LocalDateTime fileDate, Long intervalNumber, int batchNum) {
 		return String.format("%s/%d/%s-%d-%d%s", config.getFilenameRoot(), fileDate.toEpochSecond(ZoneOffset.UTC), filePrefix, intervalNumber, batchNum, FILENAME_SUFFIX);
 	}
@@ -355,15 +376,14 @@ public class ExportService {
 		String objectName = indexFilename(config, fileDate);
 		blobstore.createObject(config.getBucketName(), objectName, data);
 		return objectName;
-	}	
-	
-	private String indexFilename(ExportConfig config, LocalDateTime fileDate ) {
+	}
+
+	private String indexFilename(ExportConfig config, LocalDateTime fileDate) {
 		return String.format("%s/%d/%s", config.getFilenameRoot(), fileDate.toEpochSecond(ZoneOffset.UTC), "index.json");
 	}
 
 	private String commonIndexFilename(ExportConfig config) {
 		return String.format("%s/%s", config.getFilenameRoot(), "index.json");
 	}
-	
-	
+
 }
