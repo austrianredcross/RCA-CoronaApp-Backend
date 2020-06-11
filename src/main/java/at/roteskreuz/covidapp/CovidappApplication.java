@@ -1,9 +1,11 @@
 package at.roteskreuz.covidapp;
 
+import at.roteskreuz.covidapp.config.ApplicationConfig;
 import at.roteskreuz.covidapp.domain.Exposure;
 import at.roteskreuz.covidapp.properties.*;
 import at.roteskreuz.covidapp.repository.ExposureRepository;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -58,7 +60,8 @@ public class CovidappApplication implements CommandLineRunner {
 				String password = randomString(8);
 				String appPackageName = "at.roteskreuz.stopcorona.stage";
 				String regions = ",AT,HU,";
-				Integer intervalNumber = random.nextInt(2160) + 2650038;
+				long intervalNumberStart = LocalDateTime.now().minusDays(14).toInstant(ZoneOffset.UTC).getEpochSecond() / ApplicationConfig.INTERVAL_LENGTH.getSeconds();				
+				Integer intervalNumber = random.nextInt((int)intervalNumberStart) + 2650038;
 				Integer intervalCount = random.nextInt(10);
 				LocalDateTime created = now.minusMinutes(random.nextInt(2000));
 				Exposure exposure = new Exposure(exposureKey, password, appPackageName, regions, intervalNumber, intervalCount, created, false, null, diagnosisType, null);
