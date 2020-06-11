@@ -46,6 +46,14 @@ public class ExportConfig implements Serializable {
 	@Convert(converter = DutarionToStringConverter.class)
 	private Duration periodOfKeepingFiles;
 
+	@Convert(converter = DutarionToStringConverter.class)
+	private Duration periodOfDailyFiles;
+
+	@Convert(converter = DutarionToStringConverter.class)
+	private Duration periodOfBigFile;
+
+	@Convert(converter = DutarionToStringConverter.class)
+	private Duration periodOfMediumFile;	
 	
 	private String region;
 	@Column(name="from_timestamp")

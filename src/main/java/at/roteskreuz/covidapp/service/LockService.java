@@ -32,7 +32,7 @@ public class LockService {
 	 */
 	public LocalDateTime acquireLock(String lockId, Duration ttl) throws LockNotAcquiredException {
 		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime expiresAt = now.plus(ttl);
+		LocalDateTime expiresAt = now.plus(ttl).withNano(0);
 		Lock lock = lockRepository.findById(lockId).orElse(null);
 		if (lock == null) {
 			lockRepository.save(new Lock(lockId, expiresAt));			
@@ -45,6 +45,7 @@ public class LockService {
 			lock.setExpires(expiresAt);
 			lockRepository.save(lock);
 		}
+		log.debug(String.format("Setting lock for id %s is set to expiration value %s", lockId, expiresAt));
 		return expiresAt;
 	}
 	
@@ -57,6 +58,7 @@ public class LockService {
 	public boolean releaseLock(String lockId, LocalDateTime timestamp) {
 		Lock lock = lockRepository.findById(lockId).orElse(null);
 		if (lock != null) {
+			log.debug(String.format("Lock foud with expiration %s, checked value is %s",lock.getExpires(), timestamp));
 			if (!lock.getExpires().equals(timestamp)) {
 				//Another process acquired an expired lock
 				return false;
