@@ -36,7 +36,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -100,10 +99,11 @@ public class ExportService {
 		//cleanup exposures and files
 		ApiResponse result = cleanupService.cleanup();
 
-		log.info(String.format("Waiting %d seconds to call the push notification service", pushnotificationWaitAfterExportPeriod.getSeconds()));
-		Thread.sleep(pushnotificationWaitAfterExportPeriod.toMillis());
-
-		pushNotificationService.sendNotification(UUID.randomUUID().toString());
+		//https://tasks.pxp-x.com/browse/CTAA-1616
+//		log.info(String.format("Waiting %d seconds to call the push notification service", pushnotificationWaitAfterExportPeriod.getSeconds()));
+//		Thread.sleep(pushnotificationWaitAfterExportPeriod.toMillis());
+//
+//		pushNotificationService.sendNotification(UUID.randomUUID().toString());
 
 		return result;
 	}
