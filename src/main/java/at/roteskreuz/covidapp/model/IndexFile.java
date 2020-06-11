@@ -12,8 +12,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class IndexFile {
-	@JsonProperty("full_batch")
-	private IndexFileBatch fullBatch;
+	@JsonProperty("full_14_batch")
+	private IndexFileBatch fullBigBatch;
+	@JsonProperty("full_7_batch")
+	private IndexFileBatch fullMediumBatch;
 	@JsonProperty("daily_batches")
 	private List<IndexFileBatch> dailyBatches;
 }
