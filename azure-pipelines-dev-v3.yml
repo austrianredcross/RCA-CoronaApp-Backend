@@ -19,6 +19,11 @@ variables:
   # Agent VM image name
   vmImageName: 'windows-latest'
 
+trigger:
+  branches:
+    exclude:
+      - *
+
 stages:
 - stage: Build
   displayName: Build stage
