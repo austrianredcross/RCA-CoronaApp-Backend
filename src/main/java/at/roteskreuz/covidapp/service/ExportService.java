@@ -36,7 +36,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -100,10 +99,11 @@ public class ExportService {
 		//cleanup exposures and files
 		ApiResponse result = cleanupService.cleanup();
 
-		log.info(String.format("Waiting %d seconds to call the push notification service", pushnotificationWaitAfterExportPeriod.getSeconds()));
-		Thread.sleep(pushnotificationWaitAfterExportPeriod.toMillis());
-
-		pushNotificationService.sendNotification(UUID.randomUUID().toString());
+		//https://tasks.pxp-x.com/browse/CTAA-1616
+//		log.info(String.format("Waiting %d seconds to call the push notification service", pushnotificationWaitAfterExportPeriod.getSeconds()));
+//		Thread.sleep(pushnotificationWaitAfterExportPeriod.toMillis());
+//
+//		pushNotificationService.sendNotification(UUID.randomUUID().toString());
 
 		return result;
 	}
@@ -239,10 +239,10 @@ public class ExportService {
 		LocalDateTime fileDate = LocalDateTime.now();
 
 		IndexFile indexFile = new IndexFile();
-		LocalDateTime startDate = LocalDate.now().atStartOfDay();
-		LocalDateTime fromYellow = startDate.minus(config.getPeriodYellowWarnings());
-		LocalDateTime fromRed = startDate.minus(config.getPeriodRedWarnings());
-		LocalDateTime until = startDate;
+		LocalDateTime startOfToday = LocalDate.now().atStartOfDay();
+		LocalDateTime fromYellow = startOfToday.minus(config.getPeriodYellowWarnings());
+		LocalDateTime fromRed = startOfToday.minus(config.getPeriodRedWarnings());
+		LocalDateTime until = startOfToday;
 		if (exportProperties.isExportCurrentDay()) {
 			until = LocalDateTime.now();
 		}
@@ -251,19 +251,31 @@ public class ExportService {
 		List<Exposure> allExposures = new ArrayList<>();
 		allExposures.addAll(redExposures);
 		allExposures.addAll(yellowExposures);
-		long intervalNumber = startDate.toInstant(ZoneOffset.UTC).getEpochSecond() / ApplicationConfig.INTERVAL_LENGTH.getSeconds();
-		log.info("Creating full export file with start date: " + startDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd.")));
-		List<String> fullExportFilenames = exportExposures("batch_full", fileDate, config, startDate, until, intervalNumber, allExposures);
-		//Writing files to database
-		fullExportFilenames.forEach((fileName) -> {
-			exportFileRepository.save(new ExportFile(fileName, config.getBucketName(), config, config.getRegion(), fileDate.toEpochSecond(ZoneOffset.UTC), ExportFileStatus.EXPORT_FILE_CREATED));
-		});
-		indexFile.setFullBatch(new IndexFileBatch(intervalNumber, fullExportFilenames.stream().map(s -> "/" + config.getBucketName() + "/" + s).collect(Collectors.toList())));
+		
+		
+		LocalDateTime bigFileSartDate = startOfToday.minus(config.getPeriodOfBigFile());
+		long startIntervalNumberBig = getIntervalNumber(bigFileSartDate);
+		long endIntervalNumberBig = getIntervalNumber(until);
+		log.info(String.format("Creating full export file with start date: %s for period of days: %d", bigFileSartDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd.")), config.getPeriodOfBigFile().toDays()));
+		List<Exposure> fullExportBigExposures = allExposures.stream().filter(s -> s.getIntervalNumber() >= startIntervalNumberBig && s.getIntervalNumber() < endIntervalNumberBig).collect(Collectors.toList());
+		List<String> fullExportBigFilenames = exportExposures("batch_full" + config.getPeriodOfBigFile().toDays(), fileDate, config, startOfToday, until, startIntervalNumberBig, fullExportBigExposures);
+		indexFile.setFullBigBatch(new IndexFileBatch(startIntervalNumberBig, fullExportBigFilenames));
+
+		
+		LocalDateTime mediumFileSartDate = startOfToday.minus(config.getPeriodOfMediumFile());
+		long startIntervalNumberMedium = getIntervalNumber(mediumFileSartDate);
+		long endIntervalNumberMedium = getIntervalNumber(until);
+		log.info(String.format("Creating full export file with start date: %s for period of days: %d", mediumFileSartDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd.")), config.getPeriodOfMediumFile().toDays()));
+		List<Exposure> fullExportMediumExposures = allExposures.stream().filter(s -> s.getIntervalNumber() >= startIntervalNumberMedium && s.getIntervalNumber() < endIntervalNumberMedium).collect(Collectors.toList());
+		List<String> fullExportMediumFilenames = exportExposures("batch_full" + config.getPeriodOfMediumFile().toDays(), fileDate, config, startOfToday, until, startIntervalNumberMedium, fullExportMediumExposures);
+		indexFile.setFullMediumBatch(new IndexFileBatch(startIntervalNumberMedium, fullExportMediumFilenames));
+
+
 		indexFile.setDailyBatches(new ArrayList<>());
-		LocalDateTime date = fromRed.isBefore(fromYellow) ? fromRed : fromYellow;
+		LocalDateTime date = startOfToday.minus(config.getPeriodOfDailyFiles());
 		while (date.isBefore(until)) {
-			long startIntervalNumber = date.toInstant(ZoneOffset.UTC).getEpochSecond() / ApplicationConfig.INTERVAL_LENGTH.getSeconds();
-			long endIntervalNumber = date.plusDays(1).toInstant(ZoneOffset.UTC).getEpochSecond() / ApplicationConfig.INTERVAL_LENGTH.getSeconds();
+			long startIntervalNumber = getIntervalNumber(date);
+			long endIntervalNumber = getIntervalNumber(date.plusDays(1));
 			List<Exposure> exposuresForDate = allExposures.stream().filter(s -> s.getIntervalNumber() >= startIntervalNumber && s.getIntervalNumber() < endIntervalNumber).collect(Collectors.toList());
 			log.info("Creating daily export file with start date: " + date.format(DateTimeFormatter.ofPattern("yyyy.MM.dd.")));
 			log.trace("Creating file for intervals: " + startIntervalNumber + " - " + endIntervalNumber);
@@ -272,10 +284,7 @@ public class ExportService {
 				endDate = fileDate;
 			}
 			List<String> dailyExportFilenames = exportExposures("batch", fileDate, config, date, endDate, startIntervalNumber, exposuresForDate);
-			dailyExportFilenames.forEach((fileName) -> {
-				exportFileRepository.save(new ExportFile(fileName, config.getBucketName(), config, config.getRegion(), fileDate.toEpochSecond(ZoneOffset.UTC), ExportFileStatus.EXPORT_FILE_CREATED));
-			});
-			indexFile.getDailyBatches().add(new IndexFileBatch(startIntervalNumber, dailyExportFilenames.stream().map(s -> "/" + config.getBucketName() + "/" + s).collect(Collectors.toList())));
+			indexFile.getDailyBatches().add(new IndexFileBatch(startIntervalNumber, dailyExportFilenames));
 			date = date.plusDays(1);
 		}
 		//createIndexFile
@@ -323,7 +332,11 @@ public class ExportService {
 				objectNames.add(objectName);
 			}
 		}
-		return objectNames;
+		//Writing files to database
+		objectNames.forEach((fileName) -> {
+			exportFileRepository.save(new ExportFile(fileName, config.getBucketName(), config, config.getRegion(), fileDate.toEpochSecond(ZoneOffset.UTC), ExportFileStatus.EXPORT_FILE_CREATED));
+		});		
+		return objectNames.stream().map(s -> "/" + config.getBucketName() + "/" + s).collect(Collectors.toList());
 	}
 
 	private List<Exposure> ensureMinNumExposures(List<Exposure> exposures, String region, Integer minLength, Integer jitter) throws NoSuchAlgorithmException {
@@ -385,5 +398,8 @@ public class ExportService {
 	private String commonIndexFilename(ExportConfig config) {
 		return String.format("%s/%s", config.getFilenameRoot(), "index.json");
 	}
-
+	
+	private long getIntervalNumber(LocalDateTime timestamp) {
+		return timestamp.toInstant(ZoneOffset.UTC).getEpochSecond() / ApplicationConfig.INTERVAL_LENGTH.getSeconds();		
+	}
 }
