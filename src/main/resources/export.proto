@@ -17,7 +17,6 @@ syntax = "proto2";
 option java_package = "at.roteskreuz.covidapp.protobuf";
 option java_outer_classname = "Export";
 
-
 // Protobuf definition for exports of confirmed temporary exposure keys.
 //
 // The full file format is documented under "Exposure Key Export File Format
@@ -36,6 +35,7 @@ message TemporaryExposureKeyExport {
   optional string region = 3;
 
   // E.g., Batch 2 of 10. Ordinal, 1-based numbering.
+  // Note: Not yet supported on iOS. Use values of 1 for both.
   optional int32 batch_num = 4;
   optional int32 batch_size = 5;
 
@@ -47,14 +47,16 @@ message TemporaryExposureKeyExport {
 }
 
 message SignatureInfo {
-  // Apple App Store Application Bundle ID
-  optional string app_bundle_id = 1;
-  // Android App package name
-  optional string android_package = 2;
+  // No longer need to set these. Old code that still does will be fine
+  // as these were largely noops anyway.
+  reserved 1, 2;
+  reserved "app_bundle_id", "android_package";
   // Key version for rollovers
+  // Must be in character class [a-zA-Z0-9_]. E.g., 'v1'
   optional string verification_key_version = 3;
   // Alias with which to identify public key to be used for verification
   // Must be in character class [a-zA-Z0-9_]
+  // For cross-compatibility with Apple, use MCC (https://en.wikipedia.org/wiki/Mobile_country_code)
   optional string verification_key_id = 4;
   // ASN.1 OID for Algorithm Identifier. Supported algorithms are
   // either 1.2.840.10045.4.3.2 or 1.2.840.10045.4.3.4
@@ -89,4 +91,3 @@ message TEKSignature {
   // Signature in X9.62 format (ASN.1 SEQUENCE of two INTEGER fields)
   optional bytes signature = 4;
 }
-

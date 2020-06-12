@@ -171,12 +171,14 @@ public class ExportService {
 		exportSigners.forEach(si -> {
 			Export.SignatureInfo.Builder signatureBuilder = Export.SignatureInfo.newBuilder()
 					.setSignatureAlgorithm(ALGORITHM);
-			if (StringUtils.isNotEmpty(si.getAppPackageName())) {
-				signatureBuilder.setAndroidPackage(si.getAppPackageName());
-			}
-			if (StringUtils.isNotEmpty(si.getBundleID())) {
-				signatureBuilder.setAppBundleId(si.getBundleID());
-			}
+			//https://tasks.pxp-x.com/browse/CTAA-1627
+			// The first two fields have been deprecated (reserved in protobuffer)
+//			if (StringUtils.isNotEmpty(si.getAppPackageName())) {
+//				signatureBuilder.setAndroidPackage(si.getAppPackageName());
+//			}
+//			if (StringUtils.isNotEmpty(si.getBundleID())) {
+//				signatureBuilder.setAppBundleId(si.getBundleID());
+//			}
 			if (StringUtils.isNotEmpty(si.getSigningKeyVersion())) {
 				signatureBuilder.setVerificationKeyVersion(si.getSigningKeyVersion());
 			}
@@ -207,12 +209,14 @@ public class ExportService {
 		for (SignatureInfo si : exportSigners) {
 			Export.SignatureInfo.Builder signatureInfoBuilder = Export.SignatureInfo.newBuilder()
 					.setSignatureAlgorithm(ALGORITHM);
-			if (StringUtils.isNotEmpty(si.getAppPackageName())) {
-				signatureInfoBuilder.setAndroidPackage(si.getAppPackageName());
-			}
-			if (StringUtils.isNotEmpty(si.getBundleID())) {
-				signatureInfoBuilder.setAppBundleId(si.getBundleID());
-			}
+			//https://tasks.pxp-x.com/browse/CTAA-1627
+			// The first two fields have been deprecated (reserved in protobuffer)
+//			if (StringUtils.isNotEmpty(si.getAppPackageName())) {
+//				signatureInfoBuilder.setAndroidPackage(si.getAppPackageName());
+//			}
+//			if (StringUtils.isNotEmpty(si.getBundleID())) {
+//				signatureInfoBuilder.setAppBundleId(si.getBundleID());
+//			}
 			if (StringUtils.isNotEmpty(si.getSigningKeyVersion())) {
 				signatureInfoBuilder.setVerificationKeyVersion(si.getSigningKeyVersion());
 			}
