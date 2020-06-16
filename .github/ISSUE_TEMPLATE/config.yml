@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Ask a Question
+    url: https://participate.roteskreuz.at/faq_stopp_corona_app/
+    about: We have a German FAQ which also links to a contact email address.
+  - name: Responsible Disclosure
+    url: https://www.roteskreuz.at/site/ueberblick-stopp-corona-app
+    about: If you have a security issue please follow along here.
