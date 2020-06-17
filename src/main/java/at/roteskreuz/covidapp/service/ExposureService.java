@@ -66,12 +66,14 @@ public class ExposureService {
 	
 
 	/**
-	 * Deletes exposures that are older than cleanupTtl
+	 * Deletes exposures that are older than interval number for a region
 	 * 
-	 * @param cleanupTtl
+	 * @param intervalNumber interval number
+	 * @param region region
 	 * @return 
 	 */
-	public List<Exposure> cleanUpExposures(LocalDateTime cleanupTtl){
-		return exposureRepository.deleteAllByCreatedAtIsLessThan(cleanupTtl);
+		public List<Exposure> cleanUpExposures(int intervalNumber, String region) {
+		
+		return exposureRepository.deleteAllByIntervalNumberIsLessThanAndRegionsLike(intervalNumber, "%," + region + ",%");
 	}
 }
