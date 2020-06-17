@@ -44,7 +44,7 @@ public class PushNotificationService {
 						.build();
 
 				String response = FirebaseMessaging.getInstance(firebaseApp).send(sendMessage);
-				log.debug(String.format("FirebaseMessaging Response: %s", response));
+				log.info(String.format("FirebaseMessaging Response: %s", response));
 				if (StringUtils.isNotEmpty(response)) {
 					return true;
 				}
