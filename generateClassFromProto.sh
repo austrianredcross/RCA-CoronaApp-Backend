@@ -1,0 +1,1 @@
+protoc -I=src/main/resources --java_out=src/main/java src/main/resources/export.proto
