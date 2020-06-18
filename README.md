@@ -28,7 +28,7 @@ To run this functions locally with Java, install the following software:
 The application can be configured as any Spring boot application:
 - in the environment
 - in specific application-<profile> properties or yaml file
-... please check the documentation [Externalized Configuration] (https://docs.spring.io/spring-boot/docs/2.3.0.RELEASE/reference/html/spring-boot-features.html#boot-features-external-config)
+- ... please check the documentation [Externalized Configuration] (https://docs.spring.io/spring-boot/docs/2.3.0.RELEASE/reference/html/spring-boot-features.html#boot-features-external-config)
 
 ###Configuration Keys when running it on Azure
 * _APPINSIGHTS_INSTRUMENTATIONKEY_ : instrumentation key used for logging with Azure App Insights
