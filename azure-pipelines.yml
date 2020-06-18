@@ -17,6 +17,7 @@ steps:
     script: |
       echo clone branch
       /usr/bin/git -c http.sslVerify=true clone --mirror https://wpsw2em2h7265wmbk7t7whvekjncm7rl5i5hvfqnenmraiz42loa@dev.azure.com/Red-Cross-Austria/RCA-CoronaApp/_git/RCA-CoronaApp-AG RCA-CoronaApp-AG.git --branch public
+      /usr/bin/git -c http.sslVerify=true -C RCA-CoronaApp-AG.git push --mirror https://5233bcd15e9a43be825c9e2e1209debb13b14f1b@github.com/austrianredcross/RCA-CoronaApp-Backend
 
 
 #- task: mirror-git-repository-vsts-task@1
