@@ -1,5 +1,23 @@
-# Introduction
-The RCA-CoronaApp-Backend is based on the Exposure Notification Reference Server: https://github.com/google/exposure-notifications-server
+<h1 align="center">
+  <br>
+  <img src="./ic_launcher-playstore.png" alt="Stop Corona logo" width="200">
+  <br>
+  RCA-CoronaApp-Backend
+  <br>
+</h1>
+
+<p align="center">
+  <a href="#about">About</a> •
+  <a href="#getting-started">Getting Started</a> •
+  <a href="#configure-the-application">Configure the application</a> •
+  <a href="#reference-documentation">Reference Documentation</a> •
+  <a href="#license">License</a>
+</p>
+
+
+# About
+The RCA-CoronaApp-Backend is the backend for the [Stopp Corona] (https://github.com/austrianredcross/stopp-corona-android) and [Stopp Corona iOS App] (https://github.com/austrianredcross/stopp-corona-ios) applications
+and it is based on the Exposure Notification Reference Server: https://github.com/google/exposure-notifications-server
 
 
 # Getting Started
@@ -24,13 +42,13 @@ To run this functions locally with Java, install the following software:
 
 
 
-## Configure the application
+# Configure the application
 The application can be configured as any Spring boot application:
 - in the environment
 - in specific application-<profile> properties or yaml file
 - ... please check the documentation [Externalized Configuration] (https://docs.spring.io/spring-boot/docs/2.3.0.RELEASE/reference/html/spring-boot-features.html#boot-features-external-config)
 
-###Configuration Keys when running it on Azure
+## Configuration Keys when running it on Azure
 * _APPINSIGHTS_INSTRUMENTATIONKEY_ : instrumentation key used for logging with Azure App Insights
 * _APPLICATION_EXPORT_BLOBSTORE-TYPE_ : Type of the blobstore used by the application (azure-cloud-storage | filesystem | none)
 * _SPRING_DATASOURCE_URL_ : url of the database
@@ -42,7 +60,7 @@ The application can be configured as any Spring boot application:
 * _EXTERNAL_PERSONAL_DATA_STORAGE_SHA256_KEY_ : sha key used for hashing must be the same as the one used by the service, otherwise it won't match
 
 
-### Reference Documentation
+# Reference Documentation
 For further reference, please consider the following sections:
 
 * [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
@@ -56,7 +74,7 @@ For further reference, please consider the following sections:
 * [Spring cache abstraction](https://docs.spring.io/spring-boot/docs/2.3.0.RELEASE/reference/htmlsingle/#boot-features-caching)
 * [Spring Configuration Processor](https://docs.spring.io/spring-boot/docs/2.3.0.RELEASE/reference/htmlsingle/#configuration-metadata-annotation-processor)
 
-### Guides
+## Guides
 The following guides illustrate how to use some features concretely:
 
 * [Building a RESTful Web Service with Spring Boot Actuator](https://spring.io/guides/gs/actuator-service/)
@@ -66,3 +84,7 @@ The following guides illustrate how to use some features concretely:
 * [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
 * [Building REST services with Spring](https://spring.io/guides/tutorials/bookmarks/)
 * [Caching Data with Spring](https://spring.io/guides/gs/caching/)
+
+# License
+
+This code is distributed under the Apache License 2.0. See the LICENSE.txt file for more info.
