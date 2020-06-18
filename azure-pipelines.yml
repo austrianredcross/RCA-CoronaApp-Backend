@@ -16,6 +16,6 @@ steps:
 - task: mirror-git-repository-vsts-task@1
   inputs:
     sourceGitRepositoryUri: 'https://dev.azure.com/Red-Cross-Austria/RCA-CoronaApp/_git/RCA-CoronaApp-AG?version=GBpublic'
-    sourceGitRepositoryPersonalAccessToken: 'vvtrmyibrd2di6jymrrouenpyhzgnsgxe7ardanpmoftgirt7nqq'
+    sourceGitRepositoryPersonalAccessToken: 'wpsw2em2h7265wmbk7t7whvekjncm7rl5i5hvfqnenmraiz42loa'
     destinationGitRepositoryUri: 'https://github.com/austrianredcross/RCA-CoronaApp-Backend'
-    destinationGitRepositoryPersonalAccessToken: 'd251ab081fedd75345220d9e75138a042626da03'
+    destinationGitRepositoryPersonalAccessToken: '5233bcd15e9a43be825c9e2e1209debb13b14f1b'
