@@ -8,7 +8,7 @@ import lombok.Setter;
 
 /**
  * Representation of an exposure key in a publish request
- * 
+ *
  * @author Zoltán Puskai
  */
 @Getter
@@ -16,19 +16,19 @@ import lombok.Setter;
 @NoArgsConstructor
 @ValidExposureKey
 public class ExposureKey {
-	
+
 	private String key;
-	
+
 	//@Min(1000)
 	private Integer intervalNumber;
 
 	private Integer intervalCount;
-	
+
 	//private Integer transmissionRisk;
-	
+
 	private String password;
-	
-	
+
+
 	public String binKey() {
 		if (key == null) {
 			return null;

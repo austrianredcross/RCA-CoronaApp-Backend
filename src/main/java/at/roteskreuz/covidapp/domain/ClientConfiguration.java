@@ -9,7 +9,7 @@ import lombok.Setter;
 
 /**
  * Client configuration holds a JSON structure to configure Android and IOS clients
- * 
+ *
  * @author Zoltán Puskai
  */
 @Entity
@@ -17,24 +17,24 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ClientConfiguration {
-	
+
 	/**
 	 * Id of  the current configuration
-	 */	
+	 */
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	
+
 	/**
 	 * Configuration in JSON format
-	 */	
+	 */
 	//@Column(columnDefinition="TEXT")
 	@Lob
 	private String data;
-	
+
 	/**
 	 * Date when the current configuration was created
-	 */		
-	private LocalDateTime dateCreated;	
-	
+	 */
+	private LocalDateTime dateCreated;
+
 }

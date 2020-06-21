@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
- * Class for configuring Jpa 
+ * Class for configuring Jpa
  *
  * @author Zoltán Puskai
  */

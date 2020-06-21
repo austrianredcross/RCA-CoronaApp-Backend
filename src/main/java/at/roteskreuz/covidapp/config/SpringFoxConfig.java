@@ -35,14 +35,14 @@ public class SpringFoxConfig {
 	private String apiKey;
 
 	@Value("${http.request.api.value:value}")
-	private String apiValue;	
-	
+	private String apiValue;
+
 	/**
 	 * Configures Swagger 2 for generating API documentation
 	 *
 	 * @param typeResolver typeResolver to be configured
 	 * @return Docket Swagger docket
-	 */			
+	 */
 	@Bean
 	public Docket api(TypeResolver typeResolver) {
 		return new Docket(DocumentationType.SWAGGER_2)

@@ -12,7 +12,7 @@ import org.springframework.util.FileCopyUtils;
 /**
  * Base class for signers.
  * Exported files are signed with private keys during the export process.
- * 
+ *
  * @author Bernhard Roessler
  */
 @Slf4j
@@ -26,7 +26,7 @@ public abstract class AbstractSigner implements Signer {
 	 * @param keyType key type used
 	 * @return signed data
 	 * @throws GeneralSecurityException
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	protected byte[] signature(byte[] data, InputStream keyInputStream, String signatureAlgorithm, String keyType)
 									throws GeneralSecurityException, IOException {
@@ -42,7 +42,7 @@ public abstract class AbstractSigner implements Signer {
 	 * @param keyType the type of the key
 	 * @return
 	 * @throws IOException
-	 * @throws GeneralSecurityException 
+	 * @throws GeneralSecurityException
 	 */
 	protected PrivateKey getPrivateKey(InputStream keyInputStream, String keyType)
 			throws IOException, GeneralSecurityException {

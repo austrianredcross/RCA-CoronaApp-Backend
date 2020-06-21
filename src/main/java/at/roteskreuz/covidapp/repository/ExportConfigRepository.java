@@ -8,7 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 
 /**
  * Repository for persisting export configuration
- * 
+ *
  * @author Zoltán Puskai
  */
 public interface ExportConfigRepository extends CrudRepository<ExportConfig, Long> {
@@ -16,9 +16,9 @@ public interface ExportConfigRepository extends CrudRepository<ExportConfig, Lon
 	/**
 	 * Finds export configurations whose FromTimestamp is before the given time
 	 * @param timestamp
-	 * @return 
+	 * @return
 	 */
 	@Query("SELECT e FROM ExportConfig e WHERE e.from < ?1 and (e.thru IS NULL OR e.thru > ?1)")
 	List<ExportConfig> findAllByDate(LocalDateTime timestamp);
-	
+
 }

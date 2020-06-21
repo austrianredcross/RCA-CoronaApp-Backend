@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Represents export related external configuration
- * 
+ *
  * @author Zoltán Puskai
  */
 @Getter
@@ -26,6 +26,6 @@ public class ExportProperties {
 	private BlobstoreType blobstoreType = BlobstoreType.NONE;
 	private boolean exportCurrentDay;
 
-	
-	
+
+
 }

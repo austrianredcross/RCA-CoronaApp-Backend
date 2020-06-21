@@ -12,7 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
  * Filter that checks the authorization header
- * 
+ *
  * @author Zoltán Puskai
  */
 @Component
@@ -27,17 +27,17 @@ public class AuthorizationHeaderFilter extends OncePerRequestFilter {
 
 	@Value("${http.request.api.value:value}")
 	private String apiValue;
-	
-	
+
+
 	/**
 	 * If the authorization key is not present or the value is not valid, it will throw an exception
-	 * 
+	 *
 	 * @param request HTTP request
 	 * @param response HTTP response
 	 * @param filterChain filterChain
 	 * @throws ServletException exception  that could be thrown by the chain
 	 * @throws IOException exception  that could be thrown by the chain
-	 */	
+	 */
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		boolean isForbidden = false;

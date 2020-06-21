@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Represents API related external configuration
- * 
+ *
  * @author Zoltán Puskai
  */
 @Getter
@@ -16,5 +16,5 @@ public class ApiProperties {
 
 	private Integer version;
 
-	
+
 }

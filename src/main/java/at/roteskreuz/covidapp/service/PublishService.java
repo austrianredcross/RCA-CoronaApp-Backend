@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * Service class that processes publish requests
- * 
+ *
  * @author Zoltán Puskai
  */
 @Service
@@ -21,9 +21,9 @@ public class PublishService {
 	/**
 	 * Processes publish requests.
 	 * Saves the exposures from the publish request
-	 * 
+	 *
 	 * @param publish publish request
-	 * @return 
+	 * @return
 	 */
 	public ApiResponse publish(Publish publish) {
 

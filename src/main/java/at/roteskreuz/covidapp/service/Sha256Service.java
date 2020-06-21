@@ -26,7 +26,7 @@ public class Sha256Service {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Creates a SHAA256 hash for the given key
 	 * @param key key for hashing
@@ -35,8 +35,8 @@ public class Sha256Service {
 	public String sha256(String key) {
 		return bytesToHex(sha256(key.getBytes(StandardCharsets.UTF_8)));
 	}
-	
-	
+
+
 
 	private static String bytesToHex(byte[] hash) {
 		if (hash == null) {

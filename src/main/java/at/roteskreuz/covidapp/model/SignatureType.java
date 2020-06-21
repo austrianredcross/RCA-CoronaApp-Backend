@@ -5,7 +5,7 @@ import lombok.Getter;
 
 /**
  * The different types of signatures
- * 
+ *
  * @author Zoltán Puskai
  */
 @AllArgsConstructor
@@ -14,6 +14,6 @@ public enum SignatureType {
 	NONE("none"),
 	FILESYSTEM("filesystem"),
 	AZURE("azure");
-	
+
 	private final String name;
 }

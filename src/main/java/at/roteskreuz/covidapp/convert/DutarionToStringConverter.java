@@ -32,7 +32,7 @@ public class DutarionToStringConverter implements AttributeConverter<Duration, S
 	@Override
 	public Duration convertToEntityAttribute(String duration) {
 		try {
-			return Duration.parse(duration);		
+			return Duration.parse(duration);
 		} catch (Exception e) {
 		}
 		return null;

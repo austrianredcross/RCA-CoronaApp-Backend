@@ -118,7 +118,7 @@ public final class Export {
      *
      * <code>repeated .SignatureInfo signature_infos = 6;</code>
      */
-    java.util.List<at.roteskreuz.covidapp.protobuf.Export.SignatureInfo> 
+    java.util.List<at.roteskreuz.covidapp.protobuf.Export.SignatureInfo>
         getSignatureInfosList();
     /**
      * <pre>
@@ -143,7 +143,7 @@ public final class Export {
      *
      * <code>repeated .SignatureInfo signature_infos = 6;</code>
      */
-    java.util.List<? extends at.roteskreuz.covidapp.protobuf.Export.SignatureInfoOrBuilder> 
+    java.util.List<? extends at.roteskreuz.covidapp.protobuf.Export.SignatureInfoOrBuilder>
         getSignatureInfosOrBuilderList();
     /**
      * <pre>
@@ -162,7 +162,7 @@ public final class Export {
      *
      * <code>repeated .TemporaryExposureKey keys = 7;</code>
      */
-    java.util.List<at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKey> 
+    java.util.List<at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKey>
         getKeysList();
     /**
      * <pre>
@@ -187,7 +187,7 @@ public final class Export {
      *
      * <code>repeated .TemporaryExposureKey keys = 7;</code>
      */
-    java.util.List<? extends at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKeyOrBuilder> 
+    java.util.List<? extends at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKeyOrBuilder>
         getKeysOrBuilderList();
     /**
      * <pre>
@@ -416,7 +416,7 @@ public final class Export {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
+        com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -438,7 +438,7 @@ public final class Export {
         getRegionBytes() {
       java.lang.Object ref = region_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
+        com.google.protobuf.ByteString b =
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         region_ = b;
@@ -517,7 +517,7 @@ public final class Export {
      * <code>repeated .SignatureInfo signature_infos = 6;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends at.roteskreuz.covidapp.protobuf.Export.SignatureInfoOrBuilder> 
+    public java.util.List<? extends at.roteskreuz.covidapp.protobuf.Export.SignatureInfoOrBuilder>
         getSignatureInfosOrBuilderList() {
       return signatureInfos_;
     }
@@ -577,7 +577,7 @@ public final class Export {
      * <code>repeated .TemporaryExposureKey keys = 7;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKeyOrBuilder> 
+    public java.util.List<? extends at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKeyOrBuilder>
         getKeysOrBuilderList() {
       return keys_;
     }
@@ -1088,7 +1088,7 @@ public final class Export {
               signatureInfosBuilder_ = null;
               signatureInfos_ = other.signatureInfos_;
               bitField0_ = (bitField0_ & ~0x00000020);
-              signatureInfosBuilder_ = 
+              signatureInfosBuilder_ =
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getSignatureInfosFieldBuilder() : null;
             } else {
@@ -1114,7 +1114,7 @@ public final class Export {
               keysBuilder_ = null;
               keys_ = other.keys_;
               bitField0_ = (bitField0_ & ~0x00000040);
-              keysBuilder_ = 
+              keysBuilder_ =
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getKeysFieldBuilder() : null;
             } else {
@@ -1296,7 +1296,7 @@ public final class Export {
           getRegionBytes() {
         java.lang.Object ref = region_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString b =
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
           region_ = b;
@@ -1711,7 +1711,7 @@ public final class Export {
        *
        * <code>repeated .SignatureInfo signature_infos = 6;</code>
        */
-      public java.util.List<? extends at.roteskreuz.covidapp.protobuf.Export.SignatureInfoOrBuilder> 
+      public java.util.List<? extends at.roteskreuz.covidapp.protobuf.Export.SignatureInfoOrBuilder>
            getSignatureInfosOrBuilderList() {
         if (signatureInfosBuilder_ != null) {
           return signatureInfosBuilder_.getMessageOrBuilderList();
@@ -1749,12 +1749,12 @@ public final class Export {
        *
        * <code>repeated .SignatureInfo signature_infos = 6;</code>
        */
-      public java.util.List<at.roteskreuz.covidapp.protobuf.Export.SignatureInfo.Builder> 
+      public java.util.List<at.roteskreuz.covidapp.protobuf.Export.SignatureInfo.Builder>
            getSignatureInfosBuilderList() {
         return getSignatureInfosFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          at.roteskreuz.covidapp.protobuf.Export.SignatureInfo, at.roteskreuz.covidapp.protobuf.Export.SignatureInfo.Builder, at.roteskreuz.covidapp.protobuf.Export.SignatureInfoOrBuilder> 
+          at.roteskreuz.covidapp.protobuf.Export.SignatureInfo, at.roteskreuz.covidapp.protobuf.Export.SignatureInfo.Builder, at.roteskreuz.covidapp.protobuf.Export.SignatureInfoOrBuilder>
           getSignatureInfosFieldBuilder() {
         if (signatureInfosBuilder_ == null) {
           signatureInfosBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
@@ -2023,7 +2023,7 @@ public final class Export {
        *
        * <code>repeated .TemporaryExposureKey keys = 7;</code>
        */
-      public java.util.List<? extends at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKeyOrBuilder> 
+      public java.util.List<? extends at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKeyOrBuilder>
            getKeysOrBuilderList() {
         if (keysBuilder_ != null) {
           return keysBuilder_.getMessageOrBuilderList();
@@ -2061,12 +2061,12 @@ public final class Export {
        *
        * <code>repeated .TemporaryExposureKey keys = 7;</code>
        */
-      public java.util.List<at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKey.Builder> 
+      public java.util.List<at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKey.Builder>
            getKeysBuilderList() {
         return getKeysFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKey, at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKey.Builder, at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKeyOrBuilder> 
+          at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKey, at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKey.Builder, at.roteskreuz.covidapp.protobuf.Export.TemporaryExposureKeyOrBuilder>
           getKeysFieldBuilder() {
         if (keysBuilder_ == null) {
           keysBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
@@ -2365,7 +2365,7 @@ public final class Export {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
+        com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -2388,7 +2388,7 @@ public final class Export {
         getVerificationKeyVersionBytes() {
       java.lang.Object ref = verificationKeyVersion_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
+        com.google.protobuf.ByteString b =
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         verificationKeyVersion_ = b;
@@ -2430,7 +2430,7 @@ public final class Export {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
+        com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -2454,7 +2454,7 @@ public final class Export {
         getVerificationKeyIdBytes() {
       java.lang.Object ref = verificationKeyId_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
+        com.google.protobuf.ByteString b =
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         verificationKeyId_ = b;
@@ -2494,7 +2494,7 @@ public final class Export {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
+        com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -2517,7 +2517,7 @@ public final class Export {
         getSignatureAlgorithmBytes() {
       java.lang.Object ref = signatureAlgorithm_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
+        com.google.protobuf.ByteString b =
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         signatureAlgorithm_ = b;
@@ -2943,7 +2943,7 @@ public final class Export {
           getVerificationKeyVersionBytes() {
         java.lang.Object ref = verificationKeyVersion_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString b =
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
           verificationKeyVersion_ = b;
@@ -3060,7 +3060,7 @@ public final class Export {
           getVerificationKeyIdBytes() {
         java.lang.Object ref = verificationKeyId_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString b =
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
           verificationKeyId_ = b;
@@ -3177,7 +3177,7 @@ public final class Export {
           getSignatureAlgorithmBytes() {
         java.lang.Object ref = signatureAlgorithm_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString b =
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
           signatureAlgorithm_ = b;
@@ -4254,7 +4254,7 @@ public final class Export {
     /**
      * <code>repeated .TEKSignature signatures = 1;</code>
      */
-    java.util.List<at.roteskreuz.covidapp.protobuf.Export.TEKSignature> 
+    java.util.List<at.roteskreuz.covidapp.protobuf.Export.TEKSignature>
         getSignaturesList();
     /**
      * <code>repeated .TEKSignature signatures = 1;</code>
@@ -4267,7 +4267,7 @@ public final class Export {
     /**
      * <code>repeated .TEKSignature signatures = 1;</code>
      */
-    java.util.List<? extends at.roteskreuz.covidapp.protobuf.Export.TEKSignatureOrBuilder> 
+    java.util.List<? extends at.roteskreuz.covidapp.protobuf.Export.TEKSignatureOrBuilder>
         getSignaturesOrBuilderList();
     /**
      * <code>repeated .TEKSignature signatures = 1;</code>
@@ -4379,7 +4379,7 @@ public final class Export {
      * <code>repeated .TEKSignature signatures = 1;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends at.roteskreuz.covidapp.protobuf.Export.TEKSignatureOrBuilder> 
+    public java.util.List<? extends at.roteskreuz.covidapp.protobuf.Export.TEKSignatureOrBuilder>
         getSignaturesOrBuilderList() {
       return signatures_;
     }
@@ -4710,7 +4710,7 @@ public final class Export {
               signaturesBuilder_ = null;
               signatures_ = other.signatures_;
               bitField0_ = (bitField0_ & ~0x00000001);
-              signaturesBuilder_ = 
+              signaturesBuilder_ =
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getSignaturesFieldBuilder() : null;
             } else {
@@ -4943,7 +4943,7 @@ public final class Export {
       /**
        * <code>repeated .TEKSignature signatures = 1;</code>
        */
-      public java.util.List<? extends at.roteskreuz.covidapp.protobuf.Export.TEKSignatureOrBuilder> 
+      public java.util.List<? extends at.roteskreuz.covidapp.protobuf.Export.TEKSignatureOrBuilder>
            getSignaturesOrBuilderList() {
         if (signaturesBuilder_ != null) {
           return signaturesBuilder_.getMessageOrBuilderList();
@@ -4969,12 +4969,12 @@ public final class Export {
       /**
        * <code>repeated .TEKSignature signatures = 1;</code>
        */
-      public java.util.List<at.roteskreuz.covidapp.protobuf.Export.TEKSignature.Builder> 
+      public java.util.List<at.roteskreuz.covidapp.protobuf.Export.TEKSignature.Builder>
            getSignaturesBuilderList() {
         return getSignaturesFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          at.roteskreuz.covidapp.protobuf.Export.TEKSignature, at.roteskreuz.covidapp.protobuf.Export.TEKSignature.Builder, at.roteskreuz.covidapp.protobuf.Export.TEKSignatureOrBuilder> 
+          at.roteskreuz.covidapp.protobuf.Export.TEKSignature, at.roteskreuz.covidapp.protobuf.Export.TEKSignature.Builder, at.roteskreuz.covidapp.protobuf.Export.TEKSignatureOrBuilder>
           getSignaturesFieldBuilder() {
         if (signaturesBuilder_ == null) {
           signaturesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
@@ -5880,7 +5880,7 @@ public final class Export {
        * <code>optional .SignatureInfo signature_info = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          at.roteskreuz.covidapp.protobuf.Export.SignatureInfo, at.roteskreuz.covidapp.protobuf.Export.SignatureInfo.Builder, at.roteskreuz.covidapp.protobuf.Export.SignatureInfoOrBuilder> 
+          at.roteskreuz.covidapp.protobuf.Export.SignatureInfo, at.roteskreuz.covidapp.protobuf.Export.SignatureInfo.Builder, at.roteskreuz.covidapp.protobuf.Export.SignatureInfoOrBuilder>
           getSignatureInfoFieldBuilder() {
         if (signatureInfoBuilder_ == null) {
           signatureInfoBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -6099,27 +6099,27 @@ public final class Export {
 
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_TemporaryExposureKeyExport_descriptor;
-  private static final 
+  private static final
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_TemporaryExposureKeyExport_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_SignatureInfo_descriptor;
-  private static final 
+  private static final
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_SignatureInfo_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_TemporaryExposureKey_descriptor;
-  private static final 
+  private static final
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_TemporaryExposureKey_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_TEKSignatureList_descriptor;
-  private static final 
+  private static final
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_TEKSignatureList_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_TEKSignature_descriptor;
-  private static final 
+  private static final
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_TEKSignature_fieldAccessorTable;
 

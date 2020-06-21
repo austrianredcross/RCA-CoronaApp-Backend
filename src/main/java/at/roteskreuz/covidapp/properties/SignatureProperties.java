@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Represents  signature related external configuration
- * 
+ *
  * @author Zoltán Puskai
  */
 @Getter

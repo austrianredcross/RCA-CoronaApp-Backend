@@ -8,7 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 
 /**
  * Repository for persisting exported file related information
- * 
+ *
  * @author Zoltán Puskai
  */
 public interface ExportFileRepository extends CrudRepository<ExportFile, String> {
@@ -18,8 +18,8 @@ public interface ExportFileRepository extends CrudRepository<ExportFile, String>
 	 * @param config
 	 * @param timestamp
 	 * @param status
-	 * @return 
+	 * @return
 	 */
 	List<ExportFile> findByConfigAndTimestampLessThanAndStatusIsNot(ExportConfig config, Long timestamp, ExportFileStatus status);
-	
+
 }

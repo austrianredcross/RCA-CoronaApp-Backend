@@ -15,7 +15,7 @@ import lombok.Setter;
  * Lock is used to avoid parallel execution of same task
  *
  * @author Zoltán Puskai
- */	
+ */
 @Entity
 @Getter
 @Setter

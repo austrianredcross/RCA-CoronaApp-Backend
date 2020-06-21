@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Repository for persisting exposures
- * 
+ *
  * @author Zoltán Puskai
  */
 public interface ExposureRepository extends CrudRepository<Exposure, String>, JpaSpecificationExecutor<Exposure> {
@@ -19,20 +19,20 @@ public interface ExposureRepository extends CrudRepository<Exposure, String>, Jp
 	 * @param until until
 	 * @param diagnosisType diagnosis type
 	 * @param region region
-	 * @return 
+	 * @return
 	 */
 	List<Exposure> findByIntervalNumberGreaterThanEqualAndIntervalNumberLessThanAndDiagnosisTypeAndRegionsLike(Integer since, Integer until, String diagnosisType, String region);
-	
-	
-	
+
+
+
 	/**
 	 * Deletes all exposures older than..
 	 * @param intervalNumber interval number
 	 * @param region region
-	 * @return 
+	 * @return
 	 */
 	//TODO - delete query with condition would perform better
     @Transactional
 	List<Exposure> deleteAllByIntervalNumberIsLessThanAndRegionsLike(int intervalNumber, String region);
-	
+
 }

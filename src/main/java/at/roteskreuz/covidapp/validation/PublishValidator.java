@@ -42,12 +42,12 @@ public class PublishValidator extends AbstractValidator implements ConstraintVal
 	 * Validates a publish request
 	 * @param publish request to be validate
 	 * @param context validation context
-	 * @return 
+	 * @return
 	 */
 	@Override
 	public boolean isValid(Publish publish, ConstraintValidatorContext context) {
 		boolean result = true;
-		
+
 		//check if app is authorized
 		AuthorizedApp authorizedApp = authorizedAppService.findById(publish.getAppPackageName());
 		if (authorizedApp == null) {
@@ -58,7 +58,7 @@ public class PublishValidator extends AbstractValidator implements ConstraintVal
 			addErrorMessage(context, "Region is not allowed");
 			result = false;
 		}
-		
+
 		//check if device is OK - device check services are returning now true all the time !!!
 		switch (publish.getPlatform()) {
 			case AuthorizedAppService.IOS_DEVICE: {

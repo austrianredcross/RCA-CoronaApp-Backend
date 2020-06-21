@@ -14,7 +14,7 @@ import org.springframework.util.Assert;
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
-	
+
 	/**
 	 * Constructor that ensures configuration is valid
 	 * @param publishProperties properties used for the exposures publishing
@@ -23,8 +23,8 @@ public class ApplicationConfig {
 		int maxExposureKeys = publishProperties.getMaxKeysOnPublish();
 		Assert.isTrue((maxExposureKeys>= 0 && maxExposureKeys <= MAX_KEYS_PER_PUBLISH), String.format("maxExposureKeys must be > 0 and <= %s, got %s", MAX_KEYS_PER_PUBLISH, maxExposureKeys));
 	}
-	
-	
+
+
 	// 21 Days worth of keys is the maximum per publish request (inclusive)
 	public static final Integer MAX_KEYS_PER_PUBLISH  = 21;
 
@@ -45,6 +45,6 @@ public class ApplicationConfig {
 	// interval length
 	public static final Duration INTERVAL_LENGTH = Duration.ofMinutes(10);
 
-	
-	
+
+
 }

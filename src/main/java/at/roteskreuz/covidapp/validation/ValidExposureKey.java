@@ -6,7 +6,7 @@ import javax.validation.Payload;
 
 /**
  * Annotation for validating exposure keys
- * 
+ *
  * @author Zoltán Puskai
  */
 @Documented
@@ -16,11 +16,11 @@ import javax.validation.Payload;
 public @interface ValidExposureKey {
 
 	String message() default "It is not a valid ExposureKey object";
-	
+
 	public String value() default "";
-	
+
 	Class<?>[] groups() default {};
 
 	Class<? extends Payload>[] payload() default {};
-	
+
 }

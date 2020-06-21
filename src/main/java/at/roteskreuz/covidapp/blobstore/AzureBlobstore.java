@@ -17,14 +17,14 @@ import org.springframework.beans.factory.annotation.Value;
 public class AzureBlobstore implements Blobstore {
 
 	@Value("${azure.storage.connection-string:}")
-	private String storageConnectionString;	
-	
+	private String storageConnectionString;
+
 	/**
 	 * Creates a file in the blobstore
-	 * @param container name of the container 
+	 * @param container name of the container
 	 * @param objectName name of the object to be stored
 	 * @param contents data to be stored
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@Override
 	public void createObject(String container, String objectName, byte[] contents) throws Exception {
@@ -37,10 +37,10 @@ public class AzureBlobstore implements Blobstore {
 
 	/**
 	 * Deletes a file from the blobstore
-	 * @param container name of the container 
+	 * @param container name of the container
 	 * @param objectName name of the object to be deleted
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@Override
 	public boolean deleteObject(String container, String objectName) throws Exception  {
@@ -67,15 +67,15 @@ public class AzureBlobstore implements Blobstore {
 	 * @param container
 	 * @param sourcePath
 	 * @param destinationPath
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@Override
 	public void copy(String container, String sourcePath, String destinationPath) throws Exception {
-		log.debug(String.format("Azure blobstore will copy the file : %s to: %s in the container: %s", sourcePath, destinationPath, container));	
+		log.debug(String.format("Azure blobstore will copy the file : %s to: %s in the container: %s", sourcePath, destinationPath, container));
 		CloudStorageAccount cloudStorageAccount = CloudStorageAccount.parse(storageConnectionString);
 		CloudBlobContainer cloudContainer = cloudStorageAccount.createCloudBlobClient().getContainerReference(container);
-		CloudBlockBlob source = cloudContainer.getBlockBlobReference(sourcePath);		
+		CloudBlockBlob source = cloudContainer.getBlockBlobReference(sourcePath);
 		CloudBlockBlob destination = cloudContainer.getBlockBlobReference(destinationPath);
-		destination.startCopy(source);		
+		destination.startCopy(source);
 	}
 }
