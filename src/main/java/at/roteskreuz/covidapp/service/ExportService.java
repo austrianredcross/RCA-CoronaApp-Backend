@@ -24,7 +24,6 @@ import io.micrometer.core.instrument.util.StringUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.*;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -41,7 +40,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -68,10 +66,6 @@ public class ExportService {
 	private final ExportFileRepository exportFileRepository;
 	private final Signer signer;
 	private final CleanupService cleanupService;
-	private final PushNotificationService pushNotificationService;
-
-	@Value("${application.pushnotification.waitAfterExportPeriod:PT90S}")
-	private Duration pushnotificationWaitAfterExportPeriod;
 
 	/**
 	 * Exports files for every valid export configuration

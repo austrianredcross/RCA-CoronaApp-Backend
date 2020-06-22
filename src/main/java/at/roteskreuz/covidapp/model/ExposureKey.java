@@ -2,6 +2,7 @@ package at.roteskreuz.covidapp.model;
 
 import at.roteskreuz.covidapp.validation.ValidExposureKey;
 import java.util.Base64;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @ValidExposureKey
 public class ExposureKey {
 	

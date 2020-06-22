@@ -16,8 +16,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 	ApiProperties.class,
 	ExportProperties.class,
 	PublishProperties.class,
-	SignatureProperties.class,
-	PushNotificationProperties.class
+	SignatureProperties.class
 })
 @Slf4j
 public class CovidappApplication  {
