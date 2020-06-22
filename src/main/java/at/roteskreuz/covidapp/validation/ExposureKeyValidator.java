@@ -38,7 +38,6 @@ public class ExposureKeyValidator extends AbstractValidator implements Constrain
 	public boolean isValid(ExposureKey exposureKey, ConstraintValidatorContext context) {
 		boolean result = true;
 		LocalDateTime now = LocalDateTime.now();
-		//LocalDateTime truncated = now.truncatedTo(ChronoUnit.HOURS);
 		
 		long minIntervalNumber = now.minus(publishProperties.getMaxIntervalAgeOnPublish()).toInstant(ZoneOffset.UTC).getEpochSecond() / ApplicationConfig.INTERVAL_LENGTH.getSeconds();
 		// And have an interval <= maxInterval (configured allowed clock skew)
@@ -62,10 +61,6 @@ public class ExposureKeyValidator extends AbstractValidator implements Constrain
 			addErrorMessage(context, String.format("interval number %s is in the future, must be < %s", exposureKey.getIntervalNumber(), minIntervalNumber));
 			result = false;
 		}		
-//		if (exposureKey.getTransmissionRisk() < ApplicationConfig.MIN_TRANSMISSION_RISK || exposureKey.getTransmissionRisk() > ApplicationConfig.MAX_TRANSMISSION_RISK) {
-//			addErrorMessage(context, String.format("invalid transmission risk: %s, must be >= %s && <= %s", exposureKey.getTransmissionRisk(),  ApplicationConfig.MIN_TRANSMISSION_RISK,  ApplicationConfig.MAX_TRANSMISSION_RISK));
-//			result = false;
-//		}		
 		return result;
 	}
 

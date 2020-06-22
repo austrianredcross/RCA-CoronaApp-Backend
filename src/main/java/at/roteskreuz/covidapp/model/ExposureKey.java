@@ -19,12 +19,9 @@ public class ExposureKey {
 	
 	private String key;
 	
-	//@Min(1000)
 	private Integer intervalNumber;
 
 	private Integer intervalCount;
-	
-	//private Integer transmissionRisk;
 	
 	private String password;
 	

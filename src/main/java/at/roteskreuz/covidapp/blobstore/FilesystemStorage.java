@@ -45,26 +45,17 @@ public class FilesystemStorage implements Blobstore {
 		String path = folder + File.separator + filename;
 		log.debug(String.format("Filesystem storage will delete file: %s", path));
 		File file = new File(path);
-//		if (file.isDirectory()) {
-//			Files.walk(Paths.get(path))
-//					.sorted(Comparator.reverseOrder())
-//					.map(Path::toFile)
-//					.forEach(File::delete);
-//			return true;
-//		} else {
-			if (file.exists()) {
-				File parentDir = file.getParentFile();
-				boolean result = file.delete();
-				if (parentDir.listFiles().length == 0) {
-					parentDir.delete();
-				}
-				return result;
-			}
-			return false;
-//		}
-	}
-	
 
+		if (file.exists()) {
+			File parentDir = file.getParentFile();
+			boolean result = file.delete();
+			if (parentDir.listFiles().length == 0) {
+				parentDir.delete();
+			}
+			return result;
+		}
+		return false;
+	}
 
 	/**
 	 * Copies a file (and replaces if destination exists)
