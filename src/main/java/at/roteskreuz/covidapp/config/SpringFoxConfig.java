@@ -63,6 +63,6 @@ public class SpringFoxConfig {
 				"CoronaApp API description.",
 				"v" + appVersion,
 				"",
-				new Contact("Siegfried Zach", "www.accenture.com", "siegfried.zach@accenture.com"),"", "", Collections.emptyList());
+				new Contact("", "", ""),"", "", Collections.emptyList());
 	}
 }
