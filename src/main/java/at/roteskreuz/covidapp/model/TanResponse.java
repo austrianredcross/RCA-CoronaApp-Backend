@@ -5,7 +5,7 @@ import lombok.Value;
 
 /**
  * Response of a TAN validation request
- * 
+ *
  * @author Zoltán Puskai
  */
 @Value

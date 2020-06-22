@@ -30,16 +30,16 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExportConfig implements Serializable {
-	
+
 	@Id
 	@Column(name = "configid")
 	private Long id;
 	private String bucketName;
 	private String filenameRoot;
-	
+
 	@Convert(converter = DutarionToStringConverter.class)
 	private Duration periodRedWarnings;
-	
+
 	@Convert(converter = DutarionToStringConverter.class)
 	private Duration periodYellowWarnings;
 
@@ -53,8 +53,8 @@ public class ExportConfig implements Serializable {
 	private Duration periodOfBigFile;
 
 	@Convert(converter = DutarionToStringConverter.class)
-	private Duration periodOfMediumFile;	
-	
+	private Duration periodOfMediumFile;
+
 	private String region;
 	@Column(name="from_timestamp")
 	private LocalDateTime from;
@@ -62,7 +62,7 @@ public class ExportConfig implements Serializable {
 	private LocalDateTime thru;
 	@ManyToMany(fetch = FetchType.EAGER)
 	private List<SignatureInfo> signatureInfos;
-	
+
 	@JsonIgnore
 	public Duration getExposureCleanupPeriod() {
 		Duration result;

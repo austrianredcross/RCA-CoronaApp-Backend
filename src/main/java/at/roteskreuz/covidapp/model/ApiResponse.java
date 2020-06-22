@@ -8,7 +8,7 @@ import lombok.Setter;
 
 /**
  * Standard API response
- * 
+ *
  * @author Zoltán Puskai
  */
 @Getter
@@ -19,7 +19,7 @@ public class ApiResponse {
 
 	/**
 	 * Constructor to build the response
-	 * 
+	 *
 	 * @param status HTTP status
 	 * @param error error message
 	 * @param message detailed message
@@ -32,7 +32,7 @@ public class ApiResponse {
 		this.path = path;
 		this.timestamp = LocalDateTime.now();
 	}
-	
+
 	private int status;
 	private String error;
 	private String message;
@@ -41,11 +41,11 @@ public class ApiResponse {
 
 	/**
 	 * OK response. Used when the request was processed well.
-	 * 
+	 *
 	 * @return OK response with HTTP status 200
 	 */
 	public static ApiResponse ok() {
 		return new ApiResponse(200, null, "OK", null);
 	}
-	
+
 }

@@ -122,7 +122,7 @@ public class ExportService {
 	 * @throws IOException
 	 * @throws GeneralSecurityException
 	 */
-	//MarshalExportFile converts the inputs into an encoded byte array.	
+	//MarshalExportFile converts the inputs into an encoded byte array.
 	private byte[] marshalExportFile(String region, LocalDateTime startTimestamp, LocalDateTime endTimestamp, List<Exposure> exposures, int batchNum, int batchSize, List<SignatureInfo> exportSigners) throws IOException, GeneralSecurityException {
 		// create main exposure key export binary
 		byte[] expContents = marshalContents(region, startTimestamp, endTimestamp, exposures, batchNum, batchSize, exportSigners);
@@ -255,8 +255,8 @@ public class ExportService {
 		List<Exposure> allExposures = new ArrayList<>();
 		allExposures.addAll(redExposures);
 		allExposures.addAll(yellowExposures);
-		
-		
+
+
 		LocalDateTime bigFileSartDate = startOfToday.minus(config.getPeriodOfBigFile());
 		long startIntervalNumberBig = getIntervalNumber(bigFileSartDate);
 		long endIntervalNumberBig = getIntervalNumber(until);
@@ -265,7 +265,7 @@ public class ExportService {
 		List<String> fullExportBigFilenames = exportExposures("batch_full" + config.getPeriodOfBigFile().toDays(), fileDate, config, startOfToday, until, startIntervalNumberBig, fullExportBigExposures);
 		indexFile.setFullBigBatch(new IndexFileBatch(startIntervalNumberBig, fullExportBigFilenames));
 
-		
+
 		LocalDateTime mediumFileSartDate = startOfToday.minus(config.getPeriodOfMediumFile());
 		long startIntervalNumberMedium = getIntervalNumber(mediumFileSartDate);
 		long endIntervalNumberMedium = getIntervalNumber(until);
@@ -324,7 +324,7 @@ public class ExportService {
 			log.info(String.format("No records for export config %d in the time range %s - %s", config.getId(), startTimestamp.format(dtf), endTimestamp.format(dtf)));
 		} else {
 			ensureMinNumExposures(exposures, config.getRegion(), exportProperties.getMinRecords(), exportProperties.getPaddingRange());
-			// Load the non-expired signature infos associated with this export batch. - in our case we already have them, just have to filter them	
+			// Load the non-expired signature infos associated with this export batch. - in our case we already have them, just have to filter them
 			List<SignatureInfo> sigInfos = config.getSignatureInfos().stream().filter(si -> si.getEndTimestamp() == null || !si.getEndTimestamp().isBefore(LocalDateTime.now())).collect(Collectors.toList());
 
 			// Create the export files.
@@ -339,7 +339,7 @@ public class ExportService {
 		//Writing files to database
 		objectNames.forEach((fileName) -> {
 			exportFileRepository.save(new ExportFile(fileName, config.getBucketName(), config, config.getRegion(), fileDate.toEpochSecond(ZoneOffset.UTC), ExportFileStatus.EXPORT_FILE_CREATED));
-		});		
+		});
 		return objectNames.stream().map(s -> "/" + config.getBucketName() + "/" + s).collect(Collectors.toList());
 	}
 
@@ -402,8 +402,8 @@ public class ExportService {
 	private String commonIndexFilename(ExportConfig config) {
 		return String.format("%s/%s", config.getFilenameRoot(), "index.json");
 	}
-	
+
 	private long getIntervalNumber(LocalDateTime timestamp) {
-		return timestamp.toInstant(ZoneOffset.UTC).getEpochSecond() / ApplicationConfig.INTERVAL_LENGTH.getSeconds();		
+		return timestamp.toInstant(ZoneOffset.UTC).getEpochSecond() / ApplicationConfig.INTERVAL_LENGTH.getSeconds();
 	}
 }

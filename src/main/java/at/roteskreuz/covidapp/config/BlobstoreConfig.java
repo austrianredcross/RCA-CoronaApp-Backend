@@ -25,7 +25,7 @@ public class BlobstoreConfig {
 	/**
 	 * Instantiates a blobstore
 	 * @return blobstore according to the configuration
-	 */	
+	 */
 	@Bean
 	public Blobstore blobstore() {
 

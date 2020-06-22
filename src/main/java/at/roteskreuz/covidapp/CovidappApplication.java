@@ -60,7 +60,7 @@ public class CovidappApplication implements CommandLineRunner {
 				String password = randomString(8);
 				String appPackageName = "at.roteskreuz.stopcorona.stage";
 				String regions = ",AT,HU,";
-				long intervalNumberStart = LocalDateTime.now().minusDays(14).toInstant(ZoneOffset.UTC).getEpochSecond() / ApplicationConfig.INTERVAL_LENGTH.getSeconds();				
+				long intervalNumberStart = LocalDateTime.now().minusDays(14).toInstant(ZoneOffset.UTC).getEpochSecond() / ApplicationConfig.INTERVAL_LENGTH.getSeconds();
 				Integer intervalNumber = random.nextInt((int)intervalNumberStart) + 2650038;
 				Integer intervalCount = random.nextInt(10);
 				LocalDateTime created = now.minusMinutes(random.nextInt(2000));

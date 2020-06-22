@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * Service for retrieving the client configuration
- * 
+ *
  * @author Zoltán Puskai
  */
 @Service
@@ -17,18 +17,18 @@ import org.springframework.stereotype.Service;
 public class ClientConfigurationService {
 
 	private final ClientConfigurationRepository repository;
-	
+
 	/**
 	 * Returns (and caches) the current client configuration
-	 * 
-	 * @return client configuration 
+	 *
+	 * @return client configuration
 	 */
 	@Cacheable(cacheNames = "configuration")
 	public ClientConfiguration getConfiuration() {
 		return repository.findById(1L).orElse(null);
 	}
 
-	
+
 	/**
 	 * Flushes the client configuration cache
 	 */

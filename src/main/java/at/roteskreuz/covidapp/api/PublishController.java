@@ -37,7 +37,7 @@ public class PublishController {
 	private final TanService tanService;
 	private final PublishProperties publishProperties;
 
-	
+
 	/**
 	 * Stores exposures published by the clients
 	 * @param publish request containing exposures and validation data
@@ -48,7 +48,7 @@ public class PublishController {
 	@ApiOperation(value = "Publishes infection information.", authorizations = {
 		@Authorization(value = "AuthorizationKey")})
 	@ApiImplicitParams({
-	   @ApiImplicitParam(name = "X-AppId", value = "Application id", required = true, dataType = "string", paramType = "header")		
+	   @ApiImplicitParam(name = "X-AppId", value = "Application id", required = true, dataType = "string", paramType = "header")
 	 })
 	public ResponseEntity<ApiResponse> publish(@Valid @RequestBody Publish publish) throws InvalidTanException {
 		if (!publishProperties.isBypassTanValidation() && !tanService.validate(publish.getVerificationPayload().getUuid(), publish.getVerificationPayload().getAuthorization(), publish.getDiagnosisType())) {

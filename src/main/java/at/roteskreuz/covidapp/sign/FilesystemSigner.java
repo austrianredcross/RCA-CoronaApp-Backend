@@ -9,7 +9,7 @@ import org.springframework.core.io.ClassPathResource;
 
 /**
  * Signer that gets the private key from filesystem.
- * 
+ *
  * @author Bernhard Roessler
  */
 
@@ -24,7 +24,7 @@ public class FilesystemSigner extends AbstractSigner {
 	 * @param data data to be signed
 	 * @return signed data
 	 * @throws GeneralSecurityException
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@Override
 	public byte[] sign(byte[] data) throws GeneralSecurityException, IOException {

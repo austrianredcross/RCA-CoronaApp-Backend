@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Represents  push notification related external configuration
- * 
+ *
  * @author Bernhard Roessler
  */
 @Getter

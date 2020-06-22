@@ -7,7 +7,7 @@ import lombok.Setter;
 
 /**
  * Verification payload is used in a publish request to hold the TAN verification data
- * 
+ *
  * @author Zoltán Puskai
  */
 @Getter
@@ -19,5 +19,5 @@ public class VerificationPayload {
 	private String uuid;
 
 	@NotBlank
-	private String authorization;	
+	private String authorization;
 }

@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service for handling locks use to avoid parallel execution
- * 
+ *
  * @author Zoltán Puskai
  */
 @Service
@@ -20,22 +20,22 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class LockService {
-	
+
 	private final LockRepository lockRepository;
-	
+
 	/**
 	 * Acquires a lock for aa time period
 	 * @param lockId id of the lock
 	 * @param ttl time period
 	 * @return
-	 * @throws LockNotAcquiredException 
+	 * @throws LockNotAcquiredException
 	 */
 	public LocalDateTime acquireLock(String lockId, Duration ttl) throws LockNotAcquiredException {
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime expiresAt = now.plus(ttl).withNano(0);
 		Lock lock = lockRepository.findById(lockId).orElse(null);
 		if (lock == null) {
-			lockRepository.save(new Lock(lockId, expiresAt));			
+			lockRepository.save(new Lock(lockId, expiresAt));
 		} else {
 			//we have a lock, checking if it is expired
 			if (lock.getExpires().isAfter(now)) {
@@ -48,12 +48,12 @@ public class LockService {
 		log.debug(String.format("Setting lock for id %s is set to expiration value %s", lockId, expiresAt));
 		return expiresAt;
 	}
-	
+
 	/**
 	 * Releases a lock that was made until a timestamp
 	 * @param lockId id of the lock
 	 * @param timestamp timestamp until the lock should be valid
-	 * @return 
+	 * @return
 	 */
 	public boolean releaseLock(String lockId, LocalDateTime timestamp) {
 		Lock lock = lockRepository.findById(lockId).orElse(null);

@@ -15,11 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author Zoltán Puskai
  */
 public class ExposureKeyValidator extends AbstractValidator implements ConstraintValidator<ValidExposureKey, ExposureKey> {
-	
+
 	@Autowired
 	private PublishProperties publishProperties;
-	
-	
+
+
 	/**
 	 * Initializes the validator
 	 *
@@ -32,23 +32,23 @@ public class ExposureKeyValidator extends AbstractValidator implements Constrain
 	 * Validate an exposure key
 	 * @param exposureKey key to be validated
 	 * @param context validation context
-	 * @return 
+	 * @return
 	 */
 	@Override
 	public boolean isValid(ExposureKey exposureKey, ConstraintValidatorContext context) {
 		boolean result = true;
 		LocalDateTime now = LocalDateTime.now();
 		//LocalDateTime truncated = now.truncatedTo(ChronoUnit.HOURS);
-		
+
 		long minIntervalNumber = now.minus(publishProperties.getMaxIntervalAgeOnPublish()).toInstant(ZoneOffset.UTC).getEpochSecond() / ApplicationConfig.INTERVAL_LENGTH.getSeconds();
 		// And have an interval <= maxInterval (configured allowed clock skew)
 		long maxIntervalNumber = now.toInstant(ZoneOffset.UTC).getEpochSecond() /  ApplicationConfig.INTERVAL_LENGTH.getSeconds();
-		
+
 		String key =exposureKey.binKey();
 		if (key.length() != ApplicationConfig.KEY_LENGTH) {
 			addErrorMessage(context, "invalid key length, " + key.length() + ", must be " + ApplicationConfig.KEY_LENGTH);
 			result = false;
-			
+
 		}
 		if (exposureKey.getIntervalCount() < ApplicationConfig.MIN_INTERVAL_COUNT || exposureKey.getIntervalCount() > ApplicationConfig.MAX_INTERVAL_COUNT ) {
 			addErrorMessage(context, String.format("invalid interval count, %s, must be >= %s && <= %s", exposureKey.getIntervalCount(), ApplicationConfig.MIN_INTERVAL_COUNT, ApplicationConfig.MAX_INTERVAL_COUNT));
@@ -61,11 +61,11 @@ public class ExposureKeyValidator extends AbstractValidator implements Constrain
 		if (exposureKey.getIntervalNumber() >= maxIntervalNumber) {
 			addErrorMessage(context, String.format("interval number %s is in the future, must be < %s", exposureKey.getIntervalNumber(), minIntervalNumber));
 			result = false;
-		}		
+		}
 //		if (exposureKey.getTransmissionRisk() < ApplicationConfig.MIN_TRANSMISSION_RISK || exposureKey.getTransmissionRisk() > ApplicationConfig.MAX_TRANSMISSION_RISK) {
 //			addErrorMessage(context, String.format("invalid transmission risk: %s, must be >= %s && <= %s", exposureKey.getTransmissionRisk(),  ApplicationConfig.MIN_TRANSMISSION_RISK,  ApplicationConfig.MAX_TRANSMISSION_RISK));
 //			result = false;
-//		}		
+//		}
 		return result;
 	}
 

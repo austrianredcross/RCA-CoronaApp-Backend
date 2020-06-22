@@ -77,7 +77,7 @@ public final class PemReader {
 	 * Encodes a sequence of bytes
 	 * @param encodedValues
 	 * @return
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public static byte[] encodeSequence(byte[]... encodedValues) throws IOException {
 		int length = 0;

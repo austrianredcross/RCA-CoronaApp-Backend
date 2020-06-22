@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 /**
  * Cleans up old files and old exposures
  * Exported files are signed with private keys during the export process.
- * 
+ *
  * @author Bernhard Roessler
  */
 @Service
@@ -31,8 +31,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class CleanupService {
 
-	private static final Duration MIN_CLEANUP_EXPOSURE_TTL = Duration.ofDays(10);	
-	private static final Duration MIN_CLEANUP_FILES_TTL = Duration.ofDays(1);	
+	private static final Duration MIN_CLEANUP_EXPOSURE_TTL = Duration.ofDays(10);
+	private static final Duration MIN_CLEANUP_FILES_TTL = Duration.ofDays(1);
 
 	private final ExposureService exposureService;
 	private final ExportFileRepository exportFileRepository;
@@ -62,22 +62,22 @@ public class CleanupService {
 		} catch (LockNotAcquiredException e) {
 			log.error("Could not acquire lock for cleaning up");
 			//fail silently
-		}	
+		}
 		return ApiResponse.ok();
 	}
-	
-	
+
+
 	private void cleanupConfig(ExportConfig config) throws Exception {
 		cleanupFiles(config);
 		cleanupExposures(config);
 	}
-	
+
 	private void cleanupFiles(ExportConfig config) throws Exception {
 		LocalDateTime deletionDate = getCutOffDate(config.getPeriodOfKeepingFiles(), MIN_CLEANUP_FILES_TTL);
 		//select directories that are older than deletionDate
 		List<ExportFile> files = exportFileRepository.findByConfigAndTimestampLessThanAndStatusIsNot(config, deletionDate.toEpochSecond(ZoneOffset.UTC), ExportFileStatus.EXPORT_FILE_DELETED);
-		
-		
+
+
 		for (ExportFile file : files) {
 			blobstore.deleteObject(config.getBucketName(), file.getFilename());
 			file.setStatus(ExportFileStatus.EXPORT_FILE_DELETED);
@@ -90,8 +90,8 @@ public class CleanupService {
 		long intervalNumber = deletionDate.toInstant(ZoneOffset.UTC).getEpochSecond() / ApplicationConfig.INTERVAL_LENGTH.getSeconds();
 		List<Exposure> delExposures = exposureService.cleanUpExposures((int)intervalNumber, config.getRegion());
 		log.info(String.format("%d Exposures deleted for config %d", delExposures == null ? 0 : delExposures.size(), config.getId()));
-	}	
-	
+	}
+
 
 	private LocalDateTime getCutOffDate(Duration cleanupTtl, Duration minimumDuration) {
 			if (cleanupTtl.compareTo(minimumDuration) < 0) {

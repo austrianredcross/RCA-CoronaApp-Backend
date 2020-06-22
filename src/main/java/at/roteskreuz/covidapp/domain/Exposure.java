@@ -14,34 +14,34 @@ import lombok.Setter;
  * Exposure represents the record as stored in the database
  *
  * @author Zoltán Puskai
- */	
+ */
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Exposure implements Serializable {
-	
+
 	@Id
 	private String exposureKey;
-	
+
 	private String password;
 
 	private String appPackageName;
-	
+
 	private String regions;
-	
+
 	private Integer intervalNumber;
-	
+
 	private Integer intervalCount;
-	
+
 	private LocalDateTime createdAt;
-	
+
 	private Boolean localProvenance;
-	
+
 	@Column(name = "sync_id")
-	private Long federationSyncID;	
-	
+	private Long federationSyncID;
+
 	private String diagnosisType;
 
 	private LocalDateTime updatedAt;
@@ -55,7 +55,7 @@ public class Exposure implements Serializable {
 		this.intervalCount = intervalCount;
 		this.diagnosisType = diagnosisType;
 	}
-	
+
 	public  Integer getTransmissionRisk() {
 		int result =  0;
 		switch(diagnosisType) {
@@ -70,6 +70,6 @@ public class Exposure implements Serializable {
 		}
 		return result;
 	}
-	
+
 
 }

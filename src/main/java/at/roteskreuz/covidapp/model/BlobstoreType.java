@@ -5,7 +5,7 @@ import lombok.Getter;
 
 /**
  * The different types of blobstores
- * 
+ *
  * @author Zoltán Puskai
  */
 @AllArgsConstructor
@@ -14,6 +14,6 @@ public enum BlobstoreType {
 	NONE("none"),
 	FILESYSTEM("filesystem"),
 	AZURE_CLOUD_STORAGE("azure-cloud-storage");
-	
+
 	private final String name;
 }

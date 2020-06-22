@@ -23,11 +23,11 @@ public class PushNotificationController {
 
 	private final PushNotificationService pushNotificationService;
 
-	
+
 	/**
 	 * Sends out push notifications
 	 * @return 200 (OK) or 400 (Bad request), if notification cannot be sent
-	 */			
+	 */
 	@GetMapping(value = "/notification", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> pushNotification()  {
 		return pushNotificationService.sendNotification(UUID.randomUUID().toString()) ?

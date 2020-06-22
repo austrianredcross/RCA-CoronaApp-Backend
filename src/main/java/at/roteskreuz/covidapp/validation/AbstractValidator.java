@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class AbstractValidator  {
-	
+
 	/**
 	 * Adds an error message to the response
 	 * @param context validation context
@@ -22,5 +22,5 @@ public class AbstractValidator  {
 		context
 				.buildConstraintViolationWithTemplate(message)
 				.addConstraintViolation();
-	}	
+	}
 }

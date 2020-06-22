@@ -30,7 +30,7 @@ public class ClientConfigurationController {
 
 	private final ClientConfigurationService service;
 
-	
+
 	/**
 	 * Returns the current client configuration ({@link ClientConfiguration})
 	 *

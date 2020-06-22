@@ -21,7 +21,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	/**
 	 * Configures the http security
 	 *
-	 * 
+	 *
 	 * @param http http security to be configured
 	 * @throws java.lang.Exception authentication cannot be configured
 	 */

@@ -19,20 +19,20 @@ import org.springframework.stereotype.Service;
 
 /**
  * Service for sending push notifications
- * 
+ *
  * @author Bernhard Roessler
  */
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class PushNotificationService {
-	
+
 	private final PushNotificationProperties pushNotificationProperties;
 
 	/**
 	 * Sends a push notification
 	 * @param message message to be sent
-	 * @return 
+	 * @return
 	 */
 	public boolean sendNotification(String message) {
 		FirebaseApp firebaseApp = getFirebaseApp();

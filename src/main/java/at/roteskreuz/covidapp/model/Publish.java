@@ -14,7 +14,7 @@ import lombok.Setter;
 
 /**
  * Representation of a publish request
- * 
+ *
  * @author Zoltán Puskai
  */
 @Getter
@@ -22,28 +22,28 @@ import lombok.Setter;
 @NoArgsConstructor
 @ValidPublish
 public class Publish {
-	
+
 	@Size(min = 0)
 	@JsonProperty("temporaryExposureKeys")
 	@Valid
 	private List<ExposureKey> keys;
-	
+
 	private List<String> regions;
 
 	private String 	appPackageName;
 
 	private String 	platform;
-	
+
 	private String 	deviceVerificationPayload;
 
 	private String verificationAuthorityName;
-	
+
 	private String 	padding;
-	
+
 	@NotBlank
 	@Pattern(regexp = "red-warning|yellow-warning|green-warning", message = "The diagnosis type can be eighter red-warning, yellow-warning or green-warning")
 	private String diagnosisType;
-	
+
 	@Valid
 	@NotNull
 	private VerificationPayload verificationPayload;

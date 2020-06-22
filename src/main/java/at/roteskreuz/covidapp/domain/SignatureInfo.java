@@ -13,7 +13,7 @@ import lombok.Setter;
  * SignatureInfo represents signature information used when signing the exported files
  *
  * @author Zoltán Puskai
- */	
+ */
 @Entity
 @Getter
 @Setter
@@ -27,8 +27,8 @@ public class SignatureInfo implements Serializable {
 	private String appPackageName;
 	private String bundleID;
 	private String signingKeyVersion;
-	
+
 	private String signingKeyID;
 	private LocalDateTime endTimestamp;
-	
+
 }

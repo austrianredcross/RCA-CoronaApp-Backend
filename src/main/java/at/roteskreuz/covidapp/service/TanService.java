@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 /**
  * Service for interacting with the external TAN service.
  * external personal data storage: ULR, authorization key, authorization value, SHA256 key can be configured in the application.properties
- * 
+ *
  * @author Zoltán Puskai
  */
 @Service
@@ -26,28 +26,28 @@ import org.springframework.web.client.RestTemplate;
 public class TanService {
 
 	private final RestTemplate restTemplate;
-	
+
 	private final Sha256Service sha256Service;
-		
+
 	private final Pattern TAN_PATTERN = Pattern.compile("^[0-9]{6}$");
-	
+
 	@Value("${external.personal.data.storage.url:}")
 	private String personalDataServiceUrl;
-	
+
 	@Value("${external.personal.data.storage.authorization.key.name:}")
 	private String personalDataServiceAutorizationKeyName;
 
-		
+
 	@Value("${external.personal.data.storage.authorization.key.value:}")
 	private String personalDataServiceAutorizationKeyValue;
-	
+
 
 	@Value("${external.personal.data.storage.sha256.key:}")
 	private String personalDataServiceSha256Key;
-	
+
 	/**
 	 * Validates a phone number with a TAN
-	 * 
+	 *
 	 * @param uuid id of the request
 	 * @param tan TAN
 	 * @param type
@@ -56,12 +56,12 @@ public class TanService {
 	public boolean validate(String uuid, String tan, String type) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		
+
 		headers.add(personalDataServiceAutorizationKeyName,personalDataServiceAutorizationKeyValue);
-		
+
 		StringJoiner stringJoiner = new StringJoiner(",");
-		stringJoiner.add(uuid).add(personalDataServiceSha256Key).add(type);		
-		String sha256 = sha256Service.sha256(stringJoiner.toString());		
+		stringJoiner.add(uuid).add(personalDataServiceSha256Key).add(type);
+		String sha256 = sha256Service.sha256(stringJoiner.toString());
 		TanRequest request = new TanRequest(uuid, tan, type, sha256);
 		HttpEntity<TanRequest> entity= new HttpEntity<>(request, headers);
 		if (StringUtils.isBlank(tan) || !TAN_PATTERN.matcher(tan).matches()) {
@@ -78,7 +78,7 @@ public class TanService {
 				return false;
 			}
 		}
-		
+
 	}
 
 }
