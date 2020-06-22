@@ -7,17 +7,18 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Validates Exposure key objects
  *
  * @author Zoltán Puskai
  */
+@RequiredArgsConstructor
 public class ExposureKeyValidator extends AbstractValidator implements ConstraintValidator<ValidExposureKey, ExposureKey> {
 	
-	@Autowired
-	private PublishProperties publishProperties;
+	
+	private final PublishProperties publishProperties;
 	
 	
 	/**

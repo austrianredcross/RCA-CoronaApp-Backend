@@ -9,7 +9,7 @@ import at.roteskreuz.covidapp.service.SafetynetAttestationService;
 import java.util.Comparator;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 
 /**
@@ -17,17 +17,18 @@ import org.springframework.beans.factory.annotation.Value;
  *
  * @author Zoltán Puskai
  */
+@RequiredArgsConstructor
 public class PublishValidator extends AbstractValidator implements ConstraintValidator<ValidPublish, Publish> {
 
 	@Value("${application.publish.max-keys-on-publish}")
 	private int maxExposureKeys;
 
-	@Autowired
-	private AuthorizedAppService authorizedAppService;
-	@Autowired
-	private DeviceCheckService deviceCheckService;
-	@Autowired
-	private SafetynetAttestationService safetynetAttestationService;
+	
+	private final AuthorizedAppService authorizedAppService;
+	
+	private final DeviceCheckService deviceCheckService;
+	
+	private final SafetynetAttestationService safetynetAttestationService;
 
 	/**
 	 * Initializes the validator
