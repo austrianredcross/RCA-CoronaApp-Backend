@@ -40,7 +40,41 @@ To run this functions locally with Java, install the following software:
 3. Edit Configurations ... and set Spring Boot Profile (optional)
 4. Debug 'CovidappApplication'
 
+## CLI
 
+### Setup
+
+First you need to generate a key or copy the private key for testing purpose.
+```
+cp src/test/resources/private.pem src/main/resources/private.pem
+```
+```
+openssl ecparam -genkey -name prime256v1 -noout -out  src/test/resources/private.pem
+```
+
+### Run
+
+Run development Server
+
+```
+mvn spring-boot:run
+```
+
+### Test
+
+Run all unit Tests
+
+```
+mvn test
+```
+
+### Release
+
+creates a standalone application in `target/****.jar`
+
+```
+mvn package
+```
 
 # Configure the application
 The application can be configured as any Spring boot application:
