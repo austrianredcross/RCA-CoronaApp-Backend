@@ -6,7 +6,7 @@ import lombok.Value;
 
 /**
  *
- * @author zolika
+ * @author Zoltán Puskai
  */
 @Value
 public class IndexFileBatch {

@@ -7,7 +7,7 @@ import lombok.Setter;
 
 /**
  *
- * @author zolika
+ * @author Zoltán Puskai
  */
 @Getter
 @Setter

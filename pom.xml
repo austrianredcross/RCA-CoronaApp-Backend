@@ -142,14 +142,6 @@
 	    <version>${protobuf-java-format.version}</version>
 	</dependency>	
 	
-
-		
-	<!--	<dependency>
-	    <groupId>org.bouncycastle</groupId>
-	    <artifactId>bcpkix-jdk15on</artifactId>
-	    <version>${bouncycastle.version}</version>
-	</dependency>	
-	-->
 	<dependency>
 	    <groupId>io.springfox</groupId>
 	    <artifactId>springfox-swagger2</artifactId>
@@ -195,12 +187,6 @@
 		<artifactId>firebase-admin</artifactId>
 		<version>${firebase-admin.version}</version>
 	</dependency>
-
-	<!--<dependency>
-		<groupId>com.google.auth</groupId>
-		<artifactId>google-auth-library-oauth2-http</artifactId>
-		<version>0.20.0</version>
-	</dependency>-->
 
     </dependencies>
     

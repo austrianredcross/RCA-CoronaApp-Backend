@@ -2,7 +2,6 @@ package at.roteskreuz.covidapp.domain;
 
 import java.time.LocalDateTime;
 import javax.persistence.*;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,7 +27,6 @@ public class ClientConfiguration {
 	/**
 	 * Configuration in JSON format
 	 */	
-	//@Column(columnDefinition="TEXT")
 	@Lob
 	private String data;
 	
