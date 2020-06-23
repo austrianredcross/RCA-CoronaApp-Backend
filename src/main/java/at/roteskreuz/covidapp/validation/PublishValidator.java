@@ -4,12 +4,10 @@ import at.roteskreuz.covidapp.domain.AuthorizedApp;
 import at.roteskreuz.covidapp.model.ExposureKey;
 import at.roteskreuz.covidapp.model.Publish;
 import at.roteskreuz.covidapp.service.AuthorizedAppService;
-import at.roteskreuz.covidapp.service.DeviceCheckService;
-import at.roteskreuz.covidapp.service.SafetynetAttestationService;
 import java.util.Comparator;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 
 /**
@@ -17,17 +15,15 @@ import org.springframework.beans.factory.annotation.Value;
  *
  * @author Zoltán Puskai
  */
+@RequiredArgsConstructor
 public class PublishValidator extends AbstractValidator implements ConstraintValidator<ValidPublish, Publish> {
 
 	@Value("${application.publish.max-keys-on-publish}")
 	private int maxExposureKeys;
 
-	@Autowired
-	private AuthorizedAppService authorizedAppService;
-	@Autowired
-	private DeviceCheckService deviceCheckService;
-	@Autowired
-	private SafetynetAttestationService safetynetAttestationService;
+	
+	private final AuthorizedAppService authorizedAppService;
+	
 
 	/**
 	 * Initializes the validator
@@ -57,29 +53,6 @@ public class PublishValidator extends AbstractValidator implements ConstraintVal
 			//check if region is allowed
 			addErrorMessage(context, "Region is not allowed");
 			result = false;
-		}
-		
-		//check if device is OK - device check services are returning now true all the time !!!
-		switch (publish.getPlatform()) {
-			case AuthorizedAppService.IOS_DEVICE: {
-				if (!deviceCheckService.isDeviceTokenValid(publish.getDeviceVerificationPayload())) {
-					addErrorMessage(context, "This device is not allowed");
-					result = false;
-				}
-				break;
-			}
-			case AuthorizedAppService.ANDROID_DEVICE: {
-				if (!safetynetAttestationService.isAttestationValid(publish.getDeviceVerificationPayload())) {
-					addErrorMessage(context, "This device is not allowed");
-					result = false;
-				}
-				break;
-			}
-			default: {
-				addErrorMessage(context, "Platform is not supported!");
-				result = false;
-				break;
-			}
 		}
 
 		if (publish.getKeys().size() > maxExposureKeys) {
