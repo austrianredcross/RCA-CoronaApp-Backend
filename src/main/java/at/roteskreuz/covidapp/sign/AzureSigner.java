@@ -24,7 +24,7 @@ public class AzureSigner extends AbstractSigner {
 	/**
 	 * Signs data
 	 * @param data data to be signed
-	 * @return signed data
+	 * @return signature
 	 * @throws GeneralSecurityException
 	 * @throws IOException 
 	 */

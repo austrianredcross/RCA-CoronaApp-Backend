@@ -15,14 +15,14 @@ public class NoopSigner implements Signer {
 	/**
 	 * Does not sign data
 	 * @param data data to be signed
-	 * @return not signed (same) data
+	 * @return not signed (static) data
 	 * @throws GeneralSecurityException
 	 * @throws IOException 
 	 */	
 	@Override
 	public byte[] sign(byte[] data) throws GeneralSecurityException, IOException {
 		log.info(String.format("Noop Signature don't signature data!"));
-		return data;
+		return new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	}
 
 }

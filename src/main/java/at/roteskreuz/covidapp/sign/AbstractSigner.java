@@ -24,7 +24,7 @@ public abstract class AbstractSigner implements Signer {
 	 * @param keyInputStream private key
 	 * @param signatureAlgorithm algorithm used
 	 * @param keyType key type used
-	 * @return signed data
+	 * @return signature
 	 * @throws GeneralSecurityException
 	 * @throws IOException 
 	 */
