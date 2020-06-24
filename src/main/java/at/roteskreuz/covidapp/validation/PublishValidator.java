@@ -67,13 +67,15 @@ public class PublishValidator extends AbstractValidator implements ConstraintVal
 
 		// 2) Walk the slice and verify no gaps/overlaps.
 		// We know the slice isn't empty, seed w/ the first interval.
-		Integer nextInterval = publish.getKeys().get(0).getIntervalNumber();
-		for (ExposureKey key : publish.getKeys()) {
-			if (key.getIntervalNumber() < nextInterval) {
-				addErrorMessage(context, String.format("exposure keys have overlapping intervals"));
-				result = false;
+		if (!publish.getKeys().isEmpty()) {
+			Integer nextInterval = publish.getKeys().get(0).getIntervalNumber();
+			for (ExposureKey key : publish.getKeys()) {
+				if (key.getIntervalNumber() < nextInterval) {
+					addErrorMessage(context, String.format("exposure keys have overlapping intervals"));
+					result = false;
+				}
+				nextInterval = key.getIntervalNumber() + key.getIntervalCount();
 			}
-			nextInterval = key.getIntervalNumber() + key.getIntervalCount();
 		}
 		return result;
 	}
