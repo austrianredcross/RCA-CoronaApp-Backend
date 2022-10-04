@@ -16,7 +16,7 @@
 
     <properties>
 	<java.version>1.8</java.version>
-	<protobuf-java.version>3.12.1</protobuf-java.version>
+	<protobuf-java.version>3.16.3</protobuf-java.version>
 	<protobuf-java-format.version>1.4</protobuf-java-format.version>	
 	<swager.version>2.9.2</swager.version>
 	
